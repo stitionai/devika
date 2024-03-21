@@ -71,7 +71,7 @@ To install Devika, follow these steps:
 
 1. Clone the Devika repository:
    ```
-   git clone https://github.com/example/devika.git
+   git clone https://github.com/stitionai/devika.git
    ```
 2. Navigate to the project directory:
    ```
