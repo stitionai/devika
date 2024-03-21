@@ -34,6 +34,10 @@ Devika aims to revolutionize the way we build software by providing an AI pair p
 > [!NOTE]
 > Devika is modeled after [Devin](https://www.cognition-labs.com/introducing-devin) by Cognition AI. This project aims to be an open-source alternative to Devin with an "overly ambitious" goal to meet the same score as Devin in the [SWE-bench](https://www.swebench.com/) Benchmarks... and eventually beat it?
 
+## Demoes
+
+https://github.com/stitionai/devika/assets/26198477/cfed6945-d53b-4189-9fbe-669690204206
+
 ## Key Features
 
 - 🧠 Advanced AI planning and reasoning capabilities
