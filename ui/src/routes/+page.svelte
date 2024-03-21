@@ -1,6 +1,5 @@
 <script>
   import { onMount } from "svelte";
-  import Sidebar from "$lib/components/Sidebar.svelte";
   import ControlPanel from "$lib/components/ControlPanel.svelte";
   import MessageContainer from "$lib/components/MessageContainer.svelte";
   import InternalMonologue from "$lib/components/InternalMonologue.svelte";
@@ -30,23 +29,19 @@
   });
 </script>
 
-<div class="flex h-screen">
-  <Sidebar />
+<div class="flex flex-col p-4 h-full">
+  <ControlPanel />
 
-  <div class="flex flex-col flex-1 p-4">
-    <ControlPanel />
+  <div class="flex h-full space-x-4">
+    <div class="flex flex-col w-1/2">
+      <MessageContainer />
+      <InternalMonologue />
+      <MessageInput />
+    </div>
 
-    <div class="flex h-full space-x-4">
-      <div class="flex flex-col w-1/2">
-        <MessageContainer />
-        <InternalMonologue />
-        <MessageInput />
-      </div>
-
-      <div class="flex flex-col w-1/2 space-y-4">
-        <BrowserWidget />
-        <TerminalWidget />
-      </div>
+    <div class="flex flex-col w-1/2 space-y-4">
+      <BrowserWidget />
+      <TerminalWidget />
     </div>
   </div>
 </div>
