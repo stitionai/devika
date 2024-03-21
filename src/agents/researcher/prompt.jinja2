@@ -1,0 +1,43 @@
+For the provided step-by-step plan, write all the necessary search queries to gather information from the web that the base model doesn't already know.
+
+Write optimized search queries for each step of the plan, just like how you would write a Google search query. Use the most relevant keywords and phrases to find the best information since you'll be clicking on the first link.
+
+Step-by-Step Plan:
+{{ step_by_step_plan }}
+
+Only respond in the following JSON format:
+
+```
+{
+    "queries": [
+        "<QUERY 1>",
+        "<QUERY 2>"
+    ],
+    "ask_user": "<ASK INPUT FROM USER>"
+}
+```
+
+Keywords for Search Query: {{ contextual_keywords }}
+
+Example "queries": ["How to do Bing Search via API in Python", "Claude API Documentation Python"]
+Example "ask_user": "Can you please provide API Keys for Claude, OpenAI, and Firebase?"
+
+Rules:
+- Only search for a maximum of 3 queries.
+- Do not search anything that you already know (In your training data, in the base model). For example: You already know how to write a Python flask web server, it is in your data, so you shouldn't search how to do that.
+- Do not search for information that is not relevant to the task at hand.
+- Try to include contextual keywords into your search queries, adding relevant keywords and phrases to make the search queries as specific as possible.
+- Only search for documentation, do not search basic how tos. Forbidden Queries: How to install XYZ, How to setup ABC, etc.
+- Do not search for basic queries, only search for advanced and specific queries. You are allowed to leave the "queries" field empty if no search queries are needed for the step.
+- DO NOT EVER SEARCH FOR BASIC QUERIES. ONLY SEARCH FOR ADVANCED QUERIES.
+- YOU ARE ALLOWED TO LEAVE THE "queries" FIELD EMPTY IF NO SEARCH QUERIES ARE NEEDED FOR THE STEP.
+
+Remember to only make search queries for resources that might require external information (like Documentation or a Blog or an Article). If the information is already known to you or commonly known, there is no need to search for it.
+
+The `queries` key and the `ask_user` key can be empty list and string respectively if no search queries or user input are needed for the step. Try to keep the number of search queries to a minimum to save context window. One query per subject.
+
+Only search for documentation or articles that are relevant to the task at hand. Do not search for general information.
+
+Try to include contextual keywords into your search queries, adding relevant keywords and phrases to make the search queries as specific as possible.
+
+Only the provided JSON response format is accepted. Any other response format will be rejected.
