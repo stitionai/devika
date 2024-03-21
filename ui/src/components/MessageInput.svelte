@@ -50,10 +50,10 @@
   }
 </script>
 
-<div class="expandable-input mt-4 relative">
+<div class="expandable-input relative">
   <textarea
     id="message-input"
-    class="w-full p-2 bg-slate-800 rounded pr-20"
+    class="w-full p-2 border-2 rounded-lg pr-20"
     placeholder="Type your message..."
     bind:value={messageInput}
     on:input={calculateTokens}
@@ -64,12 +64,12 @@
       }
     }}
   ></textarea>
-  <div class="token-count absolute right-2 bottom-2 text-gray-400 text-xs">
+  <div class="token-count text-gray-400 text-xs p-2">
     0 tokens
   </div>
   <button
     id="send-message-btn"
-    class={`px-4 py-2 rounded w-full mt-2 ${isAgentActive ? "bg-slate-800" : "bg-indigo-700"}`}
+    class={`px-4 py-3 border-2 text-white rounded-lg w-full ${isAgentActive ? "bg-slate-800" : "bg-black"}`}
     on:click={handleSendMessage}
     disabled={isAgentActive}
   >

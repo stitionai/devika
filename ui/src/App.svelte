@@ -16,7 +16,7 @@
   } from "./api";
 
   onMount(() => {
-    localStorage.clear();
+    // localStorage.clear();
 
     const intervalId = setInterval(async () => {
       await fetchProjectList();
@@ -24,7 +24,7 @@
       await fetchAgentState();
       await fetchMessages();
       await checkInternetStatus();
-    }, 1000);
+    }, 5000);
 
     return () => clearInterval(intervalId);
   });
@@ -33,17 +33,17 @@
 <div class="flex h-screen">
   <Sidebar />
 
-  <div class="flex flex-col flex-1 p-4">
+  <div class="flex h-full flex-col flex-1 p-4">
     <ControlPanel />
 
-    <div class="flex h-full space-x-4">
-      <div class="flex flex-col w-1/2">
+    <div class="flex space-x-4 h-full overflow-y-auto">
+      <div class="flex flex-col gap-4 w-1/2">
         <MessageContainer />
         <InternalMonologue />
         <MessageInput />
       </div>
 
-      <div class="flex flex-col w-1/2 space-y-4">
+      <div class="flex flex-col gap-4 w-1/2">
         <BrowserWidget />
         <TerminalWidget />
       </div>

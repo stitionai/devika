@@ -31,7 +31,7 @@
     "svelte": "^4.2.12",
     "svelte-loader": "^3.2.0",
     "tailwindcss": "latest",
-    "vite": "^5.1.6",
+    "vite": "^5.2.2",
     "xterm": "^5.2.0",
     "xterm-addon-fit": "^0.8.0"
   }

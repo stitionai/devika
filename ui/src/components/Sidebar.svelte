@@ -1,20 +1,20 @@
 <div
-  class="flex flex-col w-20 bg-slate-950 p-4 space-y-4 items-center shadow-2xl shadow-indigo-700"
+  class="flex flex-col p-4 gap-4 items-center bg-gray-100"
 >
   <div class="p-5 rounded nav-button relative">
-    <button class="text-gray-400 hover:text-white flex justify-center w-full">
+    <button class="hover:text-white flex justify-center w-full">
       <i class="fas fa-home fa-lg"></i>
     </button>
     <span class="tooltip">Home</span>
   </div>
   <div class="p-5 rounded nav-button relative">
-    <button class="text-gray-400 hover:text-white flex justify-center w-full">
+    <button class="hover:text-white flex justify-center w-full">
       <i class="fas fa-cog fa-lg"></i>
     </button>
     <span class="tooltip">Settings</span>
   </div>
   <div class="p-5 rounded nav-button relative">
-    <button class="text-gray-400 hover:text-white flex justify-center w-full">
+    <button class="hover:text-white flex justify-center w-full">
       <i class="fas fa-history fa-lg"></i>
     </button>
     <span class="tooltip">Logs</span>

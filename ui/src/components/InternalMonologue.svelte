@@ -3,16 +3,16 @@
 </script>
 
 <div
-  class="internal-monologue bg-slate-950 border border-indigo-700 p-2 rounded mt-4 flex items-start space-x-3"
+  class="internal-monologue  border-2 flex items-center justify-center gap-2 px-2 py-4 rounded-lg"
 >
   <img
     src="/assets/devika-avatar.png"
     alt="Devika's Avatar"
     class="avatar rounded-full flex-shrink-0"
   />
-  <div>
+  <div class="flex flex-col w-full gap-1">
     <p class="text-xs text-gray-400">Devika's Internal Monologue</p>
-    <p class="text-sm">{$agentState?.internal_monologue || "😴"}</p>
+    <p class="text-xs">{$agentState?.internal_monologue || "😴"}</p>
   </div>
 </div>
 

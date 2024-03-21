@@ -13,10 +13,14 @@
   });
 </script>
 
-<div id="message-container" class="flex-grow overflow-y-auto pr-2" bind:this={messageContainer}>
+<div
+  id="message-container"
+  class="flex flex-col flex-1 gap-2 overflow-y-auto border-2 rounded-lg p-4"
+  bind:this={messageContainer}
+>
   {#if $messages !== null}
     {#each $messages as message}
-      <div class="flex items-start space-x-3 mt-4">
+      <div class="flex items-center justify-center gap-2 px-2 py-4 border-b-2">
         {#if message.from_devika}
           <img
             src="/assets/devika-avatar.png"
@@ -32,39 +36,37 @@
             style="width: 40px; height: 40px;"
           />
         {/if}
-
-        <div class="flex flex-col w-full">
-          <p class="text-xs text-gray-400 sender-name">
+        <div class="flex flex-col w-full gap-1">
+          <p class="text-xs text-gray-400">
             {message.from_devika ? "Devika" : "You"}
             <span class="timestamp"
               >{new Date(message.timestamp).toLocaleTimeString()}</span
             >
           </p>
-          {#if message.from_devika && message.message.startsWith('{')}
-            <div
-              class="bg-slate-800 p-2 rounded w-full mr-4"
-              contenteditable="false"
-            >
-            {@html `<strong>Here's my step-by-step plan:</strong>`}
-            <br><br>
-            {#if JSON.parse(message.message)}
-              {#each Object.entries(JSON.parse(message.message)) as [step, description]}
-                <input type="checkbox" id="step-{step}" disabled />
-                <label for="step-{step}"><strong>Step {step}</strong>: {description}</label>
-                <br><br>
-              {/each}
-            {/if}
+          {#if message.from_devika && message.message.startsWith("{")}
+            <div class="w-full" contenteditable="false">
+              {@html `<strong>Here's my step-by-step plan:</strong>`}
+              <br /><br />
+              {#if JSON.parse(message.message)}
+                {#each Object.entries(JSON.parse(message.message)) as [step, description]}
+                  <input type="checkbox" id="step-{step}" disabled />
+                  <label for="step-{step}"
+                    ><strong>Step {step}</strong>: {description}</label
+                  >
+                  <br /><br />
+                {/each}
+              {/if}
             </div>
           {:else if /https?:\/\/[^\s]+/.test(message.message)}
-            <div
-              class="bg-slate-800 p-2 rounded w-full mr-4"
-              contenteditable="false"
-            >
-              {@html message.message.replace(/(https?:\/\/[^\s]+)/g, '<u><a href="$1" target="_blank" style="font-weight: bold;">$1</a></u>')}
+            <div class="w-full" contenteditable="false">
+              {@html message.message.replace(
+                /(https?:\/\/[^\s]+)/g,
+                '<u><a href="$1" target="_blank" style="font-weight: bold;">$1</a></u>'
+              )}
             </div>
           {:else}
             <div
-              class="bg-slate-800 p-2 rounded w-full mr-4"
+              class="w-full"
               contenteditable="false"
               bind:innerHTML={message.message}
             ></div>
@@ -89,22 +91,15 @@
   }
 
   #message-container {
-    height: 390px;
     overflow-y: auto;
   }
-
+  /* scrollbar hidden for all browsers*/
   #message-container::-webkit-scrollbar {
-    width: 4px;
+    display: none;
   }
-
-  #message-container::-webkit-scrollbar-track {
-    background: #020617;
-    border-radius: 10px;
-  }
-
-  #message-container::-webkit-scrollbar-thumb {
-    background: #4337c9;
-    border-radius: 10px;
+  #message-container {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 
   input[type="checkbox"] {

@@ -1,10 +1,24 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onMount } from "svelte";
   import { projectList, modelList, internet } from "../store";
   import { createProject, fetchProjectList, getTokenUsage } from "../api";
 
-  let selectedProject = localStorage.getItem("selectedProject") || "Select Project";
-  let selectedModel = localStorage.getItem("selectedModel") || "Select Model";
+  let selectedProject;
+  let selectedModel;
+
+  if (projectList !== null) {
+    selectedProject = "Select Project";
+    localStorage.setItem("selectedProject", "");
+  } else {
+    selectedProject = localStorage.getItem("selectedProject") || projectList[0];
+  }
+  if(modelList !== null) {
+    selectedModel = localStorage.getItem("selectedModel") || modelList[0][1];
+  } else {
+    selectedModel = "Select Model";
+    localStorage.setItem("selectedModel", "");
+  }
+
   let tokenUsage = 0;
 
   async function updateTokenUsage() {
@@ -14,11 +28,13 @@
   function selectProject(project) {
     selectedProject = project;
     localStorage.setItem("selectedProject", project);
+    document.getElementById("project-dropdown").classList.add("hidden");
   }
 
   function selectModel(model) {
     selectedModel = `${model[0]} (${model[1]})`;
     localStorage.setItem("selectedModel", model[1]);
+    document.getElementById("model-dropdown").classList.add("hidden");
   }
 
   async function createNewProject() {
@@ -51,8 +67,8 @@
     }
   }
 
-  onMount(() => {
-    setInterval(updateTokenUsage, 1000);
+  onMount(async () => {
+    await updateTokenUsage();
 
     document
       .getElementById("project-button")
@@ -76,50 +92,40 @@
   });
 </script>
 
-<div class="control-panel bg-slate-900 border border-indigo-700 rounded">
+<div class="control-panel">
   <div class="dropdown-menu relative inline-block">
     <button
       type="button"
-      class="inline-flex justify-center w-full gap-x-1.5 rounded-md bg-slate-900 px-3 py-2 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-indigo-700 hover:bg-slate-800"
+      class="inline-flex items-center justify-center w-full gap-2 rounded-md px-3 py-2 text-sm font-semibold border-2 border-gray-200 "
       id="project-button"
       aria-expanded="true"
       aria-haspopup="true"
     >
       <span id="selected-project">{selectedProject}</span>
-      <svg
-        class="-mr-1 h-5 w-5 text-gray-400"
-        viewBox="0 0 20 20"
-        fill="currentColor"
-        aria-hidden="true"
-      >
-        <path
-          fill-rule="evenodd"
-          d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-          clip-rule="evenodd"
-        />
-      </svg>
+      <i class="fas fa-angle-down"></i>
     </button>
     <div
       id="project-dropdown"
-      class="absolute left-0 z-10 mt-2 w-full origin-top-left rounded-md bg-slate-800 shadow-lg ring-1 ring-indigo-700 ring-opacity-5 focus:outline-none hidden"
+      class="absolute left-0 z-10 mt-2 w-40 origin-top-left rounded-md bg-gray-100 shadow-lg max-h-96 overflow-y-auto hidden"
       role="menu"
       aria-orientation="vertical"
       aria-labelledby="project-button"
       tabindex="-1"
     >
-      <div class="py-1" role="none">
+      <div role="none" class="flex flex-col divide-y-2 w-full">
         <a
           href="#"
-          class="text-white block px-4 py-2 text-sm hover:bg-slate-700"
+          class="flex gap-2 items-center text-sm px-4 py-3 w-full"
           on:click|preventDefault={createNewProject}
         >
-          + Create new project
+        <i class="fas fa-plus"></i>
+          new project
         </a>
         {#if $projectList !== null}
           {#each $projectList as project}
             <a
               href="#"
-              class="text-white block px-4 py-2 text-sm hover:bg-slate-700"
+              class="flex gap-2 items-center text-sm px-4 py-3 w-full text-clip {selectedProject === project ? 'bg-gray-300' : ''}"
               on:click|preventDefault={() => selectProject(project)}
             >
               {project}
@@ -136,7 +142,12 @@
   >
     <div class="flex items-center space-x-2">
       <span>Internet:</span>
-      <div id="internet-status" class="internet-status" class:online={$internet} class:offline={!$internet}></div>
+      <div
+        id="internet-status"
+        class="internet-status"
+        class:online={$internet}
+        class:offline={!$internet}
+      ></div>
       <span id="internet-status-text"></span>
     </div>
     <div class="flex items-center space-x-2">
@@ -147,41 +158,34 @@
       <div>
         <button
           type="button"
-          class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-slate-900 px-3 py-2 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-indigo-700 hover:bg-slate-800"
+          class="inline-flex items-center justify-center w-fit gap-x-1.5 rounded-md px-3 py-2 text-sm font-semibold ring-2 ring-inset ring-black"
           id="model-button"
           aria-expanded="true"
           aria-haspopup="true"
         >
           <span id="selected-model">{selectedModel}</span>
-          <svg
-            class="-mr-1 h-5 w-5 text-gray-400"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-            aria-hidden="true"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-              clip-rule="evenodd"
-            />
-          </svg>
+          <i class="fas fa-angle-down"></i>
+
         </button>
       </div>
 
       <div
         id="model-dropdown"
-        class="absolute right-0 z-10 mt-2 w-full origin-top-right rounded-md bg-slate-800 shadow-lg ring-1 ring-indigo-700 ring-opacity-5 focus:outline-none hidden"
+        class="absolute right-0 z-10 mt-2 w-64 origin-top-right rounded-md bg-gray-100 shadow-lg max-h-96 overflow-y-auto hidden"
         role="menu"
         aria-orientation="vertical"
         aria-labelledby="model-button"
         tabindex="-1"
       >
-        <div class="py-1" role="none">
+        <div class="flex flex-col divide-y-2 w-full" role="none">
           {#if $modelList !== null}
             {#each $modelList as model}
               <a
                 href="#"
-                class="text-white block px-4 py-2 text-sm hover:bg-slate-700"
+                class="flex gap-2 items-center text-sm px-4 py-3 w-full text-clip 
+                {(selectedModel == `${model[0]} (${model[1]})`) || (
+                  selectedModel == model[1]
+                ) ? 'bg-gray-300' : ''}"
                 on:click|preventDefault={() => selectModel(model)}
               >
                 {model[0]} ({model[1]})
@@ -208,7 +212,12 @@
   .offline {
     background-color: #ef4444;
   }
-
+  /* no visible scrollbar */
+  #model-dropdown {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+    scroll-behavior: smooth;
+  }
   @keyframes roll {
     0% {
       transform: translateY(-5%);

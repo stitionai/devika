@@ -15,6 +15,7 @@ tiktoken
 ollama
 openai
 anthropic
+google-generativeai
 sqlmodel
 keybert
 GitPython

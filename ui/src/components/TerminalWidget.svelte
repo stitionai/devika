@@ -15,6 +15,12 @@
       cursorBlink: true,
       convertEol: true,
       rows: 1,
+      theme: {
+        background: "#fdf6e3",
+        foreground: "#000000",
+        innerText: "#000000",
+        cursor: "#000000",
+      },
     });
     fitAddon = new FitAddon();
     terminal.loadAddon(fitAddon);
@@ -54,8 +60,8 @@
   }
 </script>
 
-<div class="flex flex-col bg-slate-950 border border-indigo-700 rounded flex-1 overflow-hidden">
-  <div class="p-2 flex items-center border-b border-gray-700">
+<div class="flex flex-col border-2 rounded-lg flex-1">
+  <div class="p-2 flex items-center border-b">
     <div class="flex space-x-2 ml-2 mr-4">
       <div class="w-3 h-3 bg-red-500 rounded-full"></div>
       <div class="w-3 h-3 bg-yellow-400 rounded-full"></div>
@@ -65,26 +71,23 @@
   </div>
   <div
     id="terminal-content"
-    class="bg-black flex-grow flex overflow-hidden"
+    class="flex-grow flex overflow-hidden"
     bind:this={terminalElement}
-    style="height: 100%; margin-left: 5px;"
   ></div>
 </div>
 
 <style>
-  #terminal-content {
-    height: 100%;
-  }
   
-  #terminal-content :global(.xterm) {
+  
+  /* #terminal-content :global(.xterm) {
     padding: 10px;
     height: 100%; /* Ensure terminal content height is fixed */
-  }
+  /* }
 
   #terminal-content :global(.xterm-viewport) {
     overflow-y: auto !important;
     height: 100%;
-  }
+  } */
 
   #terminal-content::-webkit-scrollbar, #terminal-content :global(.xterm-viewport)::-webkit-scrollbar {
     width: 4px;

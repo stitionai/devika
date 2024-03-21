@@ -17,8 +17,8 @@ from src.agents import Agent
 from src.llm import LLM
 
 app = Flask(__name__)
-log = logging.getLogger("werkzeug")
-log.disabled = True
+# log = logging.getLogger("werkzeug")
+# log.disabled = True
 CORS(app)
 
 Logger().logger.info("Booting up... This may take a few seconds")
@@ -26,6 +26,7 @@ Logger().logger.info("Booting up... This may take a few seconds")
 TIKTOKEN_ENC = tiktoken.get_encoding("cl100k_base")
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
+
 
 @app.route("/api/create-project", methods=["POST"])
 def create_project():
@@ -92,12 +93,12 @@ def send_message():
     message = data.get("message")
     project_name = data.get("project_name")
     base_model = data.get("base_model")
-    
+
     new_message = ProjectManager().new_message()
     new_message["message"] = message
     new_message["from_devika"] = False
     ProjectManager().add_message_to_project(project_name, new_message)
-    
+
     if AgentState().is_agent_completed(project_name):
         thread = Thread(
             target=lambda: Agent(base_model=base_model).subsequent_execute(message, project_name)
@@ -205,4 +206,4 @@ def get_settings():
 
 if __name__ == "__main__":
     init_devika()
-    app.run(debug=False, port=1337, host="0.0.0.0")
+    app.run(debug=True, host="0.0.0.0")
