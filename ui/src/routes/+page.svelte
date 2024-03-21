@@ -13,7 +13,7 @@
     fetchAgentState,
     fetchMessages,
     checkInternetStatus,
-  } from "./api";
+  } from "$lib/api";
 
   onMount(() => {
     localStorage.clear();
