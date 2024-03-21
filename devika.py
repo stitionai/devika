@@ -224,4 +224,4 @@ def get_settings():
 if __name__ == "__main__":
     logger.info("Booting up... This may take a few seconds")
     init_devika()
-    app.run(debug=True, port=1337, host="0.0.0.0")
+    app.run(debug=False, port=1337, host="0.0.0.0")
