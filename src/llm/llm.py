@@ -3,6 +3,7 @@ from enum import Enum
 from .ollama_client import Ollama
 from .claude_client import Claude
 from .openai_client import OpenAI
+from .groq_client import Groq
 
 from src.state import AgentState
 
@@ -24,6 +25,7 @@ class Model(Enum):
         )
         for model in Ollama.list_models()
     ]
+    GROQ = ("GROQ Mixtral", "mixtral-8x7b-32768")
 
 class LLM:
     def __init__(self, model_id: str = None):
@@ -58,6 +60,8 @@ class LLM:
             response = Claude().inference(self.model_id, prompt).strip()
         elif "GPT" in str(model):
             response = OpenAI().inference(self.model_id, prompt).strip()
+        elif "GROQ" in str(model):
+            response = Groq().inference(self.model_id, prompt).strip()
         else:
             raise ValueError(f"Model {model} not supported")
 
