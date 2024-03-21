@@ -94,29 +94,34 @@ python3 devika.py
 Docker images will be released soon. :raised_hands:
 
 ## Installation
+Devika requires the following things as dependencies:
+- Ollama (follow the instructions here to install it: [https://ollama.com/](https://ollama.com/))
+- Bun (follow the instructions here to install it: [https://bun.sh/](https://ollama.com/))
 
 To install Devika, follow these steps:
 
 1. Clone the Devika repository:
-   ```
+   ```bash
    git clone https://github.com/stitionai/devika.git
    ```
 2. Navigate to the project directory:
-   ```
+   ```bash
    cd devika
    ```
 3. Install the required dependencies:
-   ```
+   ```bash
    pip install -r requirements.txt
+   playwright install --with-deps # installs browsers in playwright (and their deps) if required
    ```
 4. Set up the necessary API keys and configuration (see [Configuration](#configuration) section).
 5. Start the Devika server:
-   ```
+   ```bash
    python devika.py
    ```
 6. Compile and run the UI server:
-   ```
+   ```bash
    cd ui/
+   bun install
    bun run dev
    ```
 7. Access the Devika web interface by opening a browser and navigating to `http://127.0.0.1:3000`.
