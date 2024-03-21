@@ -63,6 +63,8 @@ Devika's system architecture consists of the following key components:
 8. **Knowledge Base**: Stores and retrieves project-specific information, code snippets, and learned knowledge for efficient access.
 9. **Database**: Persists project data, agent states, and configuration settings.
 
+Read [**ARCHITECTURE.md**](https://github.com/stitionai/devika/blob/main/ARCHITECTURE.md) for the detailed documentation.
+
 ## Installation
 
 To install Devika, follow these steps:
