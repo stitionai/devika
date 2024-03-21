@@ -4,8 +4,6 @@ from .ollama_client import Ollama
 from .claude_client import Claude
 from .openai_client import OpenAI
 
-from src.state import AgentState
-
 import tiktoken
 
 TOKEN_USAGE = 0
