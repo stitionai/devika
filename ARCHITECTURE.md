@@ -131,7 +131,7 @@ Devika's natural language processing capabilities are driven by state-of-the-art
 
 - **Claude** (Anthropic): Claude models like claude-v1.3, claude-instant-v1.0 etc.
 - **GPT-4/GPT-3** (OpenAI): Models like gpt-4, gpt-3.5-turbo etc.
-- **Self-hosted models** (via Llama.cpp): Allows using open-source models in a self-hosted environment
+- **Self-hosted models** (via [Ollama](https://ollama.com/)): Allows using open-source models in a self-hosted environment
 
 The `LLM` class abstracts out the specifics of each provider's API, allowing agents to interact with the models in a consistent way. It supports:
 - Listing available models
