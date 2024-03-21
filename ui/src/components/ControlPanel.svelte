@@ -76,11 +76,12 @@
   });
 </script>
 
-<div class="control-panel bg-slate-900 border border-indigo-700 rounded">
-  <div class="dropdown-menu relative inline-block">
+<div class="flex flex-row px-5 py-2 border-b border-gray-800 gap-4 ">
+  <h1 class="text-lg font-bold flex items-center text-gray-400 ">Devika</h1>
+  <div class="dropdown-menu relative flex">
     <button
       type="button"
-      class="inline-flex justify-center w-full gap-x-1.5 rounded-md bg-slate-900 px-3 py-2 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-indigo-700 hover:bg-slate-800"
+      class="flex justify-center items-center w-[200px] gap-x-1.5  rounded-md px-2 py-1 text-xs font-semibold text-white shadow-s  border border-gray-700  hover:outline hover:outline-gray-600"
       id="project-button"
       aria-expanded="true"
       aria-haspopup="true"
@@ -131,12 +132,12 @@
   </div>
 
   <div
-    class="right-controls"
+    class="right-controls text-xs w-full flex flex-row justify-end"
     style="display: flex; align-items: center; gap: 20px"
   >
     <div class="flex items-center space-x-2">
       <span>Internet:</span>
-      <div id="internet-status" class="internet-status" class:online={$internet} class:offline={!$internet}></div>
+      <div id="internet-status" class={`w-[12px] h-[12px] rounded-full ${$internet ? "bg-green-500" : "bg-red-500"}`} ></div>
       <span id="internet-status-text"></span>
     </div>
     <div class="flex items-center space-x-2">
@@ -147,7 +148,7 @@
       <div>
         <button
           type="button"
-          class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-slate-900 px-3 py-2 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-indigo-700 hover:bg-slate-800"
+          class="flex w-full justify-center items-center gap-x-1.5 rounded-md px-3 py-1 text-xs font-semibold text-white shadow-sm border border-gray-800  hover:outline hover:outline-gray-600"
           id="model-button"
           aria-expanded="true"
           aria-haspopup="true"
@@ -195,20 +196,6 @@
 </div>
 
 <style>
-  .internet-status {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-  }
-
-  .online {
-    background-color: #22c55e;
-  }
-
-  .offline {
-    background-color: #ef4444;
-  }
-
   @keyframes roll {
     0% {
       transform: translateY(-5%);
@@ -221,22 +208,5 @@
   .token-count-animation {
     display: inline-block;
     animation: roll 0.5s ease-in-out;
-  }
-
-  .control-panel {
-    padding: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-  }
-
-  .control-panel > *:not(:first-child) {
-    margin-left: 20px;
-  }
-
-  .right-controls > *:not(:last-child) {
-    border-right: 1px solid #4b5563;
-    padding-right: 20px;
   }
 </style>

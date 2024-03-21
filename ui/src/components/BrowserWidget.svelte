@@ -3,7 +3,7 @@
   import { API_BASE_URL } from "../api";
 </script>
 
-<div class="flex flex-col bg-slate-950 border border-indigo-700 rounded flex-1 overflow-hidden">
+<div class="flex flex-col bg-black border border-gray-800 rounded-lg flex-1 overflow-hidden">
   <div class="p-2 flex items-center border-b border-gray-700">
     <div class="flex space-x-2 ml-2 mr-4">
       <div class="w-3 h-3 bg-red-500 rounded-full"></div>
@@ -13,7 +13,7 @@
     <input
       type="text"
       id="browser-url"
-      class="flex-grow bg-slate-900 p-2 rounded"
+      class="flex-grow text-sm bg-gray-900 px-4 py-2 rounded-full pointer-events-none"
       placeholder="chrome://newtab"
       value={$agentState?.browser_session.url || ""}
       readonly
@@ -22,7 +22,7 @@
   <div id="browser-content" class="flex-grow overflow-auto">
     {#if $agentState?.browser_session.screenshot}
       <img
-        class="browser-img"
+        class=" block object-contain w-full"
         src={API_BASE_URL + "/api/get-browser-snapshot?snapshot_path=" + $agentState?.browser_session.screenshot}
         alt="Browser snapshot"
       />
@@ -33,13 +33,5 @@
 </div>
 
 <style>
-  #browser-url {
-    pointer-events: none
-  }
 
-  .browser-img {
-    display: block;
-    object-fit: contain;
-    max-width: 100%;
-  }
 </style>

@@ -50,10 +50,11 @@
   }
 </script>
 
-<div class="expandable-input mt-4 relative">
-  <textarea
+<div class="expandable-input flex flex-col mt-0 gap-3 p-3 ">
+  <div class="flex flex-row w-full h-fit gap-3 ">
+     <textarea
     id="message-input"
-    class="w-full p-2 bg-slate-800 rounded pr-20"
+    class="text-sm w-full flex flex-row items-center  max-h-[200px] resize-none  bg-[#1d2228] rounded-xl ltr outline-none  p-3 box-content  text-white overflow-y-scroll"
     placeholder="Type your message..."
     bind:value={messageInput}
     on:input={calculateTokens}
@@ -64,24 +65,23 @@
       }
     }}
   ></textarea>
-  <div class="token-count absolute right-2 bottom-2 text-gray-400 text-xs">
-    0 tokens
-  </div>
+  
   <button
     id="send-message-btn"
-    class={`px-4 py-2 rounded w-full mt-2 ${isAgentActive ? "bg-slate-800" : "bg-indigo-700"}`}
+    class={` px-4 py-2 rounded w-20  ${isAgentActive ? "bg-slate-800" : "bg-indigo-700 hover:bg-indigo-600 active:bg-indigo-800"}`}
     on:click={handleSendMessage}
     disabled={isAgentActive}
   >
-    {@html isAgentActive ? "<i>Agent is busy...</i>" : "Send"}
-  </button>
+    <i class="fas fa-paper-plane"></i>
+    <!-- {@html isAgentActive ? "<i>Agent is busy...</i>" : "Send"} -->
+  </button> 
+  
+  </div>
+  <div class="token-count right-2 bottom-2 text-gray-400 text-xs">
+    0 tokens
+  </div>
 </div>
 
 <style>
-  .expandable-input textarea {
-    min-height: 60px;
-    max-height: 200px;
-    overflow-y: hidden;
-    resize: none;
-  }
+  
 </style>

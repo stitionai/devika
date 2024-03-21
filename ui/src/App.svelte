@@ -30,20 +30,21 @@
   });
 </script>
 
-<div class="flex h-screen">
-  <Sidebar />
+<div class="flex flex-col h-screen bg-[#101010]">
+  <ControlPanel />
 
-  <div class="flex flex-col flex-1 p-4">
-    <ControlPanel />
+  <div class="flex flex-row  flex-1 p-0">
+    
+    <Sidebar />
 
-    <div class="flex h-full space-x-4">
-      <div class="flex flex-col w-1/2">
+    <div class="flex h-full w-full">
+      <div class="flex flex-col w-1/2 h-full">
         <MessageContainer />
         <InternalMonologue />
         <MessageInput />
       </div>
 
-      <div class="flex flex-col w-1/2 space-y-4">
+      <div class="flex flex-col w-1/2 space-y-2 p-3">
         <BrowserWidget />
         <TerminalWidget />
       </div>
@@ -57,7 +58,7 @@
   @import "tailwindcss/utilities";
 
   :global(::-webkit-scrollbar) {
-    width: 10px;
+    width: 2px;
   }
 
   :global(::-webkit-scrollbar-track) {

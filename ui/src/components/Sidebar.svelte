@@ -1,46 +1,26 @@
 <div
-  class="flex flex-col w-20 bg-slate-950 p-4 space-y-4 items-center shadow-2xl shadow-indigo-700"
+  class="flex flex-col gap-3 border-r border-gray-800 w-fit p-2 space-y-4 items-center "
 >
-  <div class="p-5 rounded nav-button relative">
-    <button class="text-gray-400 hover:text-white flex justify-center w-full">
-      <i class="fas fa-home fa-lg"></i>
+  <div class="p-2 rounded nav-button relative ">
+    <button class="flex flex-col text-gray-500 hover:text-white justify-center items-center w-full">
+      <i class="fas fa-home p-1"></i>
+      <p class="text-xs ">Home</p>
     </button>
-    <span class="tooltip">Home</span>
+    <!-- <span class="tooltip">Home</span> -->
   </div>
-  <div class="p-5 rounded nav-button relative">
-    <button class="text-gray-400 hover:text-white flex justify-center w-full">
-      <i class="fas fa-cog fa-lg"></i>
+  <div class="p-0 rounded nav-button relative">
+    <button class="text-gray-500 hover:text-white flex flex-col items-center justify-center w-full">
+      <i class="fas fa-cog p-1"></i>
+      <p class="text-xs ">Settings</p>
     </button>
-    <span class="tooltip">Settings</span>
+    <!-- <span class="tooltip">Settings</span> -->
   </div>
-  <div class="p-5 rounded nav-button relative">
-    <button class="text-gray-400 hover:text-white flex justify-center w-full">
-      <i class="fas fa-history fa-lg"></i>
+  <div class="p-2 rounded nav-button relative">
+    <button class="text-gray-500 hover:text-white flex flex-col items-center justify-center w-full">
+      <i class="fas fa-history p-1"></i>
+       <p class="text-xs ">Logs</p>
     </button>
-    <span class="tooltip">Logs</span>
+    <!-- <span class="tooltip">Logs</span> -->
   </div>
 </div>
 
-<style>
-  .tooltip {
-    visibility: hidden;
-    width: 120px;
-    background-color: #10172a;
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 5px 0;
-    position: absolute;
-    z-index: 1;
-    top: 50%;
-    left: 150%;
-    transform: translateY(-50%);
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-
-  .nav-button:hover .tooltip {
-    visibility: visible;
-    opacity: 1;
-  }
-</style>

@@ -13,10 +13,10 @@
   });
 </script>
 
-<div id="message-container" class="flex-grow overflow-y-auto pr-2" bind:this={messageContainer}>
+<div id="message-container" class="flex-grow overflow-y-auto px-4" bind:this={messageContainer}>
   {#if $messages !== null}
     {#each $messages as message}
-      <div class="flex items-start space-x-3 mt-4">
+      <div class={`flex items-start p-3 space-x-3 mt-4   ${message.from_devika ? "" : "bg-[#161b1e]"}`}>
         {#if message.from_devika}
           <img
             src="/assets/devika-avatar.png"
@@ -34,9 +34,9 @@
         {/if}
 
         <div class="flex flex-col w-full">
-          <p class="text-xs text-gray-400 sender-name">
+          <p class="text-xs text-gray-400 mb-[4px] flex items-baseline">
             {message.from_devika ? "Devika" : "You"}
-            <span class="timestamp"
+            <span class="ml-[8px] text-sm text-[#aaa]"
               >{new Date(message.timestamp).toLocaleTimeString()}</span
             >
           </p>
@@ -64,7 +64,7 @@
             </div>
           {:else}
             <div
-              class="bg-slate-800 p-2 rounded w-full mr-4"
+              class="  p-2 rounded w-full mr-4"
               contenteditable="false"
               bind:innerHTML={message.message}
             ></div>
@@ -76,17 +76,9 @@
 </div>
 
 <style>
-  .sender-name {
-    margin-bottom: 4px;
-    display: flex;
-    align-items: baseline;
-  }
+  
 
-  .timestamp {
-    margin-left: 8px;
-    font-size: smaller;
-    color: #aaa;
-  }
+  
 
   #message-container {
     height: 390px;
@@ -94,7 +86,7 @@
   }
 
   #message-container::-webkit-scrollbar {
-    width: 4px;
+    width: 2px;
   }
 
   #message-container::-webkit-scrollbar-track {
@@ -114,8 +106,8 @@
     -ms-appearance: none;
     -o-appearance: none;
     display: inline-block;
-    width: 16px;
-    height: 16px;
+    width: 10px;
+    height: 10px;
     border: 2px solid #4337c9;
     border-radius: 4px;
     margin-right: 8px;

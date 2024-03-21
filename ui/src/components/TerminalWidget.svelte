@@ -54,7 +54,7 @@
   }
 </script>
 
-<div class="flex flex-col bg-slate-950 border border-indigo-700 rounded flex-1 overflow-hidden">
+<div class="flex flex-col bg-black border border-gray-800 rounded-lg flex-1 overflow-hidden">
   <div class="p-2 flex items-center border-b border-gray-700">
     <div class="flex space-x-2 ml-2 mr-4">
       <div class="w-3 h-3 bg-red-500 rounded-full"></div>
@@ -65,9 +65,8 @@
   </div>
   <div
     id="terminal-content"
-    class="bg-black flex-grow flex overflow-hidden"
+    class="bg-black flex-grow flex overflow-hidden h-full w-full ml-[2px]"
     bind:this={terminalElement}
-    style="height: 100%; margin-left: 5px;"
   ></div>
 </div>
 
