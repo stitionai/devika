@@ -96,7 +96,7 @@ Docker images will be released soon. :raised_hands:
 ## Installation
 Devika requires the following things as dependencies:
 - Ollama (follow the instructions here to install it: [https://ollama.com/](https://ollama.com/))
-- Bun (follow the instructions here to install it: [https://bun.sh/](https://ollama.com/))
+- Bun (follow the instructions here to install it: [https://bun.sh/](https://bun.sh/))
 
 To install Devika, follow these steps:
 
