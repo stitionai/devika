@@ -114,12 +114,18 @@ To install Devika, follow these steps:
    ```
    python devika.py
    ```
-6. Compile and run the UI server:
+6. Compile and run the UI server:</br>
+   Install the Svelte package required
+   use command `npm install @sveltejs/vite-plugin-svelte` to install it
    ```
    cd ui/
    bun run dev
    ```
-7. Access the Devika web interface by opening a browser and navigating to `http://127.0.0.1:3000`.
+   or use npm
+   ```
+   nmp run dev
+   ```
+8. Access the Devika web interface by opening a browser and navigating to `http://127.0.0.1:3000`.
 
 ## Getting Started
 
