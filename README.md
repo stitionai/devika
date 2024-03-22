@@ -14,6 +14,7 @@
 - [About](#about)
 - [Key Features](#key-features)
 - [System Architecture](#system-architecture)
+- [Quick Start](#quick-start)
 - [Installation](#installation)
 - [Getting Started](#getting-started)
 - [Configuration](#configuration)
@@ -64,6 +65,32 @@ Devika's system architecture consists of the following key components:
 9. **Database**: Persists project data, agent states, and configuration settings.
 
 Read [**ARCHITECTURE.md**](https://github.com/stitionai/devika/blob/main/ARCHITECTURE.md) for the detailed documentation.
+
+## Quick Start
+
+The easiest way to run the project locally:
+
+1. Install `uv` - Python Package manager (https://github.com/astral-sh/uv)
+2. Install `bun` - JavaScript runtime (https://bun.sh/)
+3. Install and setup `Ollama` (https://ollama.com/)
+
+Set the API Keys in the `config.toml` file. (This will soon be moving to the UI where you can set these keys from the UI itself without touching the command-line, want to implement it? See this issue: https://github.com/stitionai/devika/issues/3)
+
+Then execute the following set of command:
+
+```
+ollama serve
+git clone https://github.com/stitionai/devika.git
+cd devika/
+uv venv
+uv pip install -r requirements.txt
+cd ui/
+bun install
+bun run dev
+python3 devika.py
+```
+
+Docker images will be released soon. :raised_hands:
 
 ## Installation
 
