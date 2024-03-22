@@ -19,8 +19,8 @@ class Model(Enum):
     GPT_3_5 = ("GPT-3.5", "gpt-3.5-turbo-0125")
     OLLAMA_MODELS = [
         (
+            model["name"].split(":")[0],
             model["name"],
-            f"{model['details']['parameter_size']} - {model['details']['quantization_level']}",
         )
         for model in Ollama.list_models()
     ]
@@ -36,7 +36,7 @@ class LLM:
 
     def model_id_to_enum_mapping(self):
         models = {model.value[1]: model for model in Model if model.name != "OLLAMA_MODELS"}
-        ollama_models = {model[0]: "OLLAMA_MODELS" for model in Model.OLLAMA_MODELS.value}
+        ollama_models = {model[1]: "OLLAMA_MODELS" for model in Model.OLLAMA_MODELS.value}
         models.update(ollama_models)
         return models
 
