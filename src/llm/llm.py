@@ -5,6 +5,7 @@ from .claude_client import Claude
 from .openai_client import OpenAI
 
 from src.state import AgentState
+from src.config import Config
 
 import tiktoken
 
@@ -43,7 +44,6 @@ class LLM:
     def update_global_token_usage(self, string: str):
         global TOKEN_USAGE
         TOKEN_USAGE += len(TIKTOKEN_ENC.encode(string))
-        print(f"Token usage: {TOKEN_USAGE}")
 
     def inference(
         self, prompt: str
@@ -57,7 +57,8 @@ class LLM:
         elif "CLAUDE" in str(model):
             response = Claude().inference(self.model_id, prompt).strip()
         elif "GPT" in str(model):
-            response = OpenAI().inference(self.model_id, prompt).strip()
+            api_key = Config().get_openai_api_key()
+            response = OpenAI(api_key=api_key).inference(self.model_id, prompt).strip()
         else:
             raise ValueError(f"Model {model} not supported")
 
