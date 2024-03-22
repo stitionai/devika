@@ -41,7 +41,7 @@ https://github.com/stitionai/devika/assets/26198477/cfed6945-d53b-4189-9fbe-6696
 
 ## Key Features
 
-- 🤖 Supports **Claude 3**, **GPT-4**, **GPT-3.5**, and **Local LLMs** via [Ollama](https://ollama.com).
+- 🤖 Supports **Claude 3**, **GPT-4**, **GPT-3.5**, and **Local LLMs** via [Ollama](https://ollama.com). For optimal performance: Use the **Claude 3** family of models.
 - 🧠 Advanced AI planning and reasoning capabilities
 - 🔍 Contextual keyword extraction for focused research
 - 🌐 Seamless web browsing and information gathering
