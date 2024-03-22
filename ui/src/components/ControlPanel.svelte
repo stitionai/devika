@@ -182,7 +182,7 @@
                 on:click|preventDefault={() => selectModel(model)}
               >
                 {model[0]} ({model[1]})
-              </button>
+              </button> 
             {/each}
           {/if}
         </div>
