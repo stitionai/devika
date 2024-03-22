@@ -123,7 +123,7 @@ To install Devika, follow these steps:
    ```
    or use npm
    ```
-   nmp run dev
+   npm run dev
    ```
 8. Access the Devika web interface by opening a browser and navigating to `http://127.0.0.1:3000`.
 
