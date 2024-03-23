@@ -14,6 +14,7 @@
 - [About](#about)
 - [Key Features](#key-features)
 - [System Architecture](#system-architecture)
+- [Quick Start](#quick-start)
 - [Installation](#installation)
 - [Getting Started](#getting-started)
 - [Configuration](#configuration)
@@ -40,6 +41,7 @@ https://github.com/stitionai/devika/assets/26198477/cfed6945-d53b-4189-9fbe-6696
 
 ## Key Features
 
+- 🤖 Supports **Claude 3**, **GPT-4**, **GPT-3.5**, and **Local LLMs** via [Ollama](https://ollama.com). For optimal performance: Use the **Claude 3** family of models.
 - 🧠 Advanced AI planning and reasoning capabilities
 - 🔍 Contextual keyword extraction for focused research
 - 🌐 Seamless web browsing and information gathering
@@ -65,30 +67,61 @@ Devika's system architecture consists of the following key components:
 
 Read [**ARCHITECTURE.md**](https://github.com/stitionai/devika/blob/main/ARCHITECTURE.md) for the detailed documentation.
 
+## Quick Start
+
+The easiest way to run the project locally:
+
+1. Install `uv` - Python Package manager (https://github.com/astral-sh/uv)
+2. Install `bun` - JavaScript runtime (https://bun.sh/)
+3. Install and setup `Ollama` (https://ollama.com/)
+
+Set the API Keys in the `config.toml` file. (This will soon be moving to the UI where you can set these keys from the UI itself without touching the command-line, want to implement it? See this issue: https://github.com/stitionai/devika/issues/3)
+
+Then execute the following set of command:
+
+```
+ollama serve
+git clone https://github.com/stitionai/devika.git
+cd devika/
+uv venv
+uv pip install -r requirements.txt
+cd ui/
+bun install
+bun run dev
+python3 devika.py
+```
+
+Docker images will be released soon. :raised_hands:
+
 ## Installation
+Devika requires the following things as dependencies:
+- Ollama (follow the instructions here to install it: [https://ollama.com/](https://ollama.com/))
+- Bun (follow the instructions here to install it: [https://bun.sh/](https://bun.sh/))
 
 To install Devika, follow these steps:
 
 1. Clone the Devika repository:
-   ```
+   ```bash
    git clone https://github.com/stitionai/devika.git
    ```
 2. Navigate to the project directory:
-   ```
+   ```bash
    cd devika
    ```
 3. Install the required dependencies:
-   ```
+   ```bash
    pip install -r requirements.txt
+   playwright install --with-deps # installs browsers in playwright (and their deps) if required
    ```
 4. Set up the necessary API keys and configuration (see [Configuration](#configuration) section).
 5. Start the Devika server:
-   ```
+   ```bash
    python devika.py
    ```
 6. Compile and run the UI server:
-   ```
+   ```bash
    cd ui/
+   bun install
    bun run dev
    ```
 7. Access the Devika web interface by opening a browser and navigating to `http://127.0.0.1:3000`.
