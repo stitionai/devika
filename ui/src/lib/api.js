@@ -9,9 +9,6 @@ import {
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:1337";
 
 export async function fetchProjectList() {
-
-  console.log(API_BASE_URL);
-
   const response = await fetch(`${API_BASE_URL}/api/project-list`);
   const data = await response.json();
   projectList.set(data.projects);
