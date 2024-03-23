@@ -5,12 +5,12 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "1773:1773"
+      - "1337:1337"
   devika-ui:
     build:
       context: ./ui  
       dockerfile: Dockerfile
-    environment:
-      - API_BASE_URL=http://devika-python:1773
+      args:
+        VITE_API_BASE_URL: "http://devika-python:1337"
     ports:
       - "3000:3000"
