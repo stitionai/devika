@@ -3,6 +3,7 @@ from enum import Enum
 from .ollama_client import Ollama
 from .claude_client import Claude
 from .openai_client import OpenAI
+from .llama_cpp_client import LlamaCpp
 
 from src.state import AgentState
 
@@ -17,6 +18,7 @@ class Model(Enum):
     CLAUDE_3_HAIKU = ("Claude 3 Haiku", "claude-3-haiku-20240307")
     GPT_4_TURBO = ("GPT-4 Turbo", "gpt-4-0125-preview")
     GPT_3_5 = ("GPT-3.5", "gpt-3.5-turbo-0125")
+    LLAMA_CPP = ("LLAMA_CPP", "LLAMA_CPP_MODEL")
     OLLAMA_MODELS = [
         (
             model["name"],
@@ -58,6 +60,8 @@ class LLM:
             response = Claude().inference(self.model_id, prompt).strip()
         elif "GPT" in str(model):
             response = OpenAI().inference(self.model_id, prompt).strip()
+        elif "LLAMA_CPP" in str(model):
+            response = LlamaCpp().inference(prompt).strip()
         else:
             raise ValueError(f"Model {model} not supported")
 

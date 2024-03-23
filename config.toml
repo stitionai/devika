@@ -5,6 +5,7 @@ PDFS_DIR = "pdfs"
 PROJECTS_DIR = "projects"
 LOGS_DIR = "logs"
 REPOS_DIR = "repos"
+MODEL_PATH = "<YOUR_MODEL_PATH>"
 
 [API_KEYS]
 BING = "<YOUR_BING_API_KEY>"
@@ -14,3 +15,8 @@ OPENAI = "<YOUR_OPENAI_API_KEY>"
 
 [API_ENDPOINTS]
 BING = "https://api.bing.microsoft.com/v7.0/search"
+
+#Only parameters are required if you are using LlamaCpp model
+[PARAMETERS]
+GPU_LAYERS = "<YOUR_GPU_LAYERS>"
+CONTEXT_SIZE = "<YOUR_CONEXT_SIZE>"
