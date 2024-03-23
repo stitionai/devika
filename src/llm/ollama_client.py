@@ -3,6 +3,7 @@ import ollama
 
 from src.logger import Logger
 
+
 class Ollama:
     @staticmethod
     def list_models():
