@@ -1,12 +1,12 @@
-from openai import OpenAI
+from openai import OpenAI as OAI
 
 from src.config import Config
 
 class OpenAI:
-    def __init__(self, api_key: str):
+    def __init__(self):
         config = Config()
         api_key = config.get_openai_api_key()
-        self.client = OpenAI(
+        self.client = OAI(
             api_key=api_key,
         )
         

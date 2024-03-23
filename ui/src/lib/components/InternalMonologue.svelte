@@ -1,5 +1,5 @@
 <script>
-  import { agentState } from "../store";
+  import { agentState } from "$lib/store";
 </script>
 
 <div
