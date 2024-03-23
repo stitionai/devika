@@ -3,7 +3,7 @@
   import { Terminal } from "xterm";
   import "xterm/css/xterm.css";
   import { FitAddon } from "xterm-addon-fit";
-  import { agentState } from "../store";
+  import { agentState } from "$lib/store";
 
   let terminalElement;
   let terminal;
