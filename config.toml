@@ -14,3 +14,7 @@ OPENAI = "<YOUR_OPENAI_API_KEY>"
 
 [API_ENDPOINTS]
 BING = "https://api.bing.microsoft.com/v7.0/search"
+OPENAI_BASE_URL = "https://api.openai.com/v1"
+
+[USER_PREFS]
+SEARCH_ENGINE = "Bing" # Possible Values: Bing, DDGS. Default Value: Bing

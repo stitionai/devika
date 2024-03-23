@@ -40,6 +40,12 @@ class Config:
     def get_repos_dir(self):
         return self.config["STORAGE"]["REPOS_DIR"]
     
+    def get_openai_base_url(self):
+        return self.config["API_ENDPOINTS"]["OPENAI_BASE_URL"]
+    
+    def get_search_engine(self):
+        return self.config["USER_PREFS"]["SEARCH_ENGINE"]
+    
     def set_bing_api_key(self, key):
         self.config["API_KEYS"]["BING"] = key
         self.save_config()
