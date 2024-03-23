@@ -23,6 +23,7 @@
   - [Keyword Extraction](#keyword-extraction)
   - [Browser Interaction](#browser-interaction)
   - [Code Writing](#code-writing)
+- [Community Discord Server](#community-discord-server)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -202,6 +203,16 @@ Devika's code writing module generates code based on the plan, research findings
 5. **Code Review and Refinement**: Devika reviews the generated code for syntax errors, logical inconsistencies, and potential improvements. It iteratively refines the code based on its own analysis and any feedback provided by the user.
 
 Devika's code writing capabilities enable it to generate functional and efficient code in various programming languages, taking into account the specific requirements and context of each project.
+
+# Community Discord Server
+
+We have a Discord server for the Devika community, where you can connect with other users, share your experiences, ask questions, and collaborate on the project. To join the server, please follow these guidelines:
+
+- Be respectful: Treat all members of the community with kindness and respect. Harassment, hate speech, and other forms of inappropriate behavior will not be tolerated.
+- Contribute positively: Share your ideas, insights, and feedback to help improve Devika. Offer assistance to other community members when possible.
+- Maintain privacy: Respect the privacy of others and do not share personal information without their consent.
+
+To join the Devika community Discord server, [click here](https://discord.com/invite/8eYNbPuB).
 
 ## Contributing
 
