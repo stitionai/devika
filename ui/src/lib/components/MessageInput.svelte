@@ -1,6 +1,6 @@
 <script>
-  import { sendMessage, executeAgent, API_BASE_URL } from "../api";
-  import { agentState, messages } from "../store";
+  import { sendMessage, executeAgent, API_BASE_URL } from "$lib/api";
+  import { agentState, messages } from "$lib/store";
 
   let isAgentActive = false;
 
