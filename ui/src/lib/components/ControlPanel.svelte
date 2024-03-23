@@ -1,7 +1,7 @@
 <script>
   import { onMount } from 'svelte';
-  import { projectList, modelList, internet } from "../store";
-  import { createProject, fetchProjectList, getTokenUsage } from "../api";
+  import { projectList, modelList, internet } from "$lib/store";
+  import { createProject, fetchProjectList, getTokenUsage } from "$lib/api";
 
   let selectedProject = localStorage.getItem("selectedProject") || "Select Project";
   let selectedModel = localStorage.getItem("selectedModel") || "Select Model";

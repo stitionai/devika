@@ -1,6 +1,6 @@
 <script>
-  import { agentState } from "../store";
-  import { API_BASE_URL } from "../api";
+  import { agentState } from "$lib/store";
+  import { API_BASE_URL } from "$lib/api";
 </script>
 
 <div class="flex flex-col bg-slate-950 border border-indigo-700 rounded flex-1 overflow-hidden">
