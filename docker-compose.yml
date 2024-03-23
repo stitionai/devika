@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  devika-python:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "1773:1773"
+  devika-ui:
+    build:
+      context: ./ui  
+      dockerfile: Dockerfile
+    environment:
+      - API_BASE_URL=http://devika-python:1773
+    ports:
+      - "3000:3000"
