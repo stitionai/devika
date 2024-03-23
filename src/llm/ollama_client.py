@@ -1,11 +1,7 @@
 import httpx
 import ollama
-import os
-
-os.environ['OLLAMA_HOST'] = 'http://192.168.1.100:11435'
 
 from src.logger import Logger
-
 
 class Ollama:
     @staticmethod

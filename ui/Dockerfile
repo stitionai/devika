@@ -7,8 +7,6 @@ WORKDIR /app
 COPY package.json .
 RUN bun install
 COPY . .
-ARG VITE_API_BASE_URL
-ENV VITE_API_BASE_URL $VITE_API_BASE_URL
 RUN bun run build
 EXPOSE 3000
 CMD ["bun", "run", "dev", "--host"]

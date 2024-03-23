@@ -1,4 +1,3 @@
-version: '3.8'
 services:
   devika-python:
     build:
@@ -8,6 +7,8 @@ services:
       - "1337:1337"
     volumes:
       - sqllitedb:/db
+    environment:
+      - OLLAMA_HOST=http://127.0.0.1:11434/
   devika-ui:
     build:
       context: ./ui  
