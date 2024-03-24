@@ -22,7 +22,5 @@ class GEMINI:
 
         return response
 
-    @staticmethod
-    def get_models_list(): 
-        return [i.name for i in GAI.list_models() if "gemini" in str(i)]
+
 
