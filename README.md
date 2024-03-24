@@ -36,7 +36,7 @@ Devika aims to revolutionize the way we build software by providing an AI pair p
 > [!NOTE]
 > Devika is modeled after [Devin](https://www.cognition-labs.com/introducing-devin) by Cognition AI. This project aims to be an open-source alternative to Devin with an "overly ambitious" goal to meet the same score as Devin in the [SWE-bench](https://www.swebench.com/) Benchmarks... and eventually beat it?
 
-## Demoes
+## Demos
 
 https://github.com/stitionai/devika/assets/26198477/cfed6945-d53b-4189-9fbe-669690204206
 
@@ -216,14 +216,7 @@ To join the Devika community Discord server, [click here](https://discord.com/in
 
 ## Contributing
 
-We welcome contributions to enhance Devika's capabilities and improve its performance. To contribute, please follow these steps:
-
-1. Fork the Devika repository on GitHub.
-2. Create a new branch for your feature or bug fix.
-3. Make your changes and ensure that the code passes all tests.
-4. Submit a pull request describing your changes and their benefits.
-
-Please adhere to the coding conventions, maintain clear documentation, and provide thorough testing for your contributions.
+We welcome contributions to enhance Devika's capabilities and improve its performance. To contribute, please see the `CONTRIBUTING.md` file for steps.
 
 ## License
 
