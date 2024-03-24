@@ -146,7 +146,7 @@ Devika requires certain configuration settings and API keys to function properly
 
 - `OPENAI_API_KEY`: Your OpenAI API key for accessing GPT models.
 - `CLAUDE_API_KEY`: Your Anthropic API key for accessing Claude models.
-- `SERP`: Your SERP Search API key for web searching capabilities.
+- `SERP_API_KEY`: Your SERP Search API key for web searching capabilities.
 - `DATABASE_URL`: The URL for your database connection.
 - `LOG_DIRECTORY`: The directory where Devika's logs will be stored.
 - `PROJECT_DIRECTORY`: The directory where Devika's projects will be stored.
