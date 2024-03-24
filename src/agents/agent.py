@@ -28,6 +28,7 @@ import json
 import time
 import platform
 import tiktoken
+import subprocess
 
 class Agent:
     def __init__(self, base_model: str):
@@ -56,7 +57,7 @@ class Agent:
         self.patcher = Patcher(base_model=base_model)
         self.reporter = Reporter(base_model=base_model)
         self.decision = Decision(base_model=base_model)
-
+        self.base_model = base_model
         self.tokenizer = tiktoken.get_encoding("cl100k_base")
 
     def search_queries(self, queries: list, project_name: str) -> dict:
@@ -113,7 +114,17 @@ class Agent:
             self.collected_context_keywords.add(keyword[0])
 
         return self.collected_context_keywords
-
+    
+    """
+    Git clone the repository
+    """
+    def git_clone(self, url):
+        """Clone a git repository from a given URL."""
+        try:
+            subprocess.run(["git", "clone", url], check=True)
+            self.logger.info(f"Repository cloned successfully from {url}")
+        except subprocess.CalledProcessError as e:
+            self.logger.error(f"Error cloning repository: {e.stderr.decode().strip()}")
     """
     Decision making Agent
     """
@@ -129,7 +140,7 @@ class Agent:
             
             if function == "git_clone":
                 url = args["url"]
-                # Implement git clone functionality here
+                self.git_clone(url)  # Clone the repository, one can also implement using GitPython for more pythonic way
                 
             elif function == "generate_pdf_document":
                 user_prompt = args["user_prompt"]
@@ -138,7 +149,7 @@ class Agent:
                 _out_pdf_file = PDF().markdown_to_pdf(markdown, project_name)
                 
                 project_name_space_url = project_name.replace(" ", "%20")
-                pdf_download_url = "http://127.0.0.1:1337/api/download-project-pdf?project_name={}".format(project_name_space_url)
+                pdf_download_url = f"http://127.0.0.1:1337/api/download-project-pdf?project_name={project_name_space_url}"
                 response = f"I have generated the PDF document. You can download it from here: {pdf_download_url}"
                 
                 Browser().go_to(pdf_download_url)
