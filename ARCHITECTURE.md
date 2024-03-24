@@ -46,7 +46,7 @@ The `Agent` class serves as the central engine that drives Devika's AI planning 
 1. When a user provides a high-level prompt, the `execute` method is invoked on the Agent. 
 2. The prompt is first passed to the Planner agent to generate a step-by-step plan.
 3. The Researcher agent then takes this plan and extracts relevant search queries and context.
-4. The Agent performs web searches using Bing Search API and crawls the top results. 
+4. The Agent performs web searches using Serp Search API and crawls the top results. 
 5. The raw crawled content is passed through the Formatter agent to extract clean, relevant information.
 6. This researched context, along with the step-by-step plan, is fed to the Coder agent to generate code.
 7. The generated code is saved to the project directory on disk.

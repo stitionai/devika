@@ -7,12 +7,12 @@ class Config:
     def get_config(self):
         return self.config
 
-    def get_bing_api_key(self):
-        return self.config["API_KEYS"]["BING"]
+    def get_serp_api_key(self):
+        return self.config["API_KEYS"]["SERP"]
     
-    def get_bing_api_endpoint(self):
-        return self.config["API_ENDPOINTS"]["BING"]
-    
+    def get_serp_api_endpoint(self):
+        return self.config["API_ENDPOINTS"]["SERP"]  
+
     def get_claude_api_key(self):
         return self.config["API_KEYS"]["CLAUDE"]
     
@@ -40,12 +40,12 @@ class Config:
     def get_repos_dir(self):
         return self.config["STORAGE"]["REPOS_DIR"]
     
-    def set_bing_api_key(self, key):
-        self.config["API_KEYS"]["BING"] = key
+    def set_serp_api_key(self, key):
+        self.config["API_KEYS"]["SERP"] = key
         self.save_config()
 
-    def set_bing_api_endpoint(self, endpoint):
-        self.config["API_ENDPOINTS"]["BING"] = endpoint
+    def set_serp_api_endpoint(self, endpoint):
+        self.config["API_ENDPOINTS"]["SERP"] = endpoint
         self.save_config()
         
     def set_claude_api_key(self, key):

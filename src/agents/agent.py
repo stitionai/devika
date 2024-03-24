@@ -17,7 +17,7 @@ from src.state import AgentState
 
 from src.bert.sentence import SentenceBert
 from src.memory import KnowledgeBase
-from src.browser.search import BingSearch
+from src.browser.search import SerpSearch
 from src.browser import Browser
 from src.browser import start_interaction
 from src.filesystem import ReadCode
@@ -63,7 +63,7 @@ class Agent:
         results = {}
         
         knowledge_base = KnowledgeBase()
-        bing_search = BingSearch()
+        web_search = SerpSearch()
         browser = Browser()
 
         for query in queries:
@@ -80,8 +80,8 @@ class Agent:
             """
             Search for the query and get the first link
             """
-            bing_search.search(query)
-            link = bing_search.get_first_link()
+            web_search.search(query)
+            link = web_search.get_first_link()
 
             """
             Browse to the link and take a screenshot, then extract the text

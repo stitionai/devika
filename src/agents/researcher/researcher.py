@@ -4,13 +4,13 @@ from typing import List
 from jinja2 import Environment, BaseLoader
 
 from src.llm import LLM
-from src.browser.search import BingSearch
+from src.browser.search import SerpSearch
 
 PROMPT = open("src/agents/researcher/prompt.jinja2").read().strip()
 
 class Researcher:
     def __init__(self, base_model: str):
-        self.bing_search = BingSearch()
+        self.serp_search = SerpSearch()
         self.llm = LLM(model_id=base_model)
 
     def render(self, step_by_step_plan: str, contextual_keywords: str) -> str:
