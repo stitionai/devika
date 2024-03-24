@@ -22,6 +22,7 @@ class Model(Enum):
         )
         for model in Ollama.list_models()
     ]
+    GEMINI_MODELS = 
 
 class LLM:
     def __init__(self, model_id: str = None):
