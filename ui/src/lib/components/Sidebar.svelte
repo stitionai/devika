@@ -8,9 +8,11 @@
     <span class="tooltip">Home</span>
   </div>
   <div class="p-5 rounded nav-button relative">
-    <button class="text-gray-400 hover:text-white flex justify-center w-full">
-      <i class="fas fa-cog fa-lg"></i>
-    </button>
+    <a href="/settings">
+      <button class="text-gray-400 hover:text-white flex justify-center w-full">
+        <i class="fas fa-cog fa-lg"></i>
+      </button>
+    </a>
     <span class="tooltip">Settings</span>
   </div>
   <div class="p-5 rounded nav-button relative">
