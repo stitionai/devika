@@ -10,27 +10,26 @@ ENV PYTHONDONTWRITEBYTECODE 1
 
 # setting up python3
 RUN apt-get update && apt-get upgrade
-RUN apt-get install -y build-essential software-properties-common curl sudo wget
+RUN apt-get install -y build-essential software-properties-common curl sudo wget git
 RUN apt-get install -y python3 python3-pip
 RUN curl -fsSL https://astral.sh/uv/install.sh | sudo -E bash -
-RUN export PATH=$PATH:$HOME/.cargo/bin
-RUN echo $PATH
 RUN $HOME/.cargo/bin/uv venv
-RUN python3 -V && pip3 -V
+ENV PATH="/home/nonroot/devika/.venv/bin:$HOME/.cargo/bin:$PATH"
+RUN echo $PATH
 
 # copy devika python engine only
+RUN $HOME/.cargo/bin/uv venv
 COPY requirements.txt /home/nonroot/devika/
 RUN $HOME/.cargo/bin/uv pip install -r requirements.txt 
-RUN $HOME/.cargo/bin/uv pip install flask flask-cors
 
 COPY src /home/nonroot/devika/src
 COPY config.toml /home/nonroot/devika/
 COPY devika.py /home/nonroot/devika/
-RUN ls
-
 RUN chown -R nonroot:nonroot /home/nonroot/devika
+RUN ls -al
+
 USER nonroot
-
 WORKDIR /home/nonroot/devika
+ENV PATH="/home/nonroot/devika/.venv/bin:$HOME/.cargo/bin:$PATH"
 
-ENTRYPOINT [ "python3", "devika.py" ]
+ENTRYPOINT [ "python3", "-m", "devika" ]

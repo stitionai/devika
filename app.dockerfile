@@ -7,19 +7,19 @@ RUN groupadd -r nonroot && useradd -r -g nonroot -d /home/nonroot/client -s /bin
 
 # install node js 
 RUN apt-get update && apt-get upgrade
-RUN apt-get install -y build-essential software-properties-common curl sudo wget
+RUN apt-get install -y build-essential software-properties-common curl sudo wget git
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 RUN apt-get install nodejs
 
 # copying devika app client only
-COPY ui /home/nonroot/client/
-COPY src /home/nonroot/client/
+COPY ui /home/nonroot/client/ui
+COPY src /home/nonroot/client/src
 COPY config.toml /home/nonroot/client/
 
-RUN npm install && npm upgrade
+RUN cd ui && npm install && npm upgrade -g npm
 RUN chown -R nonroot:nonroot /home/nonroot/client
 
 USER nonroot
-WORKDIR /home/nonroot/client
+WORKDIR /home/nonroot/client/ui
 
 ENTRYPOINT [ "npm", "run", "dev" ]
