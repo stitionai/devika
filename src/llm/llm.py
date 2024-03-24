@@ -4,9 +4,10 @@ from .ollama_client import Ollama
 from .claude_client import Claude
 from .openai_client import OpenAI
 
+from src.state import AgentState
+
 import tiktoken
 
-TOKEN_USAGE = 0
 TIKTOKEN_ENC = tiktoken.get_encoding("cl100k_base")
 
 class Model(Enum):
@@ -38,15 +39,14 @@ class LLM:
         models.update(ollama_models)
         return models
 
-    def update_global_token_usage(self, string: str):
-        global TOKEN_USAGE
-        TOKEN_USAGE += len(TIKTOKEN_ENC.encode(string))
-        print(f"Token usage: {TOKEN_USAGE}")
+    def update_global_token_usage(self, string: str, project_name: str):
+        token_usage = len(TIKTOKEN_ENC.encode(string))
+        AgentState().update_token_usage(project_name, token_usage)
 
     def inference(
-        self, prompt: str
+        self, prompt: str, project_name: str
     ) -> str:
-        self.update_global_token_usage(prompt)
+        self.update_global_token_usage(prompt, project_name)
         
         model = self.model_id_to_enum_mapping()[self.model_id]
 
@@ -59,6 +59,6 @@ class LLM:
         else:
             raise ValueError(f"Model {model} not supported")
 
-        self.update_global_token_usage(response)
+        self.update_global_token_usage(response, project_name)
         
         return response
