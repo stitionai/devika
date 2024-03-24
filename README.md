@@ -89,6 +89,7 @@ uv pip install -r requirements.txt
 cd ui/
 bun install
 bun run dev
+cd ..
 python3 devika.py
 ```
 
