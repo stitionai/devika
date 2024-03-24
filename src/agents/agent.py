@@ -17,7 +17,7 @@ from src.state import AgentState
 
 from src.bert.sentence import SentenceBert
 from src.memory import KnowledgeBase
-from src.browser.search import BingSearch,DuckDuckGoSearch
+from src.browser.search import BingSearch,DuckDuckGoSearch,GoogleSearch
 from src.browser import Browser
 from src.browser import start_interaction
 from src.filesystem import ReadCode
@@ -64,7 +64,8 @@ class Agent:
         
         knowledge_base = KnowledgeBase()
         # web_search = BingSearch()
-        web_search = DuckDuckGoSearch()
+        # web_search = DuckDuckGoSearch()
+        web_search = GoogleSearch()
         browser = Browser()
 
         for query in queries:

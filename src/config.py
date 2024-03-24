@@ -13,6 +13,15 @@ class Config:
     def get_bing_api_endpoint(self):
         return self.config["API_ENDPOINTS"]["BING"]
     
+    def get_google_search_api_key(self):
+        return self.config["API_KEYS"]["GOOGLE_SEARCH"]
+
+    def get_google_search_engine_id(self):
+        return self.config["API_KEYS"]["GOOGLE_SEARCH_ENGINE_ID"]
+    
+    def get_google_search_api_endpoint(self):
+        return self.config["API_ENDPOINTS"]["GOOGLE_SEARCH"]
+    
     def get_claude_api_key(self):
         return self.config["API_KEYS"]["CLAUDE"]
     
@@ -50,6 +59,18 @@ class Config:
     def set_bing_api_endpoint(self, endpoint):
         self.config["API_ENDPOINTS"]["BING"] = endpoint
         self.save_config()
+
+    def set_google_search_api_key(self, key):
+        self.config["API_KEYS"]["GOOGLE_SEARCH"] = key
+        self.save_config()
+
+    def set_google_search_engine_id(self, key):
+        self.config["API_KEYS"]["GOOGLE_SEARCH_ENGINE_ID"] = key
+        self.save_config()
+
+    def set_google_search_api_endpoint(self, endpoint):
+        self.config["API_ENDPOINTS"]["GOOGLE_SEARCH"] = endpoint
+        self.save_config()
         
     def set_claude_api_key(self, key):
         self.config["API_KEYS"]["CLAUDE"] = key
@@ -59,7 +80,7 @@ class Config:
         self.config["API_KEYS"]["OPENAI"] = key
         self.save_config()
 
-    def set_openai_api_key(self, key):
+    def set_gemini_api_key(self, key):
         self.config["API_KEYS"]["GEMINI"] = key
         self.save_config()
 
