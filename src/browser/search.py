@@ -1,6 +1,7 @@
 import requests
 from src.config import Config
 
+
 class BingSearch:
     def __init__(self):
         self.config = Config()

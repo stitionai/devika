@@ -1,11 +1,18 @@
 import ollama
-from src.config import Config
+from src.logger import Logger
+
+log = Logger()
 
 
 class Ollama:
     def __init__(self):
-        config = Config()
-        self.client = ollama.Client(config.get_ollama_endpoint())
+        try:
+            self.client = ollama.Client()
+            log.info("Ollama available")
+        except:
+            self.client = None
+            log.warning("Ollama not available")
+            log.warning("run ollama server to use ollama models otherwise use other models")
 
     def list_models(self) -> list[dict]:
         models = self.client.list()["models"]

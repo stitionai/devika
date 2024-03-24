@@ -4,14 +4,20 @@ import {
   modelList,
   agentState,
   internet,
+  searchEngineList,
 } from "./store";
+import { io } from "socket.io-client";
 
-export const API_BASE_URL = "http://127.0.0.1:5000";
+export const API_BASE_URL = "http://127.0.0.1:1337";
+export const socket = io(API_BASE_URL);
 
-export async function fetchProjectList() {
-  const response = await fetch(`${API_BASE_URL}/api/project-list`);
+export async function fetchInitialData() {
+  const response = await fetch(`${API_BASE_URL}/api/data`);
   const data = await response.json();
   projectList.set(data.projects);
+  modelList.set(data.models);
+  searchEngineList.set(data.search_engines);
+  localStorage.setItem("defaultData", JSON.stringify(data));
 }
 
 export async function createProject(projectName) {
@@ -22,25 +28,17 @@ export async function createProject(projectName) {
     },
     body: JSON.stringify({ project_name: projectName }),
   });
+  projectList.update((projects) => [...projects, projectName]);
 }
 
-export async function fetchModelList() {
-  const response = await fetch(`${API_BASE_URL}/api/model-list`);
-  const data = await response.json();
-  modelList.set(data.models);
-}
-
-export async function fetchAgentState() {
-  const projectName = localStorage.getItem("selectedProject");
-  const response = await fetch(`${API_BASE_URL}/api/get-agent-state`, {
+export async function deleteProject(projectName) {
+  await fetch(`${API_BASE_URL}/api/delete-project`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ project_name: projectName }),
   });
-  const data = await response.json();
-  agentState.set(data.state);
 }
 
 export async function fetchMessages() {
@@ -77,6 +75,19 @@ export async function sendMessage(message) {
     }),
   });
   await fetchMessages();
+}
+
+export async function fetchAgentState() {
+  const projectName = localStorage.getItem("selectedProject");
+  const response = await fetch(`${API_BASE_URL}/api/get-agent-state`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ project_name: projectName }),
+  });
+  const data = await response.json();
+  agentState.set(data.state);
 }
 
 export async function executeAgent(prompt) {

@@ -1,5 +1,6 @@
 <script>
-  import { agentState } from "../store";
+  import { agentState } from "$lib/store";  
+
 </script>
 
 <div
@@ -11,7 +12,17 @@
     class="avatar rounded-full flex-shrink-0"
   />
   <div class="flex flex-col w-full gap-1">
-    <p class="text-xs text-gray-400">Devika's Internal Monologue</p>
+    <p class="text-xs text-gray-400">Devika's Internal Monologue | Agent status:
+     {#if $agentState !== null}
+      {#if $agentState.agent_is_active}
+        <span class="text-green-500">Active</span>
+      {:else}
+        <span class="text-orange-600">Inactive</span>
+      {/if}
+      {:else}
+      Deactive
+    {/if}
+    </p>
     <p class="text-xs">{$agentState?.internal_monologue || "😴"}</p>
   </div>
 </div>

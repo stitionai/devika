@@ -165,6 +165,3 @@ db/
 screenshots/
 pdfs/
 projects/
-
-# bun files
-*.lockb

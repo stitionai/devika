@@ -13,11 +13,12 @@ class AgentStateModel(SQLModel, table=True):
     state_stack_json: str
 
 class AgentState:
-    def __init__(self):
+    def __init__(self, socketio=None):
         config = Config()
         sqlite_path = config.get_sqlite_db()
         self.engine = create_engine(f"sqlite:///{sqlite_path}")
         SQLModel.metadata.create_all(self.engine)
+        self.socketio = socketio
 
     def new_state(self):
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -104,6 +105,7 @@ class AgentState:
                 agent_state = AgentStateModel(project=project, state_stack_json=json.dumps(state_stack))
                 session.add(agent_state)
                 session.commit()
+            self.socketio.emit("agent-state", state_stack)
 
     def is_agent_active(self, project: str):
         with Session(self.engine) as session:

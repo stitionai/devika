@@ -8,14 +8,11 @@ class Config:
     def get_config(self):
         return self.config
 
-    def get_bing_api_key(self):
-        return self.config["API_KEYS"]["BING"]
-
     def get_bing_api_endpoint(self):
         return self.config["API_ENDPOINTS"]["BING"]
 
-    def get_ollama_endpoint(self):
-        return self.config["API_ENDPOINTS"]["OLLAMA"]
+    def get_bing_api_key(self):
+        return self.config["API_KEYS"]["BING"]
 
     def get_claude_api_key(self):
         return self.config["API_KEYS"]["CLAUDE"]
@@ -25,6 +22,9 @@ class Config:
 
     def get_gemini_api_key(self):
         return self.config["API_KEYS"]["GEMINI"]
+
+    def get_mistral_api_key(self):
+        return self.config["API_KEYS"]["MISTRAL"]
 
     def get_netlify_api_key(self):
         return self.config["API_KEYS"]["NETLIFY"]

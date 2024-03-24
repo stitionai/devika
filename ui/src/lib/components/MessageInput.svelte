@@ -1,6 +1,6 @@
 <script>
-  import { sendMessage, executeAgent, API_BASE_URL } from "../api";
-  import { agentState, messages } from "../store";
+  import { sendMessage, executeAgent, API_BASE_URL,  socket } from "$lib/api";
+  import { agentState, messages } from "$lib/store";
 
   let isAgentActive = false;
 
@@ -12,19 +12,37 @@
   let messageInput = "";
   async function handleSendMessage() {
     const projectName = localStorage.getItem("selectedProject");
-
+    const selectedModel = localStorage.getItem("selectedModel");
+    
     if (!projectName) {
       alert("Please select a project first!");
+      return;
+    }
+    if (!selectedModel) {
+      alert("Please select a model first!");
       return;
     }
 
     if (messageInput.trim() !== "" && !isAgentActive) {
       if ($messages.length === 0) {
-        console.log("Executing agent", messageInput);
-        await executeAgent(messageInput);
+        console.log("Executing agent ... ", messageInput);
+        socket.emit("user-message", { 
+          action: "execute_agent",
+          message: messageInput,
+          base_model: selectedModel,
+          project_name: projectName
+        });
+        // await executeAgent(messageInput);
       } else {
         console.log("Sending message", messageInput);
-        await sendMessage(messageInput);
+
+        socket.emit("user-message", { 
+          action: "continue",
+          message: messageInput,
+          base_model: selectedModel,
+          project_name: projectName
+         });
+        // await sendMessage(messageInput);
       }
       messageInput = "";
     }
@@ -48,6 +66,8 @@
         console.error("Error:", error);
       });
   }
+
+
 </script>
 
 <div class="expandable-input relative">
@@ -64,12 +84,10 @@
       }
     }}
   ></textarea>
-  <div class="token-count text-gray-400 text-xs p-2">
-    0 tokens
-  </div>
+  <div class="token-count text-gray-400 text-xs p-1">0 tokens</div>
   <button
     id="send-message-btn"
-    class={`px-4 py-3 border-2 text-white rounded-lg w-full ${isAgentActive ? "bg-slate-800" : "bg-black"}`}
+    class={`px-4 py-3 text-white rounded-lg w-full ${isAgentActive ? "bg-slate-800" : "bg-black"}`}
     on:click={handleSendMessage}
     disabled={isAgentActive}
   >
@@ -81,7 +99,6 @@
   .expandable-input textarea {
     min-height: 60px;
     max-height: 200px;
-    overflow-y: hidden;
     resize: none;
   }
 </style>
