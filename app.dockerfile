@@ -22,4 +22,4 @@ RUN chown -R nonroot:nonroot /home/nonroot/client
 USER nonroot
 WORKDIR /home/nonroot/client/ui
 
-ENTRYPOINT [ "npm", "run", "dev" ]
+ENTRYPOINT [ "npm", "run", "dev", "--", "--host" ]
