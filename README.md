@@ -120,6 +120,7 @@ To install Devika, follow these steps:
    python devika.py
    ```
 6. Compile and run the UI server:
+ Before you need to install "Bun" for windows > Powershell then press the command "powershell -c "irm https://bun.sh/install.ps1 | iex"
    ```bash
    cd ui/
    bun install
