@@ -1,0 +1,40 @@
+version: "3.9"
+
+services:
+  llama2-llm-service:
+    image: ollama/ollama:latest
+    networks:
+      - devika-subnetwork
+    expose:
+      - 11434
+    ports:
+      - 11434:11434
+
+  devika-backend-engine:
+    build:
+      context: .
+      dockerfile: devika.dockerfile
+    depends_on: 
+      - llama2-llm-service
+    expose:
+      - 1337
+    ports:
+      - 1337:1337
+    networks:
+      - devika-subnetwork
+
+  devika-frontend-app:
+    build:
+      context: .
+      dockerfile: app.dockerfile
+    depends_on:
+      - llama2-llm-service
+    expose:
+      - 3000
+    ports:
+      - 3000:3000
+    networks:
+      - devika-subnetwork
+
+networks:
+  devika-subnetwork:
