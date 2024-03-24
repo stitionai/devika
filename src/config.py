@@ -16,6 +16,9 @@ class Config:
     def get_claude_api_key(self):
         return self.config["API_KEYS"]["CLAUDE"]
     
+    def get_gemini_api_key(self): 
+        return self.config["API_KEYS"]["GEMINI"]
+    
     def get_openai_api_key(self):
         return self.config["API_KEYS"]["OPENAI"]
     
