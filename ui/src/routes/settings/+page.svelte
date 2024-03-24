@@ -1,5 +1,6 @@
 <script>
-  import ConfigurationSettings from "../../lib/components/ConfigurationSettings.svelte";
+  import Settings from "./Settings/Settings.svelte";
+
 
 </script>
-<div><ConfigurationSettings/></div>
+<div><Settings data/></div> 
