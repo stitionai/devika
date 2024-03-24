@@ -94,10 +94,10 @@ python3 devika.py
 
 Docker images will be released soon. :raised_hands:
 
-## Installation
-Devika requires the following things as dependencies:
+## Installation Instructions
+Before you proceed, Devika requires the following things as dependencies:
 - Ollama (follow the instructions here to install it: [https://ollama.com/](https://ollama.com/))
-- Bun (follow the instructions here to install it: [https://bun.sh/](https://bun.sh/))
+- Bun (follow the instructions here to install it: [https://bun.sh/](https://bun.sh/)) For Windows: **powershell -c "irm https://bun.sh/install.ps1 | iex"**
 
 To install Devika, follow these steps:
 
@@ -120,7 +120,6 @@ To install Devika, follow these steps:
    python devika.py
    ```
 6. Compile and run the UI server:
- Before you need to install "Bun" for windows > Powershell then press the command "powershell -c "irm https://bun.sh/install.ps1 | iex"
    ```bash
    cd ui/
    bun install
