@@ -34,15 +34,15 @@ RUN /root/.bun/bin/bun install
 
 # Expose the port 3000 from the container to port 3001 on the host
 #EXPOSE 3000:3001
-
 RUN echo '#!/bin/bash\n\
 if [ -f /devika/.env ]; then\n\
   export $(cat /devika/.env | grep -v '^#' | xargs)\n\
 fi\n\
 API_JS_PATH="/devika/ui/src/lib"\n\
-if [ -f .env ]; then\n\
+if [ -f /devika/.env ]; then\n\
   export $(grep -v '^#' /devika/.env | xargs)\n\
 fi\n\
+sed -i "s|export const API_BASE_URL = .*|export const API_BASE_URL = \"${BASE_URL}\";|g" "$API_JS_PATH/api.js"\n\
 service nginx restart\n\
 cd /devika \n\
 /root/.cargo/bin/uv venv && pip install -r /devika/requirements.txt && playwright install --with-deps && python3 /devika/devika.py &\n\
