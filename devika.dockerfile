@@ -32,6 +32,6 @@ RUN ls -al
 USER nonroot
 WORKDIR /home/nonroot/devika
 ENV PATH="/home/nonroot/devika/.venv/bin:$HOME/.cargo/bin:$PATH"
-MKDIR /home/nonroot/devika/db
+RUN mkdir /home/nonroot/devika/db
 
 ENTRYPOINT [ "python3", "-m", "devika" ]
