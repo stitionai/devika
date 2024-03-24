@@ -51,6 +51,7 @@
   }
 
   .error-text {
+    margin-top: 4px;
     color: #f55;
   }
 </style>
