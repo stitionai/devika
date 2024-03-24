@@ -1,5 +1,9 @@
 FROM debian:12
 
+# setting up build variable
+ARG VITE_API_BASE_URL
+ENV VITE_API_BASE_URL=${VITE_API_BASE_URL}
+
 # setting up os env
 USER root
 WORKDIR /home/nonroot/client
