@@ -76,7 +76,7 @@ The easiest way to run the project locally:
 2. Install `bun` - JavaScript runtime (https://bun.sh/)
 3. Install and setup `Ollama` (https://ollama.com/)
 
-Set the API Keys in the `config.toml` file. (This will soon be moving to the UI where you can set these keys from the UI itself without touching the command-line, want to implement it? See this issue: https://github.com/stitionai/devika/issues/3)
+Set the API Keys in the `config.toml` file. (This will soon be moving to the UI where you can set these keys from the UI itself without touching the command line, want to implement it? See this issue: https://github.com/stitionai/devika/issues/3)
 
 Then execute the following set of command:
 
@@ -176,7 +176,7 @@ To enable focused research and information gathering, Devika employs keyword ext
 1. **Preprocessing**: The input text (objective, conversation history, or project files) is preprocessed by removing stop words, tokenizing, and normalizing the text.
 2. **Keyword Identification**: Devika uses the BERT (Bidirectional Encoder Representations from Transformers) model to identify important keywords and phrases from the preprocessed text. BERT's pre-training on a large corpus allows it to capture semantic relationships and understand the significance of words in the given context.
 3. **Keyword Ranking**: The identified keywords are ranked based on their relevance and importance to the task at hand. Techniques like TF-IDF (Term Frequency-Inverse Document Frequency) and TextRank are used to assign scores to each keyword.
-4. **Keyword Selection**: The top-ranked keywords are selected as the most relevant and informative for the current context. These keywords are used to guide the research and information gathering process.
+4. **Keyword Selection**: The top-ranked keywords are selected as the most relevant and informative for the current context. These keywords are used to guide the research and information-gathering process.
 
 By extracting contextually relevant keywords, Devika can focus its research efforts and retrieve pertinent information to assist in the task completion.
 
@@ -190,11 +190,11 @@ Devika incorporates browser interaction capabilities to navigate websites, extra
 4. **JavaScript Execution**: Playwright enables Devika to execute JavaScript code within the browser context, allowing for dynamic interactions and data retrieval.
 5. **Screenshot Capture**: Devika can capture screenshots of the web pages visited, which can be useful for visual reference or debugging purposes.
 
-The browser interaction module empowers Devika to gather information from the web, interact with online resources, and incorporate real-time data into its decision-making and code generation processes.
+The browser interaction module empowers Devika to gather information from the web, interact with online resources, and incorporate real-time data into its decision-making and code-generation processes.
 
 ### Code Writing
 
-Devika's code writing module generates code based on the plan, research findings, and user requirements. The process involves the following steps:
+Devika's code-writing module generates code based on the plan, research findings, and user requirements. The process involves the following steps:
 
 1. **Language Selection**: Devika identifies the programming language specified by the user or infers it based on the project context.
 2. **Code Structure Generation**: Based on the plan and language-specific patterns, Devika generates the high-level structure of the code, including classes, functions, and modules.
@@ -202,7 +202,7 @@ Devika's code writing module generates code based on the plan, research findings
 4. **Code Formatting**: The generated code is formatted according to the language-specific conventions and best practices to ensure readability and maintainability.
 5. **Code Review and Refinement**: Devika reviews the generated code for syntax errors, logical inconsistencies, and potential improvements. It iteratively refines the code based on its own analysis and any feedback provided by the user.
 
-Devika's code writing capabilities enable it to generate functional and efficient code in various programming languages, taking into account the specific requirements and context of each project.
+Devika's code-writing capabilities enable it to generate functional and efficient code in various programming languages, taking into account the specific requirements and context of each project.
 
 # Community Discord Server
 
