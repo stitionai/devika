@@ -1,6 +1,5 @@
 <script>
   import { agentState } from "$lib/store";
-  import { API_BASE_URL } from "$lib/api";
 </script>
 
 <div class="flex flex-col bg-slate-950 border border-indigo-700 rounded flex-1 overflow-hidden">
@@ -20,12 +19,8 @@
     />
   </div>
   <div id="browser-content" class="flex-grow overflow-auto">
-    {#if $agentState?.browser_session.screenshot}
-      <img
-        class="browser-img"
-        src={API_BASE_URL + "/api/get-browser-snapshot?snapshot_path=" + $agentState?.browser_session.screenshot}
-        alt="Browser snapshot"
-      />
+    {#if $agentState?.browser_session.url}
+      <iframe width="100%" height="100%" src={$agentState?.browser_session.url || ""}></iframe>
     {:else}
       <div class="text-white text-center mt-5"><strong>💡 TIP:</strong> You can include a Git URL in your prompt to clone a repo!</div>
     {/if}
@@ -35,11 +30,5 @@
 <style>
   #browser-url {
     pointer-events: none
-  }
-
-  .browser-img {
-    display: block;
-    object-fit: contain;
-    max-width: 100%;
   }
 </style>
