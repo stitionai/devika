@@ -15,4 +15,4 @@ GEMINI = "<YOUR_GEMINI_API_KEY>"
 MISTRAL = "<YOUR_MISTRAL_API_KEY>"
 
 [API_ENDPOINTS]
-BING = "https://api.bing.microsoft.com/v7.0/search"
+BING = "https://api.bing.micr   osoft.com/v7.0/search"
