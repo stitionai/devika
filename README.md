@@ -68,6 +68,17 @@ Devika's system architecture consists of the following key components:
 
 Read [**ARCHITECTURE.md**](https://github.com/stitionai/devika/blob/main/ARCHITECTURE.md) for the detailed documentation.
 
+## Quick Start Docker Linux
+
+1. apt install docker.io
+2. git clone https://github.com/stitionai/devika.git
+3. edit .env set interface ip
+4. edit config.toml set api keys
+5. ./build.sh
+6. ./start.sh
+7. access on http://interfaceip:3001
+8. press ctrl + c to end
+
 ## Quick Start
 
 The easiest way to run the project locally:
