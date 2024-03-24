@@ -6,6 +6,9 @@ from .openai_client import OpenAI
 
 import tiktoken
 
+from ..config import Config
+from ..logger import Logger
+
 TOKEN_USAGE = 0
 TIKTOKEN_ENC = tiktoken.get_encoding("cl100k_base")
 
@@ -23,10 +26,14 @@ class Model(Enum):
         for model in Ollama.list_models()
     ]
 
+
+logger = Logger(filename="devika_prompts.log")
+
 class LLM:
     def __init__(self, model_id: str = None):
         self.model_id = model_id
-    
+        self.log_prompts = Config().get_logging_prompts()
+
     def list_models(self) -> list[tuple[str, str]]:
         return [model.value for model in Model if model.name != "OLLAMA_MODELS"] + list(
             Model.OLLAMA_MODELS.value
@@ -50,6 +57,9 @@ class LLM:
         
         model = self.model_id_to_enum_mapping()[self.model_id]
 
+        if self.log_prompts:
+            logger.debug(f"Prompt ({model}): --> {prompt}")
+
         if model == "OLLAMA_MODELS":
             response = Ollama().inference(self.model_id, prompt).strip()
         elif "CLAUDE" in str(model):
@@ -58,6 +68,9 @@ class LLM:
             response = OpenAI().inference(self.model_id, prompt).strip()
         else:
             raise ValueError(f"Model {model} not supported")
+
+        if self.log_prompts:
+            logger.debug(f"Response ({model}): --> {response}")
 
         self.update_global_token_usage(response)
         

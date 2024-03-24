@@ -14,3 +14,7 @@ OPENAI = "<YOUR_OPENAI_API_KEY>"
 
 [API_ENDPOINTS]
 BING = "https://api.bing.microsoft.com/v7.0/search"
+
+[LOGGING]
+LOG_REST_API = "true"
+LOG_PROMPTS = "false"

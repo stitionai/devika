@@ -39,7 +39,13 @@ class Config:
     
     def get_repos_dir(self):
         return self.config["STORAGE"]["REPOS_DIR"]
-    
+
+    def get_logging_rest_api(self):
+        return self.config["LOGGING"]["LOG_REST_API"] == "true"
+
+    def get_logging_prompts(self):
+        return self.config["LOGGING"]["LOG_PROMPTS"] == "true"
+
     def set_bing_api_key(self, key):
         self.config["API_KEYS"]["BING"] = key
         self.save_config()
@@ -82,6 +88,14 @@ class Config:
 
     def set_repos_dir(self, dir):
         self.config["STORAGE"]["REPOS_DIR"] = dir
+        self.save_config()
+
+    def set_logging_rest_api(self, value):
+        self.config["LOGGING"]["LOG_REST_API"] = "true" if value else "false"
+        self.save_config()
+
+    def set_logging_prompts(self, value):
+        self.config["LOGGING"]["LOG_PROMPTS"] = "true" if value else "false"
         self.save_config()
 
     def save_config(self):
