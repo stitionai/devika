@@ -9,7 +9,7 @@
 > [!IMPORTANT]  
 > This project is currently in a very early development/experimental stage. There are a lot of unimplemented/broken features at the moment. Contributions are welcome to help out with the progress!
 
-## Table of Contents
+## Table of Contents :
 
 - [About](#about)
 - [Key Features](#key-features)
