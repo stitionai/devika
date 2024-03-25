@@ -3,6 +3,7 @@ from enum import Enum
 from .ollama_client import Ollama
 from .claude_client import Claude
 from .openai_client import OpenAI
+from .together_client import TogetherAI
 
 import tiktoken
 
@@ -22,6 +23,8 @@ class Model(Enum):
         )
         for model in Ollama.list_models()
     ]
+    TOGETHER_MISTRAL = ("Together Mistral","mistralai/Mistral-7B-v0.1")
+    TOGETHER_GOOGLE = ("Together Gemma","google/gemma-7b")
 
 class LLM:
     def __init__(self, model_id: str = None):
@@ -56,6 +59,8 @@ class LLM:
             response = Claude().inference(self.model_id, prompt).strip()
         elif "GPT" in str(model):
             response = OpenAI().inference(self.model_id, prompt).strip()
+        elif "TOGETHER" in str(model):
+            response = TogetherAI().inference(self.model_id, prompt).strip()
         else:
             raise ValueError(f"Model {model} not supported")
 
