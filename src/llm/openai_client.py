@@ -6,8 +6,10 @@ class OpenAI:
     def __init__(self):
         config = Config()
         api_key = config.get_openai_api_key()
+        api_base = config.get_llm_endpoint_openai()
         self.client = OAI(
             api_key=api_key,
+            base_url = api_base
         )
         
     def inference(self, model_id: str, prompt: str) -> str:
