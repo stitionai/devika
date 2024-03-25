@@ -2,8 +2,8 @@
 .PHONY = setup deps compose-up compose-down compose-destroy
 
 # to check if docker is installed on the machine 
-DOCKER := $(shell command -v podman)
-DOCKER_COMPOSE := $(shell command -v podman-compose)
+DOCKER := $(shell command -v docker)
+DOCKER_COMPOSE := $(shell command -v docker-compose)
 deps:
 ifndef DOCKER
 	@echo "Docker is not available. Please install docker"
@@ -20,14 +20,14 @@ setup:
 	sh +x build
 
 compose-down: deps
-	podman volume ls
-	podman-compose ps
-	podman images
-	podman-compose down;
+	docker volume ls
+	docker-compose ps
+	docker images
+	docker-compose down;
 
 compose-up: deps compose-down
-	podman-compose up --build
+	docker-compose up --build
 
 compose-destroy: deps
-	podman images | grep -i devika | awk '{print $$3}' | xargs podman rmi -f
-	podman volume prune
+	docker images | grep -i devika | awk '{print $$3}' | xargs docker rmi -f
+	docker volume prune
