@@ -1,4 +1,4 @@
-<script type="ts">
+<script lang="ts">
   import { onMount } from "svelte";
   import { getSettings, setSettings } from "../../../lib/api";
   import Button from "./Button.svelte";
