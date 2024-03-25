@@ -12,6 +12,9 @@ class Config:
     
     def get_serp_api_endpoint(self):
         return self.config["API_ENDPOINTS"]["SERP"]  
+    
+    def get_serp_search_engine(self):
+        return self.config["SEARCH_ENGINE"]["SERP_SEARCH_ENGINE"]  
 
     def get_claude_api_key(self):
         return self.config["API_KEYS"]["CLAUDE"]
@@ -46,6 +49,10 @@ class Config:
 
     def set_serp_api_endpoint(self, endpoint):
         self.config["API_ENDPOINTS"]["SERP"] = endpoint
+        self.save_config()
+    
+    def set_serp_search_engine(self, engine):
+        self.config["SEARCH_ENGINE"]["SERP_SEARCH_ENGINE"] = engine
         self.save_config()
         
     def set_claude_api_key(self, key):

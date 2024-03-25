@@ -7,13 +7,14 @@ class SerpSearch:
         self.config= Config()
         self.serp_api_key = self.config.get_serp_api_key()
         self.serp_api_endpoint = self.config.get_serp_api_endpoint()
+        self.serp_search_engine = self.config.get_serp_search_engine()
         self.query_result = None
 
     def search(self, query):
         try:
             client = serpapi.Client(api_key = self.serp_api_key)
             self.query_result = client.search({
-                'engine': 'google',
+                'engine': self.serp_search_engine,
                 'q': query,
             })
             return self.query_result

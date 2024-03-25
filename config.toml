@@ -14,3 +14,6 @@ SERP="<YOUR_SERP_API_KEY>"
 
 [API_ENDPOINTS]
 SERP="https://serpapi.com/search.json"
+
+[SEARCH_ENGINE]
+SERP_SEARCH_ENGINE="google" 
