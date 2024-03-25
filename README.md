@@ -70,28 +70,26 @@ Read [**ARCHITECTURE.md**](https://github.com/stitionai/devika/blob/main/ARCHITE
 
 ## Quick Start
 
-The easiest way to run the project locally:
-
-1. Install `uv` - Python Package manager (https://github.com/astral-sh/uv)
-2. Install `bun` - JavaScript runtime (https://bun.sh/)
-3. Install and setup `Ollama` (https://ollama.com/)
+The easiest way to run the project locally via Docker:
 
 Set the API Keys in the `config.toml` file. (This will soon be moving to the UI where you can set these keys from the UI itself without touching the command-line, want to implement it? See this issue: https://github.com/stitionai/devika/issues/3)
 
-Then execute the following set of command:
+> [!NOTE]  
+> Ensure `Ollama` (https://ollama.com/) is running first!
 
 ```
-ollama serve
 git clone https://github.com/stitionai/devika.git
 cd devika/
-uv venv
-uv pip install -r requirements.txt
-cd ui/
-bun install
-bun run dev
-cd ..
-python3 devika.py
+docker build . -t 'devika:latest'
+
+docker run --rm -p 1337:1337 devika:latest -v config.toml:/app/config.toml
+
+OR
+
+docker run --rm -p 1337:1337 devika:latest -e OLLAMA_API_ENDPOINT=http://my-server:11434
 ```
+
+Available at [http://127.0.0.1:1337](http://127.0.0.1:1337).
 
 Docker images will be released soon. :raised_hands:
 
