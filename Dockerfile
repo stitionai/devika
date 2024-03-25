@@ -17,6 +17,7 @@ RUN apt update
 RUN apt install git -y
 COPY requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
+RUN playwright install --with-deps
 COPY --from=0 /build/build /app/ui/build
 COPY src /app/src
 COPY config.toml config.toml
