@@ -22,4 +22,3 @@ class BingSearch:
 
     def get_first_link(self):
         return self.query_result["webPages"]["value"][0]["url"]
-
