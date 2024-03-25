@@ -6,6 +6,9 @@ __pycache__/
 # C extensions
 *.so
 
+# Config file
+config.toml
+
 # Distribution / packaging
 .Python
 build/
