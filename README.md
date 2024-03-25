@@ -145,7 +145,7 @@ To start using Devika, follow these steps:
 
 Devika requires certain configuration settings and API keys to function properly. Update the `config.toml` file with the following information:
 
-- `OPENAI_type`: If your OpenAI service is powered by Azure, it should be set to `azure`, otherwise it should be `openai`.
+- `OPENAI_TYPE`: If your OpenAI service is powered by Azure, it should be set to `azure`, otherwise it should be `openai`.
 - `OPENAI_API_KEY`: Your OpenAI or Azure OpenAI API key for accessing GPT models.
 - `API_VERSION`: If your OpenAI service is powered by Azure, it should be set to "2024-02-15-preview" or newer. You can get more details in [Microsoft's website](https://learn.microsoft.com/en-us/azure/ai-services/openai/api-version-deprecation).
 - `AZURE_OPENAI_ENDPOINT`: If your OpenAI service is powered by Azure, it should be set.
