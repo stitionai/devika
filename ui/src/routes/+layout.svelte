@@ -1,9 +1,9 @@
 <script>
-	import "../app.pcss"
-	import Sidebar from '$lib/components/Sidebar.svelte'
+  import Sidebar from "$lib/components/Sidebar.svelte";
+  import "../app.pcss";
 </script>
 
-<main class="h-dvh w-[calc(100dvw-5rem)] ml-20">
-	<Sidebar />
-	<slot />
+<main class="h-dvh ml-20">
+  <Sidebar />
+  <slot />
 </main>
