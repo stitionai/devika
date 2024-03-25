@@ -17,12 +17,13 @@ from src.state import AgentState
 
 from src.bert.sentence import SentenceBert
 from src.memory import KnowledgeBase
-from src.browser.search import BingSearch
+from src.browser.search import BingSearch, DuckDuckGoSearch
 from src.browser import Browser
 from src.browser import start_interaction
 from src.filesystem import ReadCode
 from src.services import Netlify
 from src.documenter.pdf import PDF
+from src.config import Config
 
 import json
 import time
@@ -63,7 +64,16 @@ class Agent:
         results = {}
         
         knowledge_base = KnowledgeBase()
-        bing_search = BingSearch()
+        user_search_engine = Config().get_search_engine()
+
+        if user_search_engine == "DDGS":
+            search_engine = DuckDuckGoSearch()
+        else:
+            """
+            Set default search engine to Bing
+            """
+            search_engine = BingSearch()
+            
         browser = Browser()
 
         for query in queries:
@@ -80,8 +90,8 @@ class Agent:
             """
             Search for the query and get the first link
             """
-            bing_search.search(query)
-            link = bing_search.get_first_link()
+            search_engine.search(query)
+            link = search_engine.get_first_link()
 
             """
             Browse to the link and take a screenshot, then extract the text
