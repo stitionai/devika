@@ -217,7 +217,7 @@ To join the Devika community Discord server, [click here](https://discord.com/in
 
 ## Contributing
 
-We welcome contributions to enhance Devika's capabilities and improve its performance. To contribute, please see the `CONTRIBUTING.md` file for steps.
+We welcome contributions to enhance Devika's capabilities and improve its performance. To contribute, please see the [`CONTRIBUTING.md`](contributing.md) file for steps.
 
 ## License
 
