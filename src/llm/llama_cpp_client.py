@@ -13,7 +13,7 @@ class LlamaCpp:
     def __init__(self):
         if not self.initialized:
             config = Config()
-            model_path = config.get_model_path()
+            model_path = config.get_llama_model_path()
             gpu_layers = int(config.get_gpu_layers())
             context_size = int(config.get_context_size())
             self.model = llama_cpp.Llama(model_path=model_path, n_gpu_layers=gpu_layers, n_ctx=context_size)

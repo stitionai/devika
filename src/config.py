@@ -40,8 +40,8 @@ class Config:
     def get_repos_dir(self):
         return self.config["STORAGE"]["REPOS_DIR"]
 
-    def get_model_path(self):
-        return self.config["STORAGE"]["MODEL_PATH"]
+    def get_llama_model_path(self):
+        return self.config["STORAGE"]["LLAMA_MODEL_PATH"]
 
     def get_gpu_layers(self):
         return self.config["PARAMETERS"]["GPU_LAYERS"]
@@ -93,8 +93,8 @@ class Config:
         self.config["STORAGE"]["REPOS_DIR"] = dir
         self.save_config()
 
-    def set_model_path(self, model_path):
-        self.config["STORAGE"]["MODEL_PATH"] = model_path
+    def set_llama_model_path(self, llama_model_path):
+        self.config["STORAGE"]["LLAMA_MODEL_PATH"] = llama_model_path
         self.save_config()
 
     def set_gpu_layers(self, gpu_layers):
