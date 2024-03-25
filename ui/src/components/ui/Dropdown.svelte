@@ -3,7 +3,7 @@
   export let label;
 
   /** @type {string | null | undefined} **/
-  export let selection = null;
+  export let selection = undefined;
 
   /** @type {Record<string, string>} **/
   export let options;
@@ -51,6 +51,10 @@
   function closeDropdown() {
       open = false;
   }
+
+  $: {
+    console.log("selection: ", selection, "label: ", label);
+  }
 </script>
 
 <div class="dropdown-menu relative inline-block">
@@ -61,7 +65,10 @@
     aria-haspopup="true"
     on:click={() => open = !open}
   >
-    <span id="selected-project">{selection ? options[selection] : label}</span>
+    <span>
+      {selection ? options[selection] : label}
+    </span>
+
     <svg
       class="-mr-1 h-5 w-5 text-gray-400"
       viewBox="0 0 20 20"
