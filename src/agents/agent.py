@@ -64,8 +64,8 @@ class Agent:
         
         knowledge_base = KnowledgeBase()
         # web_search = BingSearch()
-        # web_search = DuckDuckGoSearch()
-        web_search = GoogleSearch()
+        web_search = DuckDuckGoSearch()
+        # web_search = GoogleSearch()
         browser = Browser()
 
         for query in queries:
