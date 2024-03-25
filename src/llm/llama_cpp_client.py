@@ -22,8 +22,3 @@ class LlamaCpp:
     def inference(self, prompt):
         response = self.model.create_completion(prompt=prompt, max_tokens=2048)
         return response["choices"][0]["text"]
-
-
-
-
-
