@@ -23,7 +23,7 @@ class Model(Enum):
         )
         for model in Ollama.list_models()
     ]
-    GEMINI_MODELS = ("gemini-1.0-pro", "gemini-1.0-pro-001", "gemini-1.0-pro-latest", "gemini-pro")
+    GEMINI_MODELS = ("gemini-1.0-pro", "gemini-1.0-pro-001", "gemini-1.0-pro-latest")
 
 class LLM:
     def __init__(self, model_id: str = None):
