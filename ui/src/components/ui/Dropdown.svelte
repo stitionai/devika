@@ -21,7 +21,12 @@
     open = false;
   }
 
-  function clickOutside(element, callbackFunction) {
+  /**
+   * Svelte Action function to handle clicks outside of the given element
+   * @param {HTMLElement} element The dropdown element
+   * @param {() => void} callbackFunction The function to call when a click outside is detected
+   */
+  function onClickOutside(element, callbackFunction) {
 		function onClick(event) {
 			if (!element.contains(event.target)) {
 				callbackFunction();
@@ -48,12 +53,9 @@
 		}
 	}
 
+  // This needs to be a function so it can passed as slot prop
   function closeDropdown() {
       open = false;
-  }
-
-  $: {
-    console.log("selection: ", selection, "label: ", label);
   }
 </script>
 
@@ -88,7 +90,7 @@
       class="absolute left-0 z-10 w-fit origin-top-left rounded-md bg-slate-800 shadow-lg ring-1 ring-indigo-700 ring-opacity-5 focus:outline-none"
       role="menu"
       tabindex="-1"
-      use:clickOutside={() => { open = false; }}
+      use:onClickOutside={() => { open = false; }}
     >
       <div role="none">
         <slot name="prefix-entries" {closeDropdown} />
