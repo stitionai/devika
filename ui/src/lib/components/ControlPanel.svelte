@@ -3,8 +3,8 @@
   import { projectList, modelList, internet } from "$lib/store";
   import { createProject, fetchProjectList, getTokenUsage } from "$lib/api";
 
-  let selectedProject = localStorage.getItem("selectedProject") || "Select Project";
-  let selectedModel = localStorage.getItem("selectedModel") || "Select Model";
+  let selectedProject;
+  let selectedModel;
   let tokenUsage = 0;
 
   async function updateTokenUsage() {
@@ -53,6 +53,9 @@
 
   onMount(() => {
     setInterval(updateTokenUsage, 1000);
+
+    selectedProject = localStorage.getItem("selectedProject") || "Select Project";
+    selectedModel = localStorage.getItem("selectedModel") || "Select Model";
 
     document
       .getElementById("project-button")
