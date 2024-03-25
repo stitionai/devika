@@ -20,10 +20,10 @@ COPY ui /home/nonroot/client/ui
 COPY src /home/nonroot/client/src
 COPY config.toml /home/nonroot/client/
 
-RUN cd ui && npm install && npm upgrade -g npm
+RUN cd ui && npm install && npm install -g npm && npm install -g bun
 RUN chown -R nonroot:nonroot /home/nonroot/client
 
 USER nonroot
 WORKDIR /home/nonroot/client/ui
 
-ENTRYPOINT [ "npm", "run", "dev", "--", "--host" ]
+ENTRYPOINT [ "npx", "bun", "run", "dev", "--", "--host" ]
