@@ -143,7 +143,7 @@ To start using Devika, follow these steps:
 
 ## Configuration
 
-Devika requires certain configuration settings and API keys to function properly. Use `example.config.toml` file, create new file called `config.toml` in the root directory with the following information:
+Devika requires certain configuration settings and API keys to function properly. Use `example.config.toml` file, create new file called `config.toml` in the root directory and also with the following information:
 
 - `OPENAI_API_KEY`: Your OpenAI API key for accessing GPT models.
 - `CLAUDE_API_KEY`: Your Anthropic API key for accessing Claude models.
