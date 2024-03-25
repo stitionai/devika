@@ -73,7 +73,7 @@ Read [**ARCHITECTURE.md**](https://github.com/stitionai/devika/blob/main/ARCHITE
 The easiest way to run the project locally:
 
 1. Install `uv` - Python Package manager (https://github.com/astral-sh/uv)
-2. Install `bun` - JavaScript runtime (https://bun.sh/)
+2. Install `bun` - JavaScript runtime (https://bun.sh/docs/installation)
 3. Install and setup `Ollama` (https://ollama.com/) 
 
 For ollama you need to install the [models](https://ollama.com/models)

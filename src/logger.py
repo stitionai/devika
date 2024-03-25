@@ -57,10 +57,15 @@ def route_logger(logger: Logger):
             # Call the actual route function
             response = func(*args, **kwargs)
 
+            from werkzeug.wrappers import Response
+
             # Log exit point, including response summary if possible
             try:
-                response_summary = response.get_data(as_text=True)
-                logger.debug(f"{request.path} {request.method} - Response: {response_summary}")
+                if isinstance(response, Response) and response.direct_passthrough:
+                    logger.debug(f"{request.path} {request.method} - Response: File response")
+                else:
+                    response_summary = response.get_data(as_text=True)
+                    logger.debug(f"{request.path} {request.method} - Response: {response_summary}")
             except Exception as e:
                 logger.exception(f"{request.path} {request.method} - {e})")
 

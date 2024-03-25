@@ -1,13 +1,14 @@
 <script>
   let navItems = [
-    { icon: "fa-home", tooltip: "Home" },
-    { icon: "fa-cog", tooltip: "Settings" },
-    { icon: "fa-history", tooltip: "Logs" },
+    { icon: "fa-home", tooltip: "Home", route: "/" },
+    { icon: "fa-cog", tooltip: "Settings", route: "/settings"},
+    { icon: "fa-history", tooltip: "Logs", route: "/logs"},
   ];
 </script>
 
 <div class="flex flex-col p-4 gap-4 items-center bg-gray-100">
   {#each navItems as item (item.tooltip)}
+  <a href = {item.route}>
     <div class="p-4 rounded nav-button relative">
       <button
         class="hover:text-gray-500 flex justify-center w-full hover:transition-colors"
@@ -16,6 +17,7 @@
       </button>
       <span class="tooltip">{item.tooltip}</span>
     </div>
+  </a>
   {/each}
 </div>
 

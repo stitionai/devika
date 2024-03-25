@@ -11,11 +11,14 @@ from .patcher import Patcher
 from .reporter import Reporter
 from .decision import Decision
 
+from src.project import ProjectManager
+from src.state import AgentState
+from src.socket_instance import emit_agent
 from src.logger import Logger
 
 from src.bert.sentence import SentenceBert
 from src.memory import KnowledgeBase
-from src.browser.search import BingSearch
+from src.browser.search import BingSearch, GoogleSearch
 from src.browser import Browser
 from src.browser import start_interaction
 from src.filesystem import ReadCode
@@ -29,7 +32,7 @@ import tiktoken
 
 
 class Agent:
-    def __init__(self, base_model: str, manager=None, agent_state=None, socketio=None):
+    def __init__(self, base_model: str, search_engine: str):
         if not base_model:
             raise ValueError("base_model is required")
 
@@ -56,51 +59,42 @@ class Agent:
         self.reporter = Reporter(base_model=base_model)
         self.decision = Decision(base_model=base_model)
 
-        self.socketio = socketio
-        self.project_manager = manager
-        self.agent_state = agent_state
+        self.project_manager = ProjectManager()
+        self.agent_state = AgentState()
+        self.engine = search_engine
         self.tokenizer = tiktoken.get_encoding("cl100k_base")
 
     def search_queries(self, queries: list, project_name: str) -> dict:
         results = {}
 
         knowledge_base = KnowledgeBase()
-        bing_search = BingSearch()
+        if self.engine == "Google":
+            engine = GoogleSearch()
+        else:
+            engine = BingSearch()
         browser = Browser()
 
         for query in queries:
             query = query.strip().lower()
 
-            """
-            Check if the knowledge base already has the query learned
-            """
+            """ Check if the knowledge base already has the query learned """
             # knowledge = knowledge_base.get_knowledge(tag=query)
             # if knowledge:
             #     results[query] = knowledge
             #     continue
 
-            """
-            Search for the query and get the first link
-            """
-            bing_search.search(query)
-            link = bing_search.get_first_link()
-
-            """
-            Browse to the link and take a screenshot, then extract the text
-            """
+            """ Search for the query and get the first link """
+            engine.search(query)
+            link = engine.get_first_link()
+            print("Link :: ", link)
+            """ Browse to the link and take a screenshot, then extract the text """
             browser.go_to(link)
             browser.screenshot(project_name)
 
-            """
-            Formatter Agent is invoked to format and learn from the contents
-            """
-            results[query] = self.formatter.execute(
-                browser.extract_text()
-            )
+            """ Formatter Agent is invoked to format and learn from the contents """
+            results[query] = self.formatter.execute(browser.extract_text())
 
-            """
-            Add the newly acquired data to the knowledge base
-            """
+            """ Add the newly acquired data to the knowledge base """
             # knowledge_base.add_knowledge(tag=query, contents=results[query])
 
         return results
@@ -170,10 +164,13 @@ class Agent:
                 )
                 self.coder.save_code_to_project(code, project_name)
 
-    def subsequent_execute(self, prompt: str, project_name: str) -> str:
+    def subsequent_execute(self, prompt: str, project_name: str):
         """
         Subsequent flow of execution
         """
+
+        os_system = platform.platform()
+
         self.agent_state.set_agent_active(project_name, True)
 
         conversation = self.project_manager.get_all_messages_formatted(project_name)
@@ -194,7 +191,7 @@ class Agent:
             )
             self.project_manager.add_message_from_devika(project_name, response)
         elif action == "run":
-            os_system = platform.platform()
+
             project_path = self.project_manager.get_project_path(project_name)
 
             self.runner.execute(
@@ -257,7 +254,7 @@ class Agent:
         self.agent_state.set_agent_active(project_name, False)
         self.agent_state.set_agent_completed(project_name, True)
 
-    def execute(self, prompt: str, project_name_from_user: str = None) -> str:
+    def execute(self, prompt: str, project_name_from_user: str = None):
         """
             Agentic flow of execution
         """
@@ -285,6 +282,7 @@ class Agent:
     
         self.agent_state.set_agent_active(project_name, True)
 
+        print("\n plans:: ", plans)
         self.project_manager.add_message_from_devika(project_name, reply)
         self.project_manager.add_message_from_devika(project_name, json.dumps(plans, indent=4))
         # self.project_manager.add_message_from_devika(project_name, f"In summary: {summary}")
@@ -319,11 +317,9 @@ class Agent:
 
         ask_user_prompt = "Nothing from the user."
 
-        if ask_user != "":
+        if ask_user != "" and ask_user is not None:
             self.project_manager.add_message_from_devika(project_name, ask_user)
-            state = self.agent_state.set_agent_active(project_name, False)
-            if state:
-                self.socketio.emit("agent-state", state)
+            self.agent_state.set_agent_active(project_name, False)
             got_user_query = False
 
             while not got_user_query:
@@ -341,10 +337,13 @@ class Agent:
 
         self.agent_state.set_agent_active(project_name, True)
 
-        search_results = self.search_queries(queries, project_name)
-
-        print(json.dumps(search_results, indent=4))
-        print("=====" * 10)
+        if queries and len(queries) > 0:
+            search_results = self.search_queries(queries, project_name)
+            print("search_results :: ", search_results)
+            print(json.dumps(search_results, indent=4))
+            print("=====" * 10)
+        else:
+            search_results = {}
 
         code = self.coder.execute(
             step_by_step_plan=plan,

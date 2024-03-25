@@ -9,11 +9,10 @@
   import {
     fetchInitialData,
     fetchAgentState,
-    fetchMessages,
     checkInternetStatus,
     socket
   } from "$lib/api";
-  import { messages, agentState } from "$lib/store";
+  import { messages,tokenUsage, agentState } from "$lib/store";
 
   onMount(() => {
     // localStorage.clear();
@@ -36,18 +35,17 @@
     });
 
     socket.on('agent-state', function(state) {
-      // state is an array of objects
       const lastState = state[state.length - 1];
-
       agentState.set(lastState);
       console.log("server-state: ", lastState);
       console.log("$agent-state: ", $agentState);
       });
+    
+    socket.on('tokens', function(tokens) {
+      console.log("tokens: ", tokens);
+      tokenUsage.set(tokens["token_usage"]);
+    });
 
-  //   const intervalId = setInterval(async () => {
-  //     load();
-  // }, 3000);
-  // return () => clearInterval(intervalId);
 });
 </script>
 

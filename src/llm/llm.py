@@ -1,6 +1,6 @@
-from enum import Enum
 import tiktoken
 
+from src.socket_instance import emit_agent
 from .ollama_client import Ollama
 from .claude_client import Claude
 from .openai_client import OpenAi
@@ -11,6 +11,7 @@ TOKEN_USAGE = 0
 TIKTOKEN_ENC = tiktoken.get_encoding("cl100k_base")
 
 ollama = Ollama()
+
 
 class LLM:
     def __init__(self, model_id: str = None):
@@ -38,7 +39,8 @@ class LLM:
             "OLLAMA_MODELS": []
         }
         if ollama:
-            self.models["OLLAMA_MODELS"] = [(model["name"].split(":")[0], model["name"]) for model in ollama.list_models()]
+            self.models["OLLAMA_MODELS"] = [(model["name"].split(":")[0], model["name"]) for model in
+                                            ollama.list_models()]
 
     def list_models(self) -> dict:
         return self.models
@@ -49,11 +51,12 @@ class LLM:
             for model_name, model_id in models:
                 mapping[model_id] = enum_name
         return mapping
-    
+
     @staticmethod
     def update_global_token_usage(string: str):
         global TOKEN_USAGE
         TOKEN_USAGE += len(TIKTOKEN_ENC.encode(string))
+        emit_agent("tokens", {"token_usage": TOKEN_USAGE})
         print(f"Token usage: {TOKEN_USAGE}")
 
     def inference(self, prompt: str) -> str:

@@ -161,8 +161,4 @@ cython_debug/
 .idea/
 
 notes.md
-logs/
-db/
-screenshots/
-pdfs/
-projects/
+data/

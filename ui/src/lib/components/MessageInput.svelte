@@ -1,5 +1,5 @@
 <script>
-  import { sendMessage, executeAgent, API_BASE_URL,  socket } from "$lib/api";
+  import { API_BASE_URL,  socket } from "$lib/api";
   import { agentState, messages } from "$lib/store";
 
   let isAgentActive = false;
@@ -13,6 +13,7 @@
   async function handleSendMessage() {
     const projectName = localStorage.getItem("selectedProject");
     const selectedModel = localStorage.getItem("selectedModel");
+    const serachEngine = localStorage.getItem("selectedSearchEngine");
     
     if (!projectName) {
       alert("Please select a project first!");
@@ -30,9 +31,9 @@
           action: "execute_agent",
           message: messageInput,
           base_model: selectedModel,
-          project_name: projectName
+          project_name: projectName,
+          search_engine: serachEngine
         });
-        // await executeAgent(messageInput);
       } else {
         console.log("Sending message", messageInput);
 
@@ -40,9 +41,9 @@
           action: "continue",
           message: messageInput,
           base_model: selectedModel,
-          project_name: projectName
+          project_name: projectName,
+          search_engine: serachEngine
          });
-        // await sendMessage(messageInput);
       }
       messageInput = "";
     }

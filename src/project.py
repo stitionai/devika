@@ -3,7 +3,7 @@ import json
 import zipfile
 from datetime import datetime
 from typing import Optional
-
+from src.socket_instance import emit_agent
 from sqlmodel import Field, Session, SQLModel, create_engine
 from src.config import Config
 
@@ -15,12 +15,11 @@ class Projects(SQLModel, table=True):
 
 
 class ProjectManager:
-    def __init__(self, socketio=None):
+    def __init__(self):
         config = Config()
         sqlite_path = config.get_sqlite_db()
         self.project_path = config.get_projects_dir()
         self.engine = create_engine(f"sqlite:///{sqlite_path}")
-        self.socketio = socketio
         SQLModel.metadata.create_all(self.engine)
 
     def new_message(self):
@@ -62,14 +61,14 @@ class ProjectManager:
     def add_message_from_devika(self, project: str, message: str):
         new_message = self.new_message()
         new_message["message"] = message
-        self.socketio.emit("server-message", {"messages": new_message})
+        emit_agent("server-message", {"messages": new_message})
         self.add_message_to_project(project, new_message)
 
     def add_message_from_user(self, project: str, message: str):
         new_message = self.new_message()
         new_message["message"] = message
         new_message["from_devika"] = False
-        self.socketio.emit("server-message", {"messages": new_message})
+        emit_agent("server-message", {"messages": new_message})
         self.add_message_to_project(project, new_message)
 
     def get_messages(self, project: str):

@@ -2,6 +2,8 @@ from flask import blueprints, request, jsonify, send_file, make_response
 from src.logger import Logger, route_logger
 from src.config import Config
 from src.project import ProjectManager
+from ..state import AgentState
+
 import os
 
 project_bp = blueprints.Blueprint("project", __name__)
@@ -26,6 +28,7 @@ def delete_project():
     data = request.json
     project_name = data.get("project_name")
     manager.delete_project(project_name)
+    AgentState().delete_state(project_name)
     return jsonify({"message": "Project deleted"})
 
 

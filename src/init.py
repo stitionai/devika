@@ -3,6 +3,7 @@ import os
 from src.config import Config
 from src.logger import Logger
 
+
 def init_devika():
     config = Config()
     logger = Logger()
@@ -24,6 +25,6 @@ def init_devika():
     from src.bert.sentence import SentenceBert
 
     logger.info("Loading sentence-transformer BERT models...")
-    prompt = "Light-weight keyword extraction excercise for BERT model loading.".strip()
+    prompt = "Light-weight keyword extraction exercise for BERT model loading.".strip()
     SentenceBert(prompt).extract_keywords()
     logger.info("BERT model loaded successfully.")

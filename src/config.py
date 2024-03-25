@@ -8,6 +8,15 @@ class Config:
     def get_config(self):
         return self.config
 
+    def get_google_api_endpoint(self):
+        return self.config["API_ENDPOINTS"]["GOOGLE"]
+
+    def get_google_api_key(self):
+        return self.config["API_KEYS"]["GOOGLE"]
+
+    def get_google_cx(self):
+        return self.config["API_KEYS"]["GOOGLE_CX"]
+
     def get_bing_api_endpoint(self):
         return self.config["API_ENDPOINTS"]["BING"]
 

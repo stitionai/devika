@@ -1,13 +1,12 @@
 <script>
   import { onMount } from "svelte";
-  import { projectList, modelList, internet, searchEngineList} from "$lib/store";
-  import { createProject, fetchMessages, getTokenUsage, deleteProject} from "$lib/api";
+  import { projectList, modelList, internet, tokenUsage, agentState, searchEngineList} from "$lib/store";
+  import { createProject, fetchMessages, fetchInitialData, deleteProject} from "$lib/api";
   import { get } from "svelte/store";
 
   let selectedProject;
   let selectedModel;
   let selectedSearchEngine;
-  let tokenUsage = 0;
 
   const checkListAndSetItem = (list, itemKey, defaultItem) => {
     if (get(list) && get(list).length > 0) {
@@ -25,7 +24,7 @@
   function selectProject(project) {
     selectedProject = project;
     localStorage.setItem("selectedProject", project);
-    // fetchMessages();
+    fetchMessages();
     document.getElementById("project-dropdown").classList.add("hidden");
   }
   function selectModel(model) {
@@ -49,7 +48,8 @@
   async function deleteproject(project) {
     if (confirm(`Are you sure you want to delete ${project}?`)) {
       await deleteProject(project);
-      // await fetchMessages();
+      await fetchInitialData();
+      agentState.setItem(null);
       selectProject("Select Project");
     }
   }
@@ -157,7 +157,7 @@
     </div>
     <div class="flex items-center space-x-2">
       <span>Token Usage:</span>
-      <span id="token-count" class="token-count-animation">{tokenUsage}</span>
+      <span id="token-count" class="token-count-animation">{$tokenUsage}</span>
     </div>
     <div class="relative inline-block text-left">
       <div>

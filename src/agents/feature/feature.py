@@ -10,6 +10,7 @@ from src.state import AgentState
 
 PROMPT = open("src/agents/feature/prompt.jinja2", "r").read().strip()
 
+
 class Feature:
     def __init__(self, base_model: str):
         config = Config()
@@ -97,9 +98,9 @@ class Feature:
 
     def execute(
         self,
-        conversation: str,
+        conversation: list,
         code_markdown: str,
-        system_os: dict,
+        system_os: str,
         project_name: str
     ) -> str:
         prompt = self.render(conversation, code_markdown, system_os)

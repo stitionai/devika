@@ -43,7 +43,7 @@ export async function deleteProject(projectName) {
 
 export async function fetchMessages() {
   const projectName = localStorage.getItem("selectedProject");
-  const response = await fetch(`${API_BASE_URL}/api/get-messages`, {
+  const response = await fetch(`${API_BASE_URL}/api/messages`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -52,29 +52,6 @@ export async function fetchMessages() {
   });
   const data = await response.json();
   messages.set(data.messages);
-}
-
-export async function sendMessage(message) {
-  const projectName = localStorage.getItem("selectedProject");
-  const modelId = localStorage.getItem("selectedModel");
-
-  if (!modelId) {
-    alert("Please select the LLM model first.");
-    return;
-  }
-
-  await fetch(`${API_BASE_URL}/api/send-message`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      message: message,
-      project_name: projectName,
-      base_model: modelId,
-    }),
-  });
-  await fetchMessages();
 }
 
 export async function fetchAgentState() {
@@ -114,12 +91,6 @@ export async function executeAgent(prompt) {
   await fetchMessages();
 }
 
-export async function getTokenUsage() {
-  const response = await fetch(`${API_BASE_URL}/api/token-usage`);
-  const data = await response.json();
-  return data.token_usage;
-}
-
 export async function getBrowserSnapshot(snapshotPath) {
   const response = await fetch(`${API_BASE_URL}/api/browser-snapshot`, {
     method: "POST",
@@ -138,4 +109,26 @@ export async function checkInternetStatus() {
   } else {
     internet.set(false);
   }
+}
+
+export async function fetchSettings() {
+  const response = await fetch(`${API_BASE_URL}/api/settings`);
+  const data = await response.json();
+  return data.settings;
+}
+
+export async function updateSettings(settings) {
+  await fetch(`${API_BASE_URL}/api/settings`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(settings),
+  });
+}
+
+export async function fetchLogs() {
+  const response = await fetch(`${API_BASE_URL}/api/logs`);
+  const data = await response.json();
+  return data.logs;
 }
