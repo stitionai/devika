@@ -12,6 +12,16 @@ class Config:
     
     def get_bing_api_endpoint(self):
         return self.config["API_ENDPOINTS"]["BING"]
+
+    def get_llm_endpoint_ollama(self):
+        try:
+            return self.config["LLM_ENDPOINTS"]["OLLAMA"]
+        except: return None
+
+    def get_llm_endpoint_openai(self):
+        try:
+            return self.config["LLM_ENDPOINTS"]["OLLAMA"]
+        except: return None
     
     def get_claude_api_key(self):
         return self.config["API_KEYS"]["CLAUDE"]
