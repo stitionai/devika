@@ -17,7 +17,7 @@ from src.state import AgentState
 
 from src.bert.sentence import SentenceBert
 from src.memory import KnowledgeBase
-from src.browser.search import *
+from src.browser.search import BingSearch, DuckDuckGoSearch
 from src.browser import Browser
 from src.browser import start_interaction
 from src.filesystem import ReadCode
