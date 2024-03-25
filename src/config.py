@@ -22,6 +22,9 @@ class Config:
     def get_netlify_api_key(self):
         return self.config["API_KEYS"]["NETLIFY"]
     
+    def get_together_key(self):
+        return self.config["API_KEYS"]["TOGETHER"]
+    
     def get_sqlite_db(self):
         return self.config["STORAGE"]["SQLITE_DB"]
     
