@@ -3,6 +3,7 @@ from flask_cors import CORS
 import os
 import logging
 from threading import Thread
+from pathlib import Path
 
 import tiktoken
 
@@ -16,7 +17,11 @@ from src.state import AgentState
 from src.agents import Agent
 from src.llm import LLM
 
-app = Flask(__name__)
+app = Flask(
+    __name__,
+    static_url_path="/",
+    static_folder=(Path(__file__).parent / "ui" / "build"),
+)
 log = logging.getLogger("werkzeug")
 log.disabled = True
 CORS(app)
@@ -26,6 +31,12 @@ logger = Logger()
 TIKTOKEN_ENC = tiktoken.get_encoding("cl100k_base")
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
+
+
+@app.route("/")
+def home():
+    with open(Path(__file__).parent / "ui" / "build" / "index.html") as handler:
+        return handler.read()
 
 
 @app.route("/api/create-project", methods=["POST"])
@@ -80,7 +91,7 @@ def download_project_pdf():
     pdf_path = os.path.join(pdf_dir, f"{project_name}.pdf")
 
     response = make_response(send_file(pdf_path))
-    response.headers['Content-Type'] = 'application/pdf'
+    response.headers["Content-Type"] = "application/pdf"
     return response
 
 
@@ -108,7 +119,9 @@ def send_message():
 
     if AgentState().is_agent_completed(project_name):
         thread = Thread(
-            target=lambda: Agent(base_model=base_model).subsequent_execute(message, project_name)
+            target=lambda: Agent(base_model=base_model).subsequent_execute(
+                message, project_name
+            )
         )
         thread.start()
 
@@ -161,6 +174,7 @@ def calculate_tokens():
 @route_logger(logger)
 def token_usage():
     from src.llm import TOKEN_USAGE
+
     return jsonify({"token_usage": TOKEN_USAGE})
 
 
