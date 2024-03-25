@@ -20,7 +20,7 @@ services:
     build:
       context: .
       dockerfile: devika.dockerfile
-    depends_on: 
+    depends_on:
       - ollama-service
     expose:
       - 1337
