@@ -7,12 +7,12 @@ DOCKER_COMPOSE := $(shell command -v docker-compose)
 deps:
 ifndef DOCKER
 	@echo "Docker is not available. Please install docker"
-	@echo "try running 'sudo apt-get install docker'"
+	@echo "try running sudo apt-get install docker"
 	@exit 1
 endif
 ifndef DOCKER_COMPOSE
 	@echo "docker-compose is not available. Please install docker-compose"
-	@echo "try running 'sudo apt-get install docker-compose'"
+	@echo "try running sudo apt-get install docker-compose"
 	@exit 1
 endif
 
