@@ -3,18 +3,19 @@
   import { getSettings, setSettings } from "../../../lib/api";
   import Button from "./Button.svelte";
   import Input from "./Input.svelte";
-  let result;
-  let settingsLoading;
+  let result: any;
+  let settingsLoading: boolean;
   onMount(async () => {
     result = await getSettings();
-    console.log(result);
+    // console.log(result);
   });
 
   async function handleSubmit() {
     settingsLoading = true;
     const postResult = await setSettings(result);
-    console.log(postResult);
+    // console.log(postResult);
     settingsLoading = false;
+    formChanged = false;
   }
   function checkNonEmptyRecursive(obj) {
     for (const key in obj) {
@@ -31,6 +32,7 @@
     return true;
   }
   $: formValid = checkNonEmptyRecursive(result);
+  let formChanged = false;
 </script>
 
 <div class="px-4 py-8 max-w-[600px]">
@@ -46,6 +48,9 @@
                   label={key}
                   type="text"
                   bind:value={result[mainKey][key]}
+                  on:input={() => {
+                    formChanged = true;
+                  }}
                   error={!result[mainKey][key] ? "field can't be empty" : ""}
                 />
               {/each}
@@ -59,13 +64,15 @@
         <div class="h-[10px]"></div>
       {/if}
 
-      <Button
-        type="submit"
-        text="Submit"
-        isActive={settingsLoading}
-        activeText="Submitting..."
-        disabled={!formValid}
-      ></Button>
+      {#if formChanged}
+        <Button
+          type="submit"
+          text="Save"
+          isActive={settingsLoading}
+          activeText="Saving..."
+          disabled={!formValid}
+        ></Button>
+      {/if}
     </form>
   {/if}
 </div>
