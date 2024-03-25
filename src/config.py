@@ -3,7 +3,7 @@ import toml
 
 class Config:
     def __init__(self):
-        self.config = toml.load("config.toml")
+        self.config = toml.load("sample.config.toml")
 
     def get_config(self):
         return self.config

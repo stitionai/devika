@@ -22,4 +22,6 @@ GitPython
 netlify-py
 Markdown
 xhtml2pdf
-python-socketio
+mistralai
+Flask-SocketIO
+eventlet

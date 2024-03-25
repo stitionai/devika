@@ -44,7 +44,7 @@
             <h1 class="text-2xl">Request logs</h1>
             <div class="flex flex-col gap-2">
                 {#each logs as log}
-                    <p class="{getTextColor(log)}">
+                    <p class=" whitespace-normal break-words {getTextColor(log)}">
                         {@html log}
                     </p>
                 {/each}
