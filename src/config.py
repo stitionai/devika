@@ -19,6 +19,15 @@ class Config:
     def get_openai_api_key(self):
         return self.config["API_KEYS"]["OPENAI"]
     
+    def get_openai_type(self):
+        return self.config["API_KEYS"]["OPENAI_TYPE"]
+    
+    def get_azure_openai_endpoint(self):
+        return self.config["API_KEYS"]["AZURE_OPENAI_ENDPOINT"]
+    
+    def get_azure_openai_api_version(self):
+        return self.config["API_KEYS"]["API_VERSION"]
+    
     def get_netlify_api_key(self):
         return self.config["API_KEYS"]["NETLIFY"]
     
@@ -54,6 +63,14 @@ class Config:
 
     def set_openai_api_key(self, key):
         self.config["API_KEYS"]["OPENAI"] = key
+        self.save_config()
+
+    def set_azure_openai_endpoint(self, endpoint):
+        self.config["API_KEYS"]["AZURE_OPENAI_ENDPOINT"] = endpoint
+        self.save_config()
+
+    def set_azure_openai_api_version(self, version):
+        self.config["API_KEYS"]["API_VERSION"] = version
         self.save_config()
 
     def set_netlify_api_key(self, key):
