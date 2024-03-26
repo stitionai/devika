@@ -1,5 +1,5 @@
 <script>
-  import { API_BASE_URL,  socket } from "$lib/api";
+  import { API_BASE_URL, socket } from "$lib/api";
   import { agentState, messages } from "$lib/store";
 
   let isAgentActive = false;
@@ -10,15 +10,53 @@
   }
 
   let messageInput = "";
+  let recognition = null;
+  let isSpeechRecognitionActive = false;
+
+  function initializeRecognition() {
+    recognition = new window.webkitSpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.continuous = false;
+
+    recognition.onresult = function(event) {
+      messageInput = event.results[0][0].transcript;
+      handleSendMessage();
+    };
+
+    recognition.onerror = function(event) {
+      console.error('Speech recognition error:', event.error);
+    };
+
+    recognition.onend = function() {
+      console.log('Speech recognition ended');
+      isSpeechRecognitionActive = false;
+    };
+  }
+
+  function toggleSpeechRecognition() {
+    if (!recognition) {
+      initializeRecognition();
+    }
+
+    if (isSpeechRecognitionActive) {
+      recognition.stop(); // Stop recognition if it's active
+      isSpeechRecognitionActive = false;
+    } else {
+      recognition.start(); // Start recognition if it's not active
+      isSpeechRecognitionActive = true;
+    }
+  }
+
   async function handleSendMessage() {
     const projectName = localStorage.getItem("selectedProject");
     const selectedModel = localStorage.getItem("selectedModel");
-    const serachEngine = localStorage.getItem("selectedSearchEngine");
-    
+    const searchEngine = localStorage.getItem("selectedSearchEngine");
+
     if (!projectName) {
       alert("Please select a project first!");
       return;
     }
+
     if (!selectedModel) {
       alert("Please select a model first!");
       return;
@@ -27,23 +65,23 @@
     if (messageInput.trim() !== "" && !isAgentActive) {
       if ($messages.length === 0) {
         console.log("Executing agent ... ", messageInput);
-        socket.emit("user-message", { 
+        socket.emit("user-message", {
           action: "execute_agent",
           message: messageInput,
           base_model: selectedModel,
           project_name: projectName,
-          search_engine: serachEngine
+          search_engine: searchEngine
         });
       } else {
         console.log("Sending message", messageInput);
 
-        socket.emit("user-message", { 
+        socket.emit("user-message", {
           action: "continue",
           message: messageInput,
           base_model: selectedModel,
           project_name: projectName,
-          search_engine: serachEngine
-         });
+          search_engine: searchEngine
+        });
       }
       messageInput = "";
     }
@@ -68,10 +106,20 @@
       });
   }
 
-
 </script>
 
 <div class="expandable-input relative">
+  <button
+    class="absolute right-0 top-0 m-3 p-2 text-black-500 rounded  hover:bg-gray-100"
+    on:click={toggleSpeechRecognition}
+  >
+    {#if isSpeechRecognitionActive}
+      <i class="fas fa-microphone"></i>
+    {:else}
+      <i class="fas fa-microphone-slash"></i>
+    {/if}
+  </button>
+  
   <textarea
     id="message-input"
     class="w-full p-2 border-2 rounded-lg pr-20"
@@ -85,7 +133,9 @@
       }
     }}
   ></textarea>
+  
   <div class="token-count text-gray-400 text-xs p-1">0 tokens</div>
+  
   <button
     id="send-message-btn"
     class={`px-4 py-3 text-white rounded-lg w-full ${isAgentActive ? "bg-slate-800" : "bg-black"}`}
