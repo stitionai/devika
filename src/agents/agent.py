@@ -28,6 +28,19 @@ import json
 import time
 import platform
 import tiktoken
+import os
+import subprocess
+
+from src.llm import LLM
+from src.project import ProjectManager
+from src.state import AgentState
+from src.agents.internal_monologue import InternalMonologue
+from src.agents.researcher import Researcher
+from src.agents.coder import Coder
+
+from jinja2 import Environment, BaseLoader
+
+PROMPT = open("src/agents/decision/prompt.jinja2").read().strip()
 
 class Agent:
     def __init__(self, base_model: str):
@@ -56,8 +69,13 @@ class Agent:
         self.patcher = Patcher(base_model=base_model)
         self.reporter = Reporter(base_model=base_model)
         self.decision = Decision(base_model=base_model)
-
         self.tokenizer = tiktoken.get_encoding("cl100k_base")
+        self.llm = LLM(model_id=base_model)
+        self.planner = Planner()
+        self.internal_monologue = InternalMonologue()
+        self.researcher = Researcher()
+        self.coder = Coder()
+        self.collected_context_keywords = []
 
     def search_queries(self, queries: list, project_name: str) -> dict:
         results = {}
@@ -348,3 +366,32 @@ class Agent:
 
         AgentState().set_agent_active(project_name, False)
         AgentState().set_agent_completed(project_name, True)
+
+        decision_agent = Decision(base_model="your_base_model_id")
+        decision_response = decision_agent.execute(prompt)
+        decision_actions = decision_response["actions"]
+
+        # Perform Decision agent's actions
+        for action in decision_actions:
+            if action["type"] == "clone_repo":
+                repo_url = action["repo_url"]
+                target_directory = action["target_directory"]
+                subprocess.run(["git", "clone", repo_url, target_directory])
+
+            elif action["type"] == "fix_bugs":
+                target_directory = action["target_directory"]
+                os.chdir(target_directory)
+                subprocess.run(["python", "fix_bugs_script.py"])
+
+            elif action["type"] == "make_pdf_report":
+                target_directory = action["target_directory"]
+                report_content = action["report_content"]
+                report_file = action["report_file"]
+                os.chdir(target_directory)
+                with open(report_file, "w") as file:
+                    file.write(report_content)
+                
+
+                subprocess.run(["pandoc", report_file, "-o", "report.pdf"])
+
+        return "Execution completed."
