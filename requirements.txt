@@ -21,4 +21,3 @@ GitPython
 netlify-py
 Markdown
 xhtml2pdf
-llama-cpp-python

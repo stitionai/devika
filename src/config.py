@@ -48,15 +48,6 @@ class Config:
     
     def get_repos_dir(self):
         return self.config["STORAGE"]["REPOS_DIR"]
-
-    def get_model_path(self):
-        return self.config["STORAGE"]["MODEL_PATH"]
-
-    def get_gpu_layers(self):
-        return self.config["PARAMETERS"]["GPU_LAYERS"]
-
-    def get_context_size(self):
-        return self.config["PARAMETERS"]["CONTEXT_SIZE"]
     
     def set_bing_api_key(self, key):
         self.config["API_KEYS"]["BING"] = key
@@ -102,19 +93,6 @@ class Config:
         self.config["STORAGE"]["REPOS_DIR"] = dir
         self.save_config()
 
-    def set_model_path(self, model_path):
-        self.config["STORAGE"]["MODEL_PATH"] = model_path
-        self.save_config()
-
-    def set_gpu_layers(self, gpu_layers):
-        self.config["PARAMETERS"]["GPU_LAYERS"] = gpu_layers
-        self.save_config()
-
-    def set_context_size(self, context_size):
-        self.config["PARAMETERS"]["CONTEXT_SIZE"] = context_size
-        self.save_config()
-
     def save_config(self):
         with open("config.toml", "w") as f:
             toml.dump(self.config, f)
-
