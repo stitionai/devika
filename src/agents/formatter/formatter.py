@@ -16,7 +16,7 @@ class Formatter:
     def validate_response(self, response: str) -> bool:
         return True
 
-    def execute(self, raw_text: str) -> str:
+    def execute(self, raw_text: str, project_name: str) -> str:
         raw_text = self.render(raw_text)
-        response = self.llm.inference(raw_text)
+        response = self.llm.inference(raw_text, project_name)
         return response

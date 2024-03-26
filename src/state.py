@@ -133,3 +133,26 @@ class AgentState:
             if agent_state:
                 return json.loads(agent_state.state_stack_json)[-1]["completed"]
             return None
+            
+    def update_token_usage(self, project: str, token_usage: int):
+        with Session(self.engine) as session:
+            agent_state = session.query(AgentStateModel).filter(AgentStateModel.project == project).first()
+            print(agent_state)
+            if agent_state:
+                state_stack = json.loads(agent_state.state_stack_json)
+                state_stack[-1]["token_usage"] += token_usage
+                agent_state.state_stack_json = json.dumps(state_stack)
+                session.commit()
+            else:
+                state_stack = [self.new_state()]
+                state_stack[-1]["token_usage"] = token_usage
+                agent_state = AgentStateModel(project=project, state_stack_json=json.dumps(state_stack))
+                session.add(agent_state)
+                session.commit()
+
+    def get_latest_token_usage(self, project: str):
+        with Session(self.engine) as session:
+            agent_state = session.query(AgentStateModel).filter(AgentStateModel.project == project).first()
+            if agent_state:
+                return json.loads(agent_state.state_stack_json)[-1]["token_usage"]
+            return 0
