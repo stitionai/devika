@@ -16,3 +16,7 @@ GROQ = "<YOUR_GROQ_API_KEY>"
 [API_ENDPOINTS]
 BING = "https://api.bing.microsoft.com/v7.0/search"
 OLLAMA = "http://127.0.0.1:11434"
+
+[LOGGING]
+LOG_REST_API = "true"
+LOG_PROMPTS = "false"
