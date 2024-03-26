@@ -3,10 +3,12 @@ from enum import Enum
 from .ollama_client import Ollama
 from .claude_client import Claude
 from .openai_client import OpenAI
+from .groq_client import Groq
+
+from src.state import AgentState
 
 import tiktoken
 
-TOKEN_USAGE = 0
 TIKTOKEN_ENC = tiktoken.get_encoding("cl100k_base")
 
 class Model(Enum):
@@ -22,6 +24,7 @@ class Model(Enum):
         )
         for model in Ollama.list_models()
     ]
+    GROQ = ("GROQ Mixtral", "mixtral-8x7b-32768")
 
 class LLM:
     def __init__(self, model_id: str = None):
@@ -38,15 +41,14 @@ class LLM:
         models.update(ollama_models)
         return models
 
-    def update_global_token_usage(self, string: str):
-        global TOKEN_USAGE
-        TOKEN_USAGE += len(TIKTOKEN_ENC.encode(string))
-        print(f"Token usage: {TOKEN_USAGE}")
+    def update_global_token_usage(self, string: str, project_name: str):
+        token_usage = len(TIKTOKEN_ENC.encode(string))
+        AgentState().update_token_usage(project_name, token_usage)
 
     def inference(
-        self, prompt: str
+        self, prompt: str, project_name: str
     ) -> str:
-        self.update_global_token_usage(prompt)
+        self.update_global_token_usage(prompt, project_name)
         
         model = self.model_id_to_enum_mapping()[self.model_id]
 
@@ -56,9 +58,11 @@ class LLM:
             response = Claude().inference(self.model_id, prompt).strip()
         elif "GPT" in str(model):
             response = OpenAI().inference(self.model_id, prompt).strip()
+        elif "GROQ" in str(model):
+            response = Groq().inference(self.model_id, prompt).strip()
         else:
             raise ValueError(f"Model {model} not supported")
 
-        self.update_global_token_usage(response)
+        self.update_global_token_usage(response, project_name)
         
         return response

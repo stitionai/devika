@@ -3,6 +3,15 @@ from os import environ
 
 
 class Config:
+
+    _instance = None
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance.config = toml.load("config.toml")
+        return cls._instance
+
     def __init__(self):
         self.config = toml.load("config.toml")
 
@@ -28,7 +37,10 @@ class Config:
 
     def get_netlify_api_key(self):
         return environ.get("NETLIFY_API_KEY", self.config["API_KEYS"]["NETLIFY"])
-
+    
+    def get_groq_api_key(self):
+        return environ.get("GROQ_API_KEY", self.config["API_KEYS"]["GROQ"])
+      
     def get_sqlite_db(self):
         return environ.get("SQLITE_DB_PATH", self.config["STORAGE"]["SQLITE_DB"])
 
