@@ -19,7 +19,7 @@ services:
   devika-backend-engine:
     build:
       context: .
-      dockerfile: devika.dockerfile
+      dockerfile: devika-backend.dockerfile
     depends_on:
       - ollama-service
     expose:
@@ -42,7 +42,7 @@ services:
   devika-frontend-app:
     build:
       context: .
-      dockerfile: app.dockerfile
+      dockerfile: devika-frontend.dockerfile
       args:
         - VITE_API_BASE_URL=http://127.0.0.1:1337
     depends_on:
