@@ -226,3 +226,9 @@ Devika is released under the [MIT License](https://opensource.org/licenses/MIT).
 ---
 
 We hope you find Devika to be a valuable tool in your software development journey. If you have any questions, feedback, or suggestions, please don't hesitate to reach out. Happy coding with Devika!
+
+
+## Ansh Jain
+
+I am learning git in order to start contributing open source
+Let's Commit
