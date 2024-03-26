@@ -8,17 +8,17 @@
   let fitAddon;
 
   onMount(async () => {
-    let xterm = await import('xterm');
-    let xtermAddonFit = await('xterm-addon-fit')
+    const { Terminal } = await import('xterm');
+    const { FitAddon } = await import('xterm-addon-fit');
 
-    terminal = new xterm.Terminal({
+    terminal = new Terminal({
       disableStdin: true,
       cursorBlink: true,
       convertEol: true,
       rows: 1,
     });
     
-    fitAddon = new xtermAddonFit.FitAddon();
+    fitAddon = new FitAddon();
     terminal.loadAddon(fitAddon);
     terminal.open(terminalElement);
     fitAddon.fit();
