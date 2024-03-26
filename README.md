@@ -73,10 +73,12 @@ Read [**ARCHITECTURE.md**](https://github.com/stitionai/devika/blob/main/ARCHITE
 The easiest way to run the project locally:
 
 1. Install `uv` - Python Package manager (https://github.com/astral-sh/uv)
-2. Install `bun` - JavaScript runtime (https://bun.sh/)
-3. Install and setup `Ollama` (https://ollama.com/)
+2. Install `bun` - JavaScript runtime (https://bun.sh/docs/installation)
+3. Install and setup `Ollama` (https://ollama.com/) 
 
-Set the API Keys in the `config.toml` file. (This will soon be moving to the UI where you can set these keys from the UI itself without touching the command-line, want to implement it? See this issue: https://github.com/stitionai/devika/issues/3)
+For ollama you need to install the [models](https://ollama.com/models)
+For API models, configure the API keys in the `config.toml` file. For this, we provide `sample.config.toml` <br><br>
+create and set the API Keys in the `config.toml` file. (This will soon be moving to the UI where you can set these keys from the UI itself without touching the command-line, want to implement it? See this issue: https://github.com/stitionai/devika/issues/3)
 
 Then execute the following set of command:
 
@@ -110,23 +112,28 @@ To install Devika, follow these steps:
    ```bash
    cd devika
    ```
-3. Install the required dependencies:
+3. Create a virtual environment and install the required dependencies:
+   ```bash
+   uv venv
+   uv pip install -r requirements.txt
+   ```
+4. Install the required dependencies:
    ```bash
    pip install -r requirements.txt
    playwright install --with-deps # installs browsers in playwright (and their deps) if required
    ```
-4. Set up the necessary API keys and configuration (see [Configuration](#configuration) section).
-5. Start the Devika server:
+5. Set up the necessary API keys and configuration (see [Configuration](#configuration) section).
+6. Start the Devika server:
    ```bash
    python devika.py
    ```
-6. Compile and run the UI server:
+7. Compile and run the UI server:
    ```bash
    cd ui/
    bun install
    bun run dev
    ```
-7. Access the Devika web interface by opening a browser and navigating to `http://127.0.0.1:3000`.
+8. Access the Devika web interface by opening a browser and navigating to `http://127.0.0.1:3000`.
 
 ## Getting Started
 
@@ -143,10 +150,13 @@ To start using Devika, follow these steps:
 
 ## Configuration
 
-Devika requires certain configuration settings and API keys to function properly. Update the `config.toml` file with the following information:
+Devika requires certain configuration settings and API keys to function properly. use the `sample.config.toml` file with the following information:
 
+- create a `config.toml` file in the root directory of the project.
 - `OPENAI_API_KEY`: Your OpenAI API key for accessing GPT models.
 - `CLAUDE_API_KEY`: Your Anthropic API key for accessing Claude models.
+- `GEMINI_API_KEY`: Your Gemini API key for accessing Gemini models.
+- `MISTRAL_API_KEY`: Your Mistral API key for accessing Mistral models.
 - `BING_API_KEY`: Your Bing Search API key for web searching capabilities.
 - `DATABASE_URL`: The URL for your database connection.
 - `LOG_DIRECTORY`: The directory where Devika's logs will be stored.

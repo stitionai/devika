@@ -5,11 +5,13 @@ from flask import request
 
 from src.config import Config
 
+
 class Logger:
     def __init__(self):
         config = Config()
         logs_dir = config.get_logs_dir()
         self.logger = LogInit(pathName=logs_dir + "/devika_agent.log", console=True, colors=True)
+        self.mode = "on"
 
     def read_log_file(self) -> str:
         with open(self.logger.pathName, "r") as file:
@@ -47,16 +49,23 @@ def route_logger(logger: Logger):
 
         @wraps(func)
         def wrapper(*args, **kwargs):
+            if logger.mode == "off":
+                return func(*args, **kwargs)
             # Log entry point
             logger.info(f"{request.path} {request.method}")
 
             # Call the actual route function
             response = func(*args, **kwargs)
 
+            from werkzeug.wrappers import Response
+
             # Log exit point, including response summary if possible
             try:
-                response_summary = response.get_data(as_text=True)
-                logger.debug(f"{request.path} {request.method} - Response: {response_summary}")
+                if isinstance(response, Response) and response.direct_passthrough:
+                    logger.debug(f"{request.path} {request.method} - Response: File response")
+                else:
+                    response_summary = response.get_data(as_text=True)
+                    logger.debug(f"{request.path} {request.method} - Response: {response_summary}")
             except Exception as e:
                 logger.exception(f"{request.path} {request.method} - {e})")
 

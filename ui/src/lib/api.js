@@ -4,14 +4,20 @@ import {
   modelList,
   agentState,
   internet,
+  searchEngineList,
 } from "./store";
+import { io } from "socket.io-client";
 
 export const API_BASE_URL = "http://127.0.0.1:1337";
+export const socket = io(API_BASE_URL);
 
-export async function fetchProjectList() {
-  const response = await fetch(`${API_BASE_URL}/api/project-list`);
+export async function fetchInitialData() {
+  const response = await fetch(`${API_BASE_URL}/api/data`);
   const data = await response.json();
   projectList.set(data.projects);
+  modelList.set(data.models);
+  searchEngineList.set(data.search_engines);
+  localStorage.setItem("defaultData", JSON.stringify(data));
 }
 
 export async function createProject(projectName) {
@@ -22,12 +28,30 @@ export async function createProject(projectName) {
     },
     body: JSON.stringify({ project_name: projectName }),
   });
+  projectList.update((projects) => [...projects, projectName]);
 }
 
-export async function fetchModelList() {
-  const response = await fetch(`${API_BASE_URL}/api/model-list`);
+export async function deleteProject(projectName) {
+  await fetch(`${API_BASE_URL}/api/delete-project`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ project_name: projectName }),
+  });
+}
+
+export async function fetchMessages() {
+  const projectName = localStorage.getItem("selectedProject");
+  const response = await fetch(`${API_BASE_URL}/api/messages`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ project_name: projectName }),
+  });
   const data = await response.json();
-  modelList.set(data.models);
+  messages.set(data.messages);
 }
 
 export async function fetchAgentState() {
@@ -41,42 +65,6 @@ export async function fetchAgentState() {
   });
   const data = await response.json();
   agentState.set(data.state);
-}
-
-export async function fetchMessages() {
-  const projectName = localStorage.getItem("selectedProject");
-  const response = await fetch(`${API_BASE_URL}/api/get-messages`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ project_name: projectName }),
-  });
-  const data = await response.json();
-  messages.set(data.messages);
-}
-
-export async function sendMessage(message) {
-  const projectName = localStorage.getItem("selectedProject");
-  const modelId = localStorage.getItem("selectedModel");
-
-  if (!modelId) {
-    alert("Please select the LLM model first.");
-    return;
-  }
-
-  await fetch(`${API_BASE_URL}/api/send-message`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      message: message,
-      project_name: projectName,
-      base_model: modelId,
-    }),
-  });
-  await fetchMessages();
 }
 
 export async function executeAgent(prompt) {
@@ -103,12 +91,6 @@ export async function executeAgent(prompt) {
   await fetchMessages();
 }
 
-export async function getTokenUsage() {
-  const response = await fetch(`${API_BASE_URL}/api/token-usage`);
-  const data = await response.json();
-  return data.token_usage;
-}
-
 export async function getBrowserSnapshot(snapshotPath) {
   const response = await fetch(`${API_BASE_URL}/api/browser-snapshot`, {
     method: "POST",
@@ -127,4 +109,26 @@ export async function checkInternetStatus() {
   } else {
     internet.set(false);
   }
+}
+
+export async function fetchSettings() {
+  const response = await fetch(`${API_BASE_URL}/api/settings`);
+  const data = await response.json();
+  return data.settings;
+}
+
+export async function updateSettings(settings) {
+  await fetch(`${API_BASE_URL}/api/settings`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(settings),
+  });
+}
+
+export async function fetchLogs() {
+  const response = await fetch(`${API_BASE_URL}/api/logs`);
+  const data = await response.json();
+  return data.logs;
 }
