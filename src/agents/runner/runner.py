@@ -136,7 +136,7 @@ class Runner:
                     error=command_output
                 )
                 
-                response = self.llm.inference(prompt)
+                response = self.llm.inference(prompt, project_name)
                 
                 valid_response = self.validate_rerunner_response(response)
                 
@@ -233,7 +233,7 @@ class Runner:
         project_name: str
     ) -> str:
         prompt = self.render(conversation, code_markdown, os_system)
-        response = self.llm.inference(prompt)
+        response = self.llm.inference(prompt, project_name)
         
         valid_response = self.validate_response(response)
         
