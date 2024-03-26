@@ -1,9 +1,9 @@
 import {
-  messages,
-  projectList,
-  modelList,
   agentState,
   internet,
+  messages,
+  modelList,
+  projectList,
 } from "./store";
 
 export const API_BASE_URL = "http://127.0.0.1:1337";
@@ -127,4 +127,22 @@ export async function checkInternetStatus() {
   } else {
     internet.set(false);
   }
+}
+
+export async function getSettings() {
+  const response = await fetch(`${API_BASE_URL}/api/get-settings`);
+  const data = await response.json();
+  return data.settings;
+}
+
+export async function setSettings(newSettings) {
+  const response = await fetch(`${API_BASE_URL}/api/set-settings`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(newSettings),
+  });
+  const data = await response.json();
+  return data;
 }
