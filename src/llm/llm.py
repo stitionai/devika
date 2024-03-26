@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import List, Tuple
 
 from .ollama_client import Ollama
 from .claude_client import Claude
@@ -30,7 +31,7 @@ class LLM:
     def __init__(self, model_id: str = None):
         self.model_id = model_id
     
-    def list_models(self) -> list[tuple[str, str]]:
+    def list_models(self) -> List[Tuple[str, str]]:
         return [model.value for model in Model if model.name != "OLLAMA_MODELS"] + list(
             Model.OLLAMA_MODELS.value
         )
