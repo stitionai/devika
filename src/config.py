@@ -1,6 +1,15 @@
 import toml
 
 class Config:
+
+    _instance = None
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance.config = toml.load("config.toml")
+        return cls._instance
+
     def __init__(self):
         self.config = toml.load("config.toml")
 
