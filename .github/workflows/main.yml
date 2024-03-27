@@ -1,0 +1,30 @@
+# This workflow handles the following steps:
+# - Basic checks like formatting & Linting on the codebase
+# - Running the tests if any
+
+name: Main Workflow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Basic Checks
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Precommit checks
+        uses: pre-commit/action@v3.0.1
