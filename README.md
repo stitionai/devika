@@ -6,7 +6,7 @@
 
 ![devika screenshot](.assets/devika-screenshot.png)
 
-> [!IMPORTANT]  
+> [!IMPORTANT]
 > This project is currently in a very early development/experimental stage. There are a lot of unimplemented/broken features at the moment. Contributions are welcome to help out with the progress!
 
 ## Table of Contents
@@ -86,7 +86,7 @@ git clone https://github.com/stitionai/devika.git
 cd devika/
 uv venv
 source .venv/bin/activate
-uv pip install -r requirements.txt
+uv pip install .
 playwright install --with-deps
 cd ui/
 bun install
@@ -114,7 +114,7 @@ To install Devika, follow these steps:
    ```
 3. Install the required dependencies:
    ```bash
-   pip install -r requirements.txt
+   pip install .
    playwright install --with-deps # installs browsers in playwright (and their deps) if required
    ```
 4. Set up the necessary API keys and configuration (see [Configuration](#configuration) section).
