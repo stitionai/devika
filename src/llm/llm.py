@@ -29,7 +29,9 @@ class Model(Enum):
         )
         for model in Ollama.list_models()
     ]
-    GROQ = ("GROQ Mixtral", "mixtral-8x7b-32768")
+    GROQ_MIXTRAL_8X7B_32768 = ("GROQ Mixtral", "mixtral-8x7b-32768")
+    GROQ_LLAMA2_70B_4096 = ("GROQ LLAMA2-70B", "llama2-70b-4096")
+    GROQ_GEMMA_7B_IT = ("GROQ GEMMA-7B-IT", "gemma-7b-it")
 
 
 logger = Logger(filename="devika_prompts.log")
