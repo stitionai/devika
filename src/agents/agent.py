@@ -23,11 +23,23 @@ from src.browser import start_interaction
 from src.filesystem import ReadCode
 from src.services import Netlify
 from src.documenter.pdf import PDF
+from src.services.git import Git    
 
 import json
 import time
 import platform
 import tiktoken
+
+# from src.llm import LLM
+# from src.project import ProjectManager
+# from src.state import AgentState
+# from src.agents.internal_monologue import InternalMonologue
+# from src.agents.researcher import Researcher
+# from src.agents.coder import Coder
+
+# from jinja2 import Environment, BaseLoader
+
+# PROMPT = open("src/agents/decision/prompt.jinja2").read().strip()
 
 class Agent:
     def __init__(self, base_model: str):
@@ -56,8 +68,13 @@ class Agent:
         self.patcher = Patcher(base_model=base_model)
         self.reporter = Reporter(base_model=base_model)
         self.decision = Decision(base_model=base_model)
-
         self.tokenizer = tiktoken.get_encoding("cl100k_base")
+        # self.llm = LLM(model_id=base_model)
+        # self.planner = Planner()
+        # self.internal_monologue = InternalMonologue()
+        # self.researcher = Researcher()
+        # self.coder = Coder()
+        # self.collected_context_keywords = []
 
     def search_queries(self, queries: list, project_name: str) -> dict:
         results = {}
@@ -93,8 +110,7 @@ class Agent:
             Formatter Agent is invoked to format and learn from the contents
             """
             results[query] = self.formatter.execute(
-                browser.extract_text(),
-                project_name
+                browser.extract_text()
             )
             
             """
@@ -119,7 +135,7 @@ class Agent:
     Decision making Agent
     """
     def make_decision(self, prompt: str, project_name: str) -> str:
-        decision = self.decision.execute(prompt, project_name)
+        decision = self.decision.execute(prompt)
         
         for item in decision:
             function = item["function"]
@@ -135,7 +151,7 @@ class Agent:
             elif function == "generate_pdf_document":
                 user_prompt = args["user_prompt"]
                 # Call the reporter agent to generate the PDF document
-                markdown = self.reporter.execute([user_prompt], "", project_name)
+                markdown = self.reporter.execute([user_prompt], "")
                 _out_pdf_file = PDF().markdown_to_pdf(markdown, project_name)
                 
                 project_name_space_url = project_name.replace(" ", "%20")
@@ -155,10 +171,10 @@ class Agent:
             elif function == "coding_project":
                 user_prompt = args["user_prompt"]
                 # Call the planner, researcher, coder agents in sequence
-                plan = self.planner.execute(user_prompt, project_name)
+                plan = self.planner.execute(user_prompt)
                 planner_response = self.planner.parse_response(plan)
                 
-                research = self.researcher.execute(plan, self.collected_context_keywords, project_name)
+                research = self.researcher.execute(plan, self.collected_context_keywords)
                 search_results = self.search_queries(research["queries"], project_name)
                 
                 code = self.coder.execute(
@@ -178,7 +194,7 @@ class Agent:
         conversation = ProjectManager().get_all_messages_formatted(project_name)
         code_markdown = ReadCode(project_name).code_set_to_markdown()
 
-        response, action = self.action.execute(conversation, project_name)
+        response, action = self.action.execute(conversation)
         
         ProjectManager().add_message_from_devika(project_name, response)
         
@@ -189,8 +205,7 @@ class Agent:
         if action == "answer":
             response = self.answer.execute(
                 conversation=conversation,
-                code_markdown=code_markdown,
-                project_name=project_name
+                code_markdown=code_markdown
             )
             ProjectManager().add_message_from_devika(project_name, response)
         elif action == "run":
@@ -240,7 +255,7 @@ class Agent:
 
             self.patcher.save_code_to_project(code, project_name)
         elif action == "report":
-            markdown = self.reporter.execute(conversation, code_markdown, project_name)
+            markdown = self.reporter.execute(conversation, code_markdown)
 
             _out_pdf_file = PDF().markdown_to_pdf(markdown, project_name)
 
@@ -259,11 +274,11 @@ class Agent:
     """
     Agentic flow of execution
     """
-    def execute(self, prompt: str, project_name_from_user: str = None) -> str:
+    def execute(self, prompt: str, target_directory: str, project_name_from_user: str = None) -> str:
         if project_name_from_user:
             ProjectManager().add_message_from_user(project_name_from_user, prompt)
         
-        plan = self.planner.execute(prompt, project_name_from_user)
+        plan = self.planner.execute(prompt)
         print(plan)
         print("=====" * 10)
 
@@ -290,7 +305,7 @@ class Agent:
         self.update_contextual_keywords(focus)
         print(self.collected_context_keywords)
         
-        internal_monologue = self.internal_monologue.execute(current_prompt=plan, project_name=project_name)
+        internal_monologue = self.internal_monologue.execute(current_prompt=plan)
         print(internal_monologue)
         print("=====" * 10)
 
@@ -298,7 +313,7 @@ class Agent:
         new_state["internal_monologue"] = internal_monologue
         AgentState().add_to_current_state(project_name, new_state)
 
-        research = self.researcher.execute(plan, self.collected_context_keywords, project_name)
+        research = self.researcher.execute(plan, self.collected_context_keywords)
         print(research)
         print("=====" * 10)
 
@@ -337,16 +352,25 @@ class Agent:
         print(json.dumps(search_results, indent=4))
         print("=====" * 10)
 
-        code = self.coder.execute(
-            step_by_step_plan=plan,
-            user_context=ask_user_prompt,
-            search_results=search_results,
-            project_name=project_name
-        )
-        print(code)
-        print("=====" * 10)
+        # Utilize the Git class for helper functions from src/services/git.py
+        git_helper = Git(target_directory)
 
-        self.coder.save_code_to_project(code, project_name)
+        decision_agent = Decision(base_model="your_base_model_id")
+        decision_response = decision_agent.execute(prompt)
+        decision_actions = decision_response["actions"]
 
-        AgentState().set_agent_active(project_name, False)
-        AgentState().set_agent_completed(project_name, True)
+        for action in decision_actions:
+            if action["type"] == "clone_repo":
+                repo_url = action["repo_url"]
+                git_helper.clone(repo_url, target_directory)
+
+            elif action["type"] == "fix_bugs":
+                pass
+                #TODO : Implement Logic for fix_bugs
+                
+
+            elif action["type"] == "make_pdf_report":
+                pass
+                #TODO : Implement logic for make_pdf_report 
+
+        return "Execution completed."
