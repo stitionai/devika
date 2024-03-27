@@ -70,7 +70,7 @@ class LLM:
             response = Ollama().inference(self.model_id, prompt).strip()
         elif "CLAUDE" in str(model):
             response = Claude().inference(self.model_id, prompt).strip()
-        elif "AZURE" in str(model):
+        elif "AZURE_GPT" in str(model):
             response = AzureOpenAI().inference(prompt).strip()
         elif "GPT" in str(model):
             response = OpenAI().inference(self.model_id, prompt).strip()
