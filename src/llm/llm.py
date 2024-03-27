@@ -5,6 +5,7 @@ from .ollama_client import Ollama
 from .claude_client import Claude
 from .openai_client import OpenAI
 from .groq_client import Groq
+from .azure_openai_client import AzureOpenAI
 
 from src.state import AgentState
 
@@ -22,6 +23,7 @@ class Model(Enum):
     CLAUDE_3_HAIKU = ("Claude 3 Haiku", "claude-3-haiku-20240307")
     GPT_4_TURBO = ("GPT-4 Turbo", "gpt-4-0125-preview")
     GPT_3_5 = ("GPT-3.5", "gpt-3.5-turbo-0125")
+    AZURE_GPT = ("AZURE-GPT", "gpt-3.5-turbo-0125")
     OLLAMA_MODELS = [
         (
             model["name"].split(":")[0],
@@ -68,6 +70,8 @@ class LLM:
             response = Ollama().inference(self.model_id, prompt).strip()
         elif "CLAUDE" in str(model):
             response = Claude().inference(self.model_id, prompt).strip()
+        elif "AZURE" in str(model):
+            response = AzureOpenAI().inference(prompt).strip()
         elif "GPT" in str(model):
             response = OpenAI().inference(self.model_id, prompt).strip()
         elif "GROQ" in str(model):

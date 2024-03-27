@@ -34,6 +34,18 @@ class Config:
     def get_openai_api_key(self):
         return environ.get("OPENAI_API_KEY", self.config["API_KEYS"]["OPENAI"])
 
+    def get_azure_openai_api_key(self):
+        return self.config["API_KEYS"]["AZURE_OPENAI"]
+    
+    def get_azure_openai_api_endpoint(self):
+        return self.config["API_ENDPOINTS"]["AZURE_OPENAI"]
+
+    def get_azure_openai_deployment_name(self):
+        return self.config["DEPLOYMENT_NAME"]["AZURE_OPENAI_ENGINE"]
+    
+    def get_azure_openai_api_version(self):
+        return self.config["API_VERSION"]["AZURE_API_VERSION"]
+
     def get_netlify_api_key(self):
         return environ.get("NETLIFY_API_KEY", self.config["API_KEYS"]["NETLIFY"])
     
@@ -82,6 +94,22 @@ class Config:
 
     def set_openai_api_key(self, key):
         self.config["API_KEYS"]["OPENAI"] = key
+        self.save_config()
+    
+    def set_azure_openai_api_key(self, key):
+        self.config["API_KEYS"]["AZURE_OPENAI"] = key
+        self.save_config()
+
+    def set_azure_openai_api_endpoint(self, endpoint):
+        self.config["API_ENDPOINTS"]["AZURE_OPENAI"] = endpoint
+        self.save_config()
+
+    def set_azure_openai_deployment_name(self, deployment):
+        self.config["DEPLOYMENT_NAME"]["AZURE_OPENAI_ENGINE"] = deployment
+        self.save_config()
+    
+    def set_azure_openai_api_version(self, version):
+        self.config["API_VERSION"]["AZURE_API_VERSION"] = version
         self.save_config()
 
     def set_netlify_api_key(self, key):
