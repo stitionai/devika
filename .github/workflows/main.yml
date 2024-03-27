@@ -13,9 +13,9 @@ on:
       - main
 
 jobs:
-  build:
+  basic_checks_backend:
     runs-on: ubuntu-latest
-    name: Basic Checks
+    name: Basic Checks - Backend
 
     steps:
       - name: Checkout code
@@ -24,7 +24,24 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: "3.10"
 
       - name: Precommit checks
         uses: pre-commit/action@v3.0.1
+
+  basic_checks_frontend:
+    runs-on: ubuntu-latest
+    name: Basic Checks - Frontend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+
+      - name: Format and Lint Checks
+        run: |
+          cd ui
+          bun format
+          bun lint

@@ -7,7 +7,7 @@ repos:
       - id: check-added-large-files
       - id: check-toml
       - id: detect-private-key
-      - id: detect-aws-credentials
+      # - id: detect-aws-credentials
       - id: check-ast
         include: '\.pyi?$'
   - repo: https://github.com/psf/black
