@@ -65,7 +65,7 @@ class Planner:
 
         return result    
 
-    def execute(self, prompt: str) -> str:
+    def execute(self, prompt: str, project_name: str) -> str:
         prompt = self.render(prompt)
-        response = self.llm.inference(prompt)
+        response = self.llm.inference(prompt, project_name)
         return response
