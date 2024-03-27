@@ -111,22 +111,20 @@
       tabindex="-1"
     >
       <div class="py-1" role="none">
-        <a
-          href="#"
+        <button
           class="text-white block px-4 py-2 text-sm hover:bg-slate-700"
           on:click|preventDefault={createNewProject}
         >
           + Create new project
-        </a>
+      </button>
         {#if $projectList !== null}
           {#each $projectList as project}
-            <a
-              href="#"
+            <button
               class="text-white block px-4 py-2 text-sm hover:bg-slate-700"
               on:click|preventDefault={() => selectProject(project)}
             >
               {project}
-            </a>
+            </button>
           {/each}
         {/if}
       </div>
@@ -182,13 +180,12 @@
         <div class="py-1" role="none">
           {#if $modelList !== null}
             {#each $modelList as model}
-              <a
-                href="#"
+              <button
                 class="text-white block px-4 py-2 text-sm hover:bg-slate-700"
                 on:click|preventDefault={() => selectModel(model)}
               >
                 {model[0]} ({model[1]})
-              </a>
+               </button>
             {/each}
           {/if}
         </div>
