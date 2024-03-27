@@ -40,6 +40,11 @@ jobs:
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
 
+      - name: Install dependencies
+        run: |
+          cd ui
+          bun install --no-lockfile
+
       - name: Format and Lint Checks
         run: |
           cd ui
