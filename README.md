@@ -143,7 +143,7 @@ To start using Devika, follow these steps:
 
 ## Configuration
 
-Devika requires certain configuration settings and API keys to function properly. Update the `config.toml` file with the following information:
+Devika requires certain configuration settings and API keys to function properly. Rename the `sample.config.toml` to `config.toml` and update the file with the following information:
 
 - `SQLITE_DB`: The path to the SQLite database file for storing Devika's data.
 - `SCREENSHOTS_DIR`: The directory where screenshots captured by Devika will be stored.
