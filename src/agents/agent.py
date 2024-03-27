@@ -93,7 +93,8 @@ class Agent:
             Formatter Agent is invoked to format and learn from the contents
             """
             results[query] = self.formatter.execute(
-                browser.extract_text()
+                browser.extract_text(),
+                project_name
             )
             
             """
@@ -118,7 +119,7 @@ class Agent:
     Decision making Agent
     """
     def make_decision(self, prompt: str, project_name: str) -> str:
-        decision = self.decision.execute(prompt)
+        decision = self.decision.execute(prompt, project_name)
         
         for item in decision:
             function = item["function"]
@@ -134,7 +135,7 @@ class Agent:
             elif function == "generate_pdf_document":
                 user_prompt = args["user_prompt"]
                 # Call the reporter agent to generate the PDF document
-                markdown = self.reporter.execute([user_prompt], "")
+                markdown = self.reporter.execute([user_prompt], "", project_name)
                 _out_pdf_file = PDF().markdown_to_pdf(markdown, project_name)
                 
                 project_name_space_url = project_name.replace(" ", "%20")
@@ -154,10 +155,10 @@ class Agent:
             elif function == "coding_project":
                 user_prompt = args["user_prompt"]
                 # Call the planner, researcher, coder agents in sequence
-                plan = self.planner.execute(user_prompt)
+                plan = self.planner.execute(user_prompt, project_name)
                 planner_response = self.planner.parse_response(plan)
                 
-                research = self.researcher.execute(plan, self.collected_context_keywords)
+                research = self.researcher.execute(plan, self.collected_context_keywords, project_name)
                 search_results = self.search_queries(research["queries"], project_name)
                 
                 code = self.coder.execute(
@@ -177,7 +178,7 @@ class Agent:
         conversation = ProjectManager().get_all_messages_formatted(project_name)
         code_markdown = ReadCode(project_name).code_set_to_markdown()
 
-        response, action = self.action.execute(conversation)
+        response, action = self.action.execute(conversation, project_name)
         
         ProjectManager().add_message_from_devika(project_name, response)
         
@@ -188,7 +189,8 @@ class Agent:
         if action == "answer":
             response = self.answer.execute(
                 conversation=conversation,
-                code_markdown=code_markdown
+                code_markdown=code_markdown,
+                project_name=project_name
             )
             ProjectManager().add_message_from_devika(project_name, response)
         elif action == "run":
@@ -238,7 +240,7 @@ class Agent:
 
             self.patcher.save_code_to_project(code, project_name)
         elif action == "report":
-            markdown = self.reporter.execute(conversation, code_markdown)
+            markdown = self.reporter.execute(conversation, code_markdown, project_name)
 
             _out_pdf_file = PDF().markdown_to_pdf(markdown, project_name)
 
@@ -261,7 +263,7 @@ class Agent:
         if project_name_from_user:
             ProjectManager().add_message_from_user(project_name_from_user, prompt)
         
-        plan = self.planner.execute(prompt)
+        plan = self.planner.execute(prompt, project_name_from_user)
         print(plan)
         print("=====" * 10)
 
@@ -288,7 +290,7 @@ class Agent:
         self.update_contextual_keywords(focus)
         print(self.collected_context_keywords)
         
-        internal_monologue = self.internal_monologue.execute(current_prompt=plan)
+        internal_monologue = self.internal_monologue.execute(current_prompt=plan, project_name=project_name)
         print(internal_monologue)
         print("=====" * 10)
 
@@ -296,7 +298,7 @@ class Agent:
         new_state["internal_monologue"] = internal_monologue
         AgentState().add_to_current_state(project_name, new_state)
 
-        research = self.researcher.execute(plan, self.collected_context_keywords)
+        research = self.researcher.execute(plan, self.collected_context_keywords, project_name)
         print(research)
         print("=====" * 10)
 

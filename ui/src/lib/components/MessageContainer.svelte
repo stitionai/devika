@@ -1,5 +1,5 @@
 <script>
-  import { messages } from "../store";
+  import { messages } from "$lib/store";
   import { onMount, afterUpdate } from "svelte";
 
   let messageContainer;
