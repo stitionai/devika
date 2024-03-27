@@ -4,13 +4,13 @@ from typing import List
 from jinja2 import Environment, BaseLoader
 
 from src.llm import LLM
-from src.browser.search import BingSearch
+from src.browser.search import WebSearch
 
 PROMPT = open("src/agents/researcher/prompt.jinja2").read().strip()
 
 class Researcher:
     def __init__(self, base_model: str):
-        self.bing_search = BingSearch()
+        self.bing_search = WebSearch()
         self.llm = LLM(model_id=base_model)
 
     def render(self, step_by_step_plan: str, contextual_keywords: str) -> str:
@@ -23,7 +23,6 @@ class Researcher:
 
     def validate_response(self, response: str):
         response = response.strip().replace("```json", "```")
-        
         if response.startswith("```") and response.endswith("```"):
             response = response[3:-3].strip()
 
@@ -33,7 +32,6 @@ class Researcher:
             return False
         
         response = {k.replace("\\", ""): v for k, v in response.items()}
-        
         if "queries" not in response and "ask_user" not in response:
             return False
         else:
@@ -43,11 +41,10 @@ class Researcher:
             }
 
     def execute(self, step_by_step_plan: str, contextual_keywords: List[str], project_name: str) -> str:
-        contextual_keywords = ", ".join(map(lambda k: k.capitalize(), contextual_keywords))
+        contextual_keywords = ", ".join(
+            map(lambda k: k.capitalize(), contextual_keywords))
         step_by_step_plan = self.render(step_by_step_plan, contextual_keywords)
-        
         response = self.llm.inference(step_by_step_plan, project_name)
-        
         valid_response = self.validate_response(response)
 
         while not valid_response:
