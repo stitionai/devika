@@ -14,7 +14,7 @@
   }
 
   function selectModel(model) {
-    $selectedModel = `${model[0]} (${model[1]})`;
+    $selectedModel = `${model[1]}`;
   }
 
   async function createNewProject() {
