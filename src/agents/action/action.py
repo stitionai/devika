@@ -39,15 +39,15 @@ class Action:
         else:
             return response["response"], response["action"]
 
-    def execute(self, conversation: list) -> str:
+    def execute(self, conversation: list, project_name: str) -> str:
         prompt = self.render(conversation)
-        response = self.llm.inference(prompt)
+        response = self.llm.inference(prompt, project_name)
         
         valid_response = self.validate_response(response)
         
         while not valid_response:
             print("Invalid response from the model, trying again...")
-            return self.execute(conversation)
+            return self.execute(conversation, project_name)
         
         print("===" * 10)
         print(valid_response)

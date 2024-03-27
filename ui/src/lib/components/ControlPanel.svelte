@@ -1,10 +1,8 @@
 <script>
   import { onMount } from 'svelte';
-  import { projectList, modelList, internet } from "$lib/store";
-  import { createProject, fetchProjectList, getTokenUsage } from "$lib/api";
+  import { selectedProject, selectedModel, projectList, modelList, internet } from '$lib/store';
+  import { createProject, fetchProjectList, getTokenUsage } from '$lib/api';
 
-  let selectedProject;
-  let selectedModel;
   let tokenUsage = 0;
 
   async function updateTokenUsage() {
@@ -12,17 +10,15 @@
   }
 
   function selectProject(project) {
-    selectedProject = project;
-    localStorage.setItem("selectedProject", project);
+    $selectedProject = project;
   }
 
   function selectModel(model) {
-    selectedModel = `${model[0]} (${model[1]})`;
-    localStorage.setItem("selectedModel", model[1]);
+    $selectedModel = `${model[0]} (${model[1]})`;
   }
 
   async function createNewProject() {
-    const projectName = prompt("Enter the project name:");
+    const projectName = prompt('Enter the project name:');
     if (projectName) {
       await createProject(projectName);
       await fetchProjectList();
@@ -31,50 +27,37 @@
   }
 
   function closeDropdowns(event) {
-    const projectDropdown = document.getElementById("project-dropdown");
-    const modelDropdown = document.getElementById("model-dropdown");
-    const projectButton = document.getElementById("project-button");
-    const modelButton = document.getElementById("model-button");
+    const projectDropdown = document.getElementById('project-dropdown');
+    const modelDropdown = document.getElementById('model-dropdown');
+    const projectButton = document.getElementById('project-button');
+    const modelButton = document.getElementById('model-button');
 
-    if (
-      !projectDropdown.contains(event.target) &&
-      !projectButton.contains(event.target)
-    ) {
-      projectDropdown.classList.add("hidden");
+    if (!projectDropdown.contains(event.target) && !projectButton.contains(event.target)) {
+      projectDropdown.classList.add('hidden');
     }
 
-    if (
-      !modelDropdown.contains(event.target) &&
-      !modelButton.contains(event.target)
-    ) {
-      modelDropdown.classList.add("hidden");
+    if (!modelDropdown.contains(event.target) && !modelButton.contains(event.target)) {
+      modelDropdown.classList.add('hidden');
     }
   }
 
   onMount(() => {
     setInterval(updateTokenUsage, 1000);
 
-    selectedProject = localStorage.getItem("selectedProject") || "Select Project";
-    selectedModel = localStorage.getItem("selectedModel") || "Select Model";
+    document.getElementById('project-button').addEventListener('click', function () {
+      const dropdown = document.getElementById('project-dropdown');
+      dropdown.classList.toggle('hidden');
+    });
 
-    document
-      .getElementById("project-button")
-      .addEventListener("click", function () {
-        const dropdown = document.getElementById("project-dropdown");
-        dropdown.classList.toggle("hidden");
-      });
+    document.getElementById('model-button').addEventListener('click', function () {
+      const dropdown = document.getElementById('model-dropdown');
+      dropdown.classList.toggle('hidden');
+    });
 
-    document
-      .getElementById("model-button")
-      .addEventListener("click", function () {
-        const dropdown = document.getElementById("model-dropdown");
-        dropdown.classList.toggle("hidden");
-      });
-
-    document.addEventListener("click", closeDropdowns);
+    document.addEventListener('click', closeDropdowns);
 
     return () => {
-      document.removeEventListener("click", closeDropdowns);
+      document.removeEventListener('click', closeDropdowns);
     };
   });
 </script>
@@ -88,13 +71,8 @@
       aria-expanded="true"
       aria-haspopup="true"
     >
-      <span id="selected-project">{selectedProject}</span>
-      <svg
-        class="-mr-1 h-5 w-5 text-gray-400"
-        viewBox="0 0 20 20"
-        fill="currentColor"
-        aria-hidden="true"
-      >
+      <span id="selected-project">{$selectedProject}</span>
+      <svg class="-mr-1 h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
         <path
           fill-rule="evenodd"
           d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
@@ -111,36 +89,25 @@
       tabindex="-1"
     >
       <div class="py-1" role="none">
-        <a
-          href="#"
-          class="text-white block px-4 py-2 text-sm hover:bg-slate-700"
-          on:click|preventDefault={createNewProject}
-        >
+        <button class="text-white block px-4 py-2 text-sm hover:bg-slate-700" on:click={createNewProject}>
           + Create new project
-        </a>
-        {#if $projectList !== null}
+        </button>
+        {#if $projectList.length > 0}
           {#each $projectList as project}
-            <a
-              href="#"
-              class="text-white block px-4 py-2 text-sm hover:bg-slate-700"
-              on:click|preventDefault={() => selectProject(project)}
-            >
+            <button class="text-white block px-4 py-2 text-sm hover:bg-slate-700" on:click={() => selectProject(project)}>
               {project}
-            </a>
+            </button>
           {/each}
         {/if}
       </div>
     </div>
   </div>
 
-  <div
-    class="right-controls"
-    style="display: flex; align-items: center; gap: 20px"
-  >
+  <div class="right-controls" style="display: flex; align-items: center; gap: 20px">
     <div class="flex items-center space-x-2">
       <span>Internet:</span>
-      <div id="internet-status" class="internet-status" class:online={$internet} class:offline={!$internet}></div>
-      <span id="internet-status-text"></span>
+      <div id="internet-status" class="internet-status" class:online={$internet} class:offline={!$internet} />
+      <span id="internet-status-text" />
     </div>
     <div class="flex items-center space-x-2">
       <span>Token Usage:</span>
@@ -155,13 +122,8 @@
           aria-expanded="true"
           aria-haspopup="true"
         >
-          <span id="selected-model">{selectedModel}</span>
-          <svg
-            class="-mr-1 h-5 w-5 text-gray-400"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-            aria-hidden="true"
-          >
+          <span id="selected-model">{$selectedModel}</span>
+          <svg class="-mr-1 h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
             <path
               fill-rule="evenodd"
               d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
@@ -180,15 +142,14 @@
         tabindex="-1"
       >
         <div class="py-1" role="none">
-          {#if $modelList !== null}
+          {#if $modelList.length > 0}
             {#each $modelList as model}
-              <a
-                href="#"
+              <button
                 class="text-white block px-4 py-2 text-sm hover:bg-slate-700"
-                on:click|preventDefault={() => selectModel(model)}
+                on:click={() => selectModel(model)}
               >
                 {model[0]} ({model[1]})
-              </a>
+              </button>
             {/each}
           {/if}
         </div>

@@ -1,12 +1,28 @@
 import {
-  messages,
-  projectList,
-  modelList,
   agentState,
   internet,
+  messages,
+  modelList,
+  projectList,
 } from "./store";
 
-export const API_BASE_URL = "http://127.0.0.1:1337";
+const getApiBaseUrl = () => {
+  if (typeof window !== 'undefined') {
+    // Client-side code
+    const host = window.location.hostname;
+    if (host === 'localhost' || host === '127.0.0.1') {
+      return 'http://127.0.0.1:1337';
+    } else {
+      return `http://${host}:1337`;
+    }
+  } else {
+    // Server-side code (Node.js)
+    return 'http://127.0.0.1:1337';
+  }
+};
+
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || getApiBaseUrl();
+
 
 export async function fetchProjectList() {
   const response = await fetch(`${API_BASE_URL}/api/project-list`);
@@ -127,4 +143,22 @@ export async function checkInternetStatus() {
   } else {
     internet.set(false);
   }
+}
+
+export async function getSettings() {
+  const response = await fetch(`${API_BASE_URL}/api/get-settings`);
+  const data = await response.json();
+  return data.settings;
+}
+
+export async function setSettings(newSettings) {
+  const response = await fetch(`${API_BASE_URL}/api/set-settings`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(newSettings),
+  });
+  const data = await response.json();
+  return data;
 }

@@ -145,12 +145,16 @@ To start using Devika, follow these steps:
 
 Devika requires certain configuration settings and API keys to function properly. Update the `config.toml` file with the following information:
 
-- `OPENAI_API_KEY`: Your OpenAI API key for accessing GPT models.
-- `CLAUDE_API_KEY`: Your Anthropic API key for accessing Claude models.
-- `BING_API_KEY`: Your Bing Search API key for web searching capabilities.
-- `DATABASE_URL`: The URL for your database connection.
-- `LOG_DIRECTORY`: The directory where Devika's logs will be stored.
-- `PROJECT_DIRECTORY`: The directory where Devika's projects will be stored.
+- `SQLITE_DB`: The path to the SQLite database file for storing Devika's data.
+- `SCREENSHOTS_DIR`: The directory where screenshots captured by Devika will be stored.
+- `PDFS_DIR`: The directory where PDF files processed by Devika will be stored.
+- `PROJECTS_DIR`: The directory where Devika's projects will be stored.
+- `LOGS_DIR`: The directory where Devika's logs will be stored.
+- `REPOS_DIR`: The directory where Git repositories cloned by Devika will be stored.
+- `BING`: Your Bing Search API key for web searching capabilities.
+- `CLAUDE`: Your Anthropic API key for accessing Claude models.
+- `NETLIFY`: Your Netlify API key for deploying and managing web projects.
+- `OPENAI`: Your OpenAI API key for accessing GPT models.
 
 Make sure to keep your API keys secure and do not share them publicly.
 
@@ -217,7 +221,7 @@ To join the Devika community Discord server, [click here](https://discord.com/in
 
 ## Contributing
 
-We welcome contributions to enhance Devika's capabilities and improve its performance. To contribute, please see the `CONTRIBUTING.md` file for steps.
+We welcome contributions to enhance Devika's capabilities and improve its performance. To contribute, please see the [`CONTRIBUTING.md`](CONTRIBUTING.md) file for steps.
 
 ## License
 
