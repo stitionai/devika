@@ -1,0 +1,60 @@
+# TODO: Not Restrictive at the moment, but will be updated as the project grows
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = ["setuptools", "wheel"]
+
+[project]
+description = "Devika is an Agentic AI Software Engineer that can understand high-level human instructions, break them down into steps, research relevant information, and write code to achieve the given objective. Devika aims to be a competitive open-source alternative to Devin by Cognition AI."
+name = "devika"
+version = "0.0.1"
+
+# TODO: break the requirements based on LLM API requirements
+dependencies = [
+  "flask",
+  "flask-cors",
+  "toml",
+  "urllib3",
+  "requests",
+  "colorama",
+  "fastlogging",
+  "Jinja2",
+  "mistletoe",
+  "markdownify",
+  "pdfminer.six",
+  "playwright",
+  "pytest-playwright",
+  "tiktoken",
+  "ollama",
+  "openai",
+  "anthropic",
+  "sqlmodel",
+  "keybert",
+  "GitPython",
+  "netlify-py",
+  "Markdown",
+  "xhtml2pdf",
+  "groq",
+  "google-generativeai",
+  "duckduckgo-search",
+]
+
+[project.optional-dependencies]
+dev = [
+  "black",
+  "isort",
+  "pylint",
+  "pre-commit",
+]
+
+[tool.isort]
+multi_line_output = 3
+profile = "black"
+
+[tool.black]
+exclude = '/(\.eggs|\.git|\.hg|\.mypy_cache|\.tox|\.venv|_build|buck-out|build|dist)/'
+include = '\.pyi?$'
+line-length = 88
+target-version = ['py310']
+
+[tool.pylint]
+disable = "missing-module-docstring,missing-function-docstring,missing-class-docstring"
