@@ -33,8 +33,8 @@ class Decision:
         return response
 
     def execute(self, prompt: str, project_name: str) -> str:
-        prompt = self.render(prompt)
-        response = self.llm.inference(prompt, project_name)
+        rendered_prompt = self.render(prompt)
+        response = self.llm.inference(rendered_prompt, project_name)
         
         valid_response = self.validate_response(response)
         
