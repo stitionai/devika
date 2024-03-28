@@ -60,10 +60,13 @@ def route_logger(logger: Logger):
             # Log exit point, including response summary if possible
             try:
                 if log_enabled:
-                    response_summary = response.get_data(as_text=True)
-                    logger.debug(f"{request.path} {request.method} - Response: {response_summary}")
+                    if hasattr(response, 'get_data'):  # Check if response object has 'get_data' method
+                        response_summary = response.get_data(as_text=True)
+                        logger.debug(f"{request.path} {request.method} - Response: {response_summary}")
+                    else:
+                        logger.debug(f"{request.path} {request.method} - No response data available")
             except Exception as e:
-                logger.exception(f"{request.path} {request.method} - {e})")
+                logger.exception(f"{request.path} {request.method} - {e}")
 
             return response
         return wrapper

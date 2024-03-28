@@ -9,7 +9,7 @@
 
   onMount(async () => {
     let xterm = await import('xterm');
-    let xtermAddonFit = await import('xterm-addon-fit')
+    let { FitAddon } = await import('xterm-addon-fit');
 
     terminal = new xterm.Terminal({
       disableStdin: true,
@@ -18,7 +18,7 @@
       rows: 1,
     });
     
-    fitAddon = new xtermAddonFit.FitAddon();
+    fitAddon = new FitAddon();
     terminal.loadAddon(fitAddon);
     terminal.open(terminalElement);
     fitAddon.fit();
