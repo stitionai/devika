@@ -4,6 +4,7 @@ import os
 
 class Config:
     _instance = None
+    _CONFIG_FILE = "config.toml"
 
     def __new__(cls):
         if cls._instance is None:
@@ -13,11 +14,11 @@ class Config:
 
     def _load_config(self):
         # If the config file doesn't exist, copy from the sample
-        if not os.path.exists("config.toml"):
-            with open("sample.config.toml", "r") as f_in, open("config.toml", "w") as f_out:
+        if not os.path.exists(self._CONFIG_FILE):
+            with open("sample.config.toml", "r") as f_in, open(self._CONFIG_FILE, "w") as f_out:
                 f_out.write(f_in.read())
 
-        self.config = toml.load("config.toml")
+        self.config = toml.load(self._CONFIG_FILE)
 
     def get_config(self):
         return self.config
@@ -163,5 +164,5 @@ class Config:
         self.save_config()
 
     def save_config(self):
-        with open("config.toml", "w") as f:
+        with open(self._CONFIG_FILE, "w") as f:
             toml.dump(self.config, f)
