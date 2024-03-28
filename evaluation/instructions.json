@@ -1,0 +1,9 @@
+{
+    "instructions":[
+        "Create an Hello World Program in cpp",
+        "Generate a Snakes and ladder game using pygame",
+        "Create a Simple Calculate app in python using tkinter",
+        "Create a shell script which outputs a random number in terminal",
+        "Write a flask code which has a get method that fetches Worker Performance data from a PostgresSQL database"
+    ]
+}
