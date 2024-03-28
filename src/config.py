@@ -123,3 +123,6 @@ class Config:
     def save_config(self):
         with open("config.toml", "w") as f:
             toml.dump(self.config, f)
+
+    def get_gemini_api_key(self):
+        return environ.get("GEMINI_API_KEY", self.config["API_KEYS"]["GEMINI"])

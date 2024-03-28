@@ -3,6 +3,7 @@ from typing import List, Tuple
 
 from .ollama_client import Ollama
 from .claude_client import Claude
+from .gemini_client import Gemini
 from .openai_client import OpenAI
 from .groq_client import Groq
 
@@ -30,6 +31,7 @@ class Model(Enum):
         for model in Ollama.list_models()
     ]
     GROQ = ("GROQ Mixtral", "mixtral-8x7b-32768")
+    GEMINI_PRO_1_5 = ("Gemini Pro 1.5", "gemini-pro")
 
 
 logger = Logger(filename="devika_prompts.log")
@@ -72,6 +74,8 @@ class LLM:
             response = OpenAI().inference(self.model_id, prompt).strip()
         elif "GROQ" in str(model):
             response = Groq().inference(self.model_id, prompt).strip()
+        elif "GEMINI" in str(model):
+            response = Gemini().inference(self.model_id, prompt).strip()
         else:
             raise ValueError(f"Model {model} not supported")
 

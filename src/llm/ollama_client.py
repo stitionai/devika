@@ -4,14 +4,15 @@ from src.config import Config
 
 from src.logger import Logger
 
-client = Client(host=Config().get_ollama_api_endpoint())
-
 
 class Ollama:
-    @staticmethod
-    def list_models():
+
+    def __init__(self):
+        self.client = Client(host=Config().get_ollama_api_endpoint())
+
+    def list_models(self):
         try:
-            return client.list()["models"]
+            return self.client.list()["models"]
         except httpx.ConnectError:
             Logger().warning(
                 "Ollama server not running, please start the server to use models from Ollama."
@@ -22,6 +23,6 @@ class Ollama:
         return []
 
     def inference(self, model_id: str, prompt: str) -> str:
-        response = client.generate(model=model_id, prompt=prompt.strip())
+        response = self.client.generate(model=model_id, prompt=prompt.strip())
 
         return response["response"]
