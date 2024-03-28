@@ -227,6 +227,18 @@ We welcome contributions to enhance Devika's capabilities and improve its perfor
 
 Devika is released under the [MIT License](https://opensource.org/licenses/MIT). See the `LICENSE` file for more information.
 
+## Star History
+
+<div align="center">
+<a href="https://star-history.com/#stitionai/devika&Date">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=stitionai/devika&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=stitionai/devika&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=stitionai/devika&type=Date" />
+ </picture>
+</a>
+</div>
+
 ---
 
 We hope you find Devika to be a valuable tool in your software development journey. If you have any questions, feedback, or suggestions, please don't hesitate to reach out. Happy coding with Devika!
