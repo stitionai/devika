@@ -15,7 +15,6 @@ RUN apt-get install -y python3 python3-pip
 RUN curl -fsSL https://astral.sh/uv/install.sh | sudo -E bash -
 RUN $HOME/.cargo/bin/uv venv
 ENV PATH="/home/nonroot/devika/.venv/bin:$HOME/.cargo/bin:$PATH"
-RUN echo $PATH
 
 # copy devika python engine only
 RUN $HOME/.cargo/bin/uv venv
@@ -27,7 +26,6 @@ COPY src /home/nonroot/devika/src
 COPY config.toml /home/nonroot/devika/
 COPY devika.py /home/nonroot/devika/
 RUN chown -R nonroot:nonroot /home/nonroot/devika
-RUN ls -al
 
 USER nonroot
 WORKDIR /home/nonroot/devika

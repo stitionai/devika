@@ -120,7 +120,8 @@ export async function executeAgent(prompt) {
 }
 
 export async function getTokenUsage() {
-  const response = await fetch(`${API_BASE_URL}/api/token-usage`);
+  const projectName = localStorage.getItem("selectedProject");
+  const response = await fetch(`${API_BASE_URL}/api/token-usage?project_name=${projectName}`);
   const data = await response.json();
   return data.token_usage;
 }
