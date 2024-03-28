@@ -1,18 +1,34 @@
-import toml
+import os
 from os import environ
+
+import toml
+from fastlogging import LogInit
+from toml import TomlDecodeError
 
 
 class Config:
     _instance = None
 
     def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls)
-            cls._instance.config = toml.load("config.toml")
-        return cls._instance
+        if cls._instance:
+            return cls._instance
 
-    def __init__(self):
-        self.config = toml.load("config.toml")
+        cls._instance = super().__new__(cls)
+
+        logger = LogInit(pathName="logs/core.log", console=True, colors=True)
+
+        try:
+            cls._instance.config = toml.load("config.toml")
+            return cls._instance
+
+        except FileNotFoundError as e:
+            logger.critical(f"Configuration file '{os.path.join(os.getcwd(), e.filename)}' not found")
+            logger.info(f"Did you forget to create 'config.toml' file at the project root ( {os.getcwd()} )?")
+        except TomlDecodeError as e:
+            logger.critical(f"There is something wrong with your 'config.toml' file: {e}")
+
+        logger.info("Checkout 'config.example.toml' and https://toml.io/en/ for more information on TOML.")
+        exit(1)
 
     def get_config(self):
         return self.config
@@ -36,10 +52,10 @@ class Config:
 
     def get_netlify_api_key(self):
         return environ.get("NETLIFY_API_KEY", self.config["API_KEYS"]["NETLIFY"])
-    
+
     def get_groq_api_key(self):
         return environ.get("GROQ_API_KEY", self.config["API_KEYS"]["GROQ"])
-      
+
     def get_sqlite_db(self):
         return environ.get("SQLITE_DB_PATH", self.config["STORAGE"]["SQLITE_DB"])
 
