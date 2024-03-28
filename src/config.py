@@ -33,21 +33,36 @@ class Config:
     def get_config(self):
         return self.config
 
-    def try_get_with_warning(self, *keys):
+    def try_get(self, *keys):
         try:
             value = self.config
             for key in keys:
                 value = value[key]
 
-            return value
+            return value, None, None
         except KeyError as e:
             sample = "Some value"
             for key in reversed(keys):
                 sample = {key: sample}
 
-            self._logger.warning(f"Key {e} of {'.'.join(keys)} not found in config.toml using 'None' as default value")
-            self._logger.info(f"To fix this, update 'config.toml' with\n\n{toml.dumps(sample)}\n")
-            return None
+            err = f"Key {e} of {'.'.join(keys)} not found in config.toml using 'None' as default value"
+            fix = f"To fix this, update 'config.toml' with\n\n{toml.dumps(sample)}\n"
+            return None, err, fix
+
+    def try_get_with_warning(self, *keys):
+        value, err, fix = self.try_get(*keys)
+        if err:
+            self._logger.warning(err)
+            self._logger.info(fix)
+        return value
+
+    def try_get_with_error(self, *keys):
+        value, err, fix = self.try_get(*keys)
+        if err:
+            self._logger.error(err)
+            self._logger.info(fix)
+            exit(1)
+        return value
 
     def get_bing_api_key(self):
         return environ.get("BING_API_KEY", self.try_get_with_warning("API_KEYS", "BING"))
@@ -71,22 +86,22 @@ class Config:
         return environ.get("GROQ_API_KEY", self.try_get_with_warning("API_KEYS", "GROQ"))
 
     def get_sqlite_db(self):
-        return environ.get("SQLITE_DB_PATH", self.try_get_with_warning("STORAGE", "SQLITE_DB"))
+        return environ.get("SQLITE_DB_PATH", self.try_get_with_error("STORAGE", "SQLITE_DB"))
 
     def get_screenshots_dir(self):
-        return environ.get("SCREENSHOTS_DIR", self.try_get_with_warning("STORAGE", "SCREENSHOTS_DIR"))
+        return environ.get("SCREENSHOTS_DIR", self.try_get_with_error("STORAGE", "SCREENSHOTS_DIR"))
 
     def get_pdfs_dir(self):
-        return environ.get("PDFS_DIR", self.try_get_with_warning("STORAGE", "PDFS_DIR"))
+        return environ.get("PDFS_DIR", self.try_get_with_error("STORAGE", "PDFS_DIR"))
 
     def get_projects_dir(self):
-        return environ.get("PROJECTS_DIR", self.try_get_with_warning("STORAGE", "PROJECTS_DIR"))
+        return environ.get("PROJECTS_DIR", self.try_get_with_error("STORAGE", "PROJECTS_DIR"))
 
     def get_logs_dir(self):
-        return environ.get("LOGS_DIR", self.try_get_with_warning("STORAGE", "LOGS_DIR"))
+        return environ.get("LOGS_DIR", self.try_get_with_error("STORAGE", "LOGS_DIR"))
 
     def get_repos_dir(self):
-        return environ.get("REPOS_DIR", self.try_get_with_warning("STORAGE", "REPOS_DIR"))
+        return environ.get("REPOS_DIR", self.try_get_with_error("STORAGE", "REPOS_DIR"))
 
     def get_logging_rest_api(self):
         return self.config["LOGGING"]["LOG_REST_API"] == "true"
