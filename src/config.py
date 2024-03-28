@@ -4,15 +4,16 @@ from os import environ
 
 class Config:
     _instance = None
+    _CONFIG_FILE = "config.toml"
 
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
-            cls._instance.config = toml.load("config.toml")
+            cls._instance.config = toml.load(cls._CONFIG_FILE)
         return cls._instance
 
     def __init__(self):
-        self.config = toml.load("config.toml")
+        self.config = toml.load(self._CONFIG_FILE)
 
     def get_config(self):
         return self.config
@@ -121,5 +122,5 @@ class Config:
         self.save_config()
 
     def save_config(self):
-        with open("config.toml", "w") as f:
+        with open(self._CONFIG_FILE, "w") as f:
             toml.dump(self.config, f)
