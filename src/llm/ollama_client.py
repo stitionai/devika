@@ -1,5 +1,5 @@
 import httpx
-from ollama import Client, generate
+from ollama import Client
 from src.config import Config
 
 from src.logger import Logger
@@ -22,7 +22,7 @@ class Ollama:
 
     def inference(self, model_id: str, prompt: str) -> str:
         try:
-            response = generate(model=model_id, prompt=prompt.strip())
+            response = client.generate(model=model_id, prompt=prompt.strip())
             return response['response']
         except Exception as e:
             logger.error(f"Error during model inference: {e}")
