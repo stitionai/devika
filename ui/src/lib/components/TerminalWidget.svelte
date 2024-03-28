@@ -9,7 +9,7 @@
 
   onMount(async () => {
     let xterm = await import('xterm');
-    let xtermAddonFit = await('xterm-addon-fit')
+    let xtermAddonFit = await import('xterm-addon-fit')
 
     terminal = new xterm.Terminal({
       disableStdin: true,
