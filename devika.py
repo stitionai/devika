@@ -21,15 +21,13 @@ log = logging.getLogger("werkzeug")
 log.disabled = True
 CORS(app)
 
-logger = Logger()
-
 TIKTOKEN_ENC = tiktoken.get_encoding("cl100k_base")
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 
 @app.route("/api/create-project", methods=["POST"])
-@route_logger(logger)
+@route_logger
 def create_project():
     data = request.json
     project_name = data.get("project_name")
@@ -38,7 +36,7 @@ def create_project():
 
 
 @app.route("/api/execute-agent", methods=["POST"])
-@route_logger(logger)
+@route_logger
 def execute_agent():
     data = request.json
     prompt = data.get("prompt")
@@ -57,14 +55,14 @@ def execute_agent():
 
 
 @app.route("/api/get-browser-snapshot", methods=["GET"])
-@route_logger(logger)
+@route_logger
 def browser_snapshot():
     snapshot_path = request.args.get("snapshot_path")
     return send_file(snapshot_path, as_attachment=True)
 
 
 @app.route("/api/download-project", methods=["GET"])
-@route_logger(logger)
+@route_logger
 def download_project():
     project_name = request.args.get("project_name")
     ProjectManager().project_to_zip(project_name)
@@ -73,7 +71,7 @@ def download_project():
 
 
 @app.route("/api/download-project-pdf", methods=["GET"])
-@route_logger(logger)
+@route_logger
 def download_project_pdf():
     project_name = request.args.get("project_name")
     pdf_dir = Config().get_pdfs_dir()
@@ -85,7 +83,7 @@ def download_project_pdf():
 
 
 @app.route("/api/get-messages", methods=["POST"])
-@route_logger(logger)
+@route_logger
 def get_messages():
     data = request.json
     project_name = data.get("project_name")
@@ -94,7 +92,7 @@ def get_messages():
 
 
 @app.route("/api/send-message", methods=["POST"])
-@route_logger(logger)
+@route_logger
 def send_message():
     data = request.json
     message = data.get("message")
@@ -116,7 +114,7 @@ def send_message():
 
 
 @app.route("/api/project-list", methods=["GET"])
-@route_logger(logger)
+@route_logger
 def project_list():
     pm = ProjectManager()
     projects = pm.get_project_list()
@@ -124,14 +122,14 @@ def project_list():
 
 
 @app.route("/api/model-list", methods=["GET"])
-@route_logger(logger)
+@route_logger
 def model_list():
     models = LLM().list_models()
     return jsonify({"models": models})
 
 
 @app.route("/api/is-agent-active", methods=["POST"])
-@route_logger(logger)
+@route_logger
 def is_agent_active():
     data = request.json
     project_name = data.get("project_name")
@@ -140,7 +138,7 @@ def is_agent_active():
 
 
 @app.route("/api/get-agent-state", methods=["POST"])
-@route_logger(logger)
+@route_logger
 def get_agent_state():
     data = request.json
     project_name = data.get("project_name")
@@ -149,7 +147,7 @@ def get_agent_state():
 
 
 @app.route("/api/calculate-tokens", methods=["POST"])
-@route_logger(logger)
+@route_logger
 def calculate_tokens():
     data = request.json
     prompt = data.get("prompt")
@@ -158,7 +156,7 @@ def calculate_tokens():
 
 
 @app.route("/api/token-usage", methods=["GET"])
-@route_logger(logger)
+@route_logger
 def token_usage():
     project_name = request.args.get("project_name")
     token_count = AgentState().get_latest_token_usage(project_name)
@@ -172,7 +170,7 @@ def real_time_logs():
 
 
 @app.route("/api/get-browser-session", methods=["GET"])
-@route_logger(logger)
+@route_logger
 def get_browser_session():
     project_name = request.args.get("project_name")
     agent_state = AgentState().get_latest_state(project_name)
@@ -184,7 +182,7 @@ def get_browser_session():
 
 
 @app.route("/api/get-terminal-session", methods=["GET"])
-@route_logger(logger)
+@route_logger
 def get_terminal_session():
     project_name = request.args.get("project_name")
     agent_state = AgentState().get_latest_state(project_name)
@@ -196,7 +194,7 @@ def get_terminal_session():
 
 
 @app.route("/api/run-code", methods=["POST"])
-@route_logger(logger)
+@route_logger
 def run_code():
     data = request.json
     project_name = data.get("project_name")
@@ -206,7 +204,7 @@ def run_code():
 
 
 @app.route("/api/set-settings", methods=["POST"])
-@route_logger(logger)
+@route_logger
 def set_settings():
     data = request.json
     config = Config()
@@ -216,13 +214,13 @@ def set_settings():
 
 
 @app.route("/api/get-settings", methods=["GET"])
-@route_logger(logger)
+@route_logger
 def get_settings():
     config = Config().get_config()
     return jsonify({"settings": config})
 
 
 if __name__ == "__main__":
-    logger.info("Booting up... This may take a few seconds")
+    Logger().info("Booting up... This may take a few seconds")
     init_devika()
     app.run(debug=False, port=1337, host="0.0.0.0")
