@@ -22,7 +22,7 @@ class Ollama:
 
     def inference(self, model_id: str, prompt: str) -> str:
         try:
-            response = ollama.generate(model=model_id, prompt=prompt.strip())
+            response = client.generate(model=model_id, prompt=prompt.strip())
             return response['response']
         except Exception as e:
             logger.error(f"Error during model inference: {e}")
