@@ -8,11 +8,11 @@ class Config:
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
-            cls._instance.config = toml.load("config.toml")
+            cls._instance.config = toml.load("sample.config.toml")
         return cls._instance
 
     def __init__(self):
-        self.config = toml.load("config.toml")
+        self.config = toml.load("sample.config.toml")
 
     def get_config(self):
         return self.config

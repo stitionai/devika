@@ -19,11 +19,11 @@ ENV PATH="/home/nonroot/devika/.venv/bin:$HOME/.cargo/bin:$PATH"
 # copy devika python engine only
 RUN $HOME/.cargo/bin/uv venv
 COPY requirements.txt /home/nonroot/devika/
-RUN UV_HTTP_TIMEOUT=100000 $HOME/.cargo/bin/uv pip install -r requirements.txt 
+RUN UV_HTTP_TIMEOUT=100000 $HOME/.cargo/bin/uv pip install -r requirements.txt
 RUN playwright install --with-deps
 
 COPY src /home/nonroot/devika/src
-COPY config.toml /home/nonroot/devika/
+COPY sample.config.toml /home/nonroot/devika/
 COPY devika.py /home/nonroot/devika/
 RUN chown -R nonroot:nonroot /home/nonroot/devika
 
