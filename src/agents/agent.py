@@ -64,7 +64,7 @@ class Agent:
         results = {}
 
         knowledge_base = KnowledgeBase()
-        bing_search = WebSearch()
+        web_search = WebSearch()
         browser = Browser()
 
         for query in queries:
