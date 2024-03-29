@@ -1,53 +1,28 @@
-import json
+"""Decision Agent Module"""
+
 import os
 
-from jinja2 import BaseLoader, Environment
+from src.agents import BaseAgent
 
-from src.llm import LLM
 
-PROMPT = (
-    open(
-        os.path.join(os.path.dirname(__file__), "prompt.jinja2"), "r", encoding="utf-8"
+class Decision(BaseAgent):
+    """Decision agent class"""
+
+    _prompt = (
+        open(
+            os.path.join(os.path.dirname(__file__), "prompt.jinja2"),
+            "r",
+            encoding="utf-8",
+        )
+        .read()
+        .strip()
     )
-    .read()
-    .strip()
-)
 
-
-class Decision:
-    def __init__(self, base_model: str):
-        self.llm = LLM(model_id=base_model)
-
-    def render(self, prompt: str) -> str:
-        env = Environment(loader=BaseLoader())
-        template = env.from_string(PROMPT)
-        return template.render(prompt=prompt)
-
-    def validate_response(self, response: str):
-        response = response.strip().replace("```json", "```")
-
-        if response.startswith("```") and response.endswith("```"):
-            response = response[3:-3].strip()
-
-        try:
-            response = json.loads(response)
-        except Exception as _:
-            return False
+    def _post_validate_response(self, response: str):
+        """Post validate respone for decision agent."""
 
         for item in response:
-            if "function" not in item or "args" not in item or "reply" not in item:
+            # TODO: Check if the change is correct since I am not sure what is the item here
+            if item not in ["function", "args", "reply"]:
                 return False
-
         return response
-
-    def execute(self, prompt: str, project_name: str) -> str:
-        rendered_prompt = self.render(prompt)
-        response = self.llm.inference(rendered_prompt, project_name)
-
-        valid_response = self.validate_response(response)
-
-        while not valid_response:
-            print("Invalid response from the model, trying again...")
-            return self.execute(prompt, project_name)
-
-        return valid_response
