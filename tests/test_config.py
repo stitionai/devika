@@ -26,12 +26,12 @@ class TestConfig:
         return mocker.patch("src.config.Config._CONFIG_FILE", p)
 
     @fixture
-    def patch_toml_load(self, mocker):
+    def patch_load_config(self, mocker):
         """
-        Patch every use of toml.load in class Config
-        The return value from toml.load is changed to `{}`
+        Patch load_config in class Config
+        The return value from load_config is changed to `{}`
         """
-        return mocker.patch("src.config.toml.load", return_value={})
+        return mocker.patch("src.config.Config.load_config", return_value={})
 
     def test_creation(self, setup, patch_config):
         assert Config() is not None
@@ -39,9 +39,9 @@ class TestConfig:
     def test_singleton(self, setup, patch_config):
         assert Config() == Config()
 
-    def test_toml_load_called_once_during_multiple_access(self, setup, patch_config, patch_toml_load):
+    def test_load_config_called_once_during_multiple_access(self, setup, patch_config, patch_load_config):
         Config(), Config(), Config(), Config(), Config()
-        patch_toml_load.assert_called_once()
+        patch_load_config.assert_called_once()
 
     def test_save_config_correctly_saves_config(self, setup, patch_config):
         # Read config from file and modify values
