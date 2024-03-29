@@ -183,7 +183,7 @@ def set_settings():
     data = request.json
     print("Data: ", data)
     config.config.update(data)
-    config.save_config()
+    config.dump_config()
     return jsonify({"message": "Settings updated"})
 
 
