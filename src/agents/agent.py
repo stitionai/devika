@@ -41,14 +41,10 @@ class Agent:
 
         self.logger = Logger()
 
-        """
-        Accumulate contextual keywords from chained prompts of all preparation agents
-        """
+        # Accumulate contextual keywords from chained prompts of all preparation agents
         self.collected_context_keywords = set()
 
-        """
-        Agents
-        """
+        # Initialize all the agents
         self.planner = Planner(base_model=base_model)
         self.researcher = Researcher(base_model=base_model)
         self.formatter = Formatter(base_model=base_model)
