@@ -10,7 +10,7 @@ PROMPT = open("src/agents/researcher/prompt.jinja2").read().strip()
 
 class Researcher:
     def __init__(self, base_model: str):
-        self.bing_search = WebSearch()
+        self.web_search = WebSearch()
         self.llm = LLM(model_id=base_model)
 
     def render(self, step_by_step_plan: str, contextual_keywords: str) -> str:
