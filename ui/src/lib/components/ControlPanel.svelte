@@ -26,19 +26,21 @@
 </script>
 
 <div class="control-panel bg-slate-900 border border-indigo-700 rounded">
-  <Dropdown options={Object.fromEntries($projectList.map((x) => [x, x]))} label="Select Project" bind:selection={$selectedProject}>
-    <div slot="prefix-entries" let:closeDropdown={close}>
-      <button
-        class="text-white block px-4 py-2 text-sm hover:bg-slate-700 w-full text-left overflow-clip"
-        on:click|preventDefault={() => {
-          createNewProject();
-          close();
-        }}
-      >
-        + Create New Project
-      </button>
-    </div>
-  </Dropdown>
+  <div class="dropdown-container">
+    <Dropdown options={Object.fromEntries($projectList.map((x) => [x, x]))} label="Select Project" bind:selection={$selectedProject}>
+      <div slot="prefix-entries" let:closeDropdown={close}>
+        <button
+          class="text-white block px-4 py-2 text-sm hover:bg-slate-700 w-full text-left overflow-clip"
+          on:click|preventDefault={() => {
+            createNewProject();
+            close();
+          }}
+        >
+          + Create New Project
+        </button>
+      </div>
+    </Dropdown>
+  </div>
   <div
     class="right-controls"
     style="display: flex; align-items: center; gap: 20px"
@@ -53,16 +55,22 @@
       <span class="token-count-animation">{tokenUsage}</span>
     </div>
     <div class="relative inline-block text-left">
-      <Dropdown
-        options={Object.fromEntries($modelList.map(([name, id]) => [id, `${name} (${id})`]))}
-        label="Select Model"
-        bind:selection={$selectedModel}
-      />
+      <div class="dropdown-container">
+        <Dropdown
+          options={Object.fromEntries($modelList.map(([name, id]) => [id, `${name} (${id})`]))}
+          label="Select Model"
+          bind:selection={$selectedModel}
+        />
+      </div>
     </div>
   </div>
 </div>
 
 <style>
+  .dropdown-container {
+    min-width: 130px; 
+  }
+
   .internet-status {
     width: 12px;
     height: 12px;
