@@ -1,11 +1,12 @@
 import os
 
-from playwright.sync_api import sync_playwright, TimeoutError
 from markdownify import markdownify as md
 from pdfminer.high_level import extract_text
+from playwright.sync_api import TimeoutError, sync_playwright
 
 from src.config import Config
 from src.state import AgentState
+
 
 class Browser:
     def __init__(self):
@@ -28,8 +29,10 @@ class Browser:
     def screenshot(self, project_name):
         screenshots_save_path = Config().get_screenshots_dir()
 
-        page_metadata = self.page.evaluate("() => { return { url: document.location.href, title: document.title } }")
-        page_url = page_metadata['url']
+        page_metadata = self.page.evaluate(
+            "() => { return { url: document.location.href, title: document.title } }"
+        )
+        page_url = page_metadata["url"]
         random_filename = os.urandom(20).hex()
         filename_to_save = f"{random_filename}.png"
         path_to_save = os.path.join(screenshots_save_path, filename_to_save)
@@ -41,10 +44,10 @@ class Browser:
         new_state["internal_monologue"] = "Browsing the web right now..."
         new_state["browser_session"]["url"] = page_url
         new_state["browser_session"]["screenshot"] = path_to_save
-        AgentState().add_to_current_state(project_name, new_state)        
+        AgentState().add_to_current_state(project_name, new_state)
 
         return path_to_save
-    
+
     def get_html(self):
         return self.page.content()
 
@@ -53,13 +56,15 @@ class Browser:
 
     def get_pdf(self):
         pdfs_save_path = Config().get_pdfs_dir()
-        
-        page_metadata = self.page.evaluate("() => { return { url: document.location.href, title: document.title } }")
+
+        page_metadata = self.page.evaluate(
+            "() => { return { url: document.location.href, title: document.title } }"
+        )
         filename_to_save = f"{page_metadata['title']}.pdf"
         save_path = os.path.join(pdfs_save_path, filename_to_save)
-        
-        self.page.pdf(path=save_path)        
-        
+
+        self.page.pdf(path=save_path)
+
         return save_path
 
     def pdf_to_text(self, pdf_path):
@@ -70,7 +75,7 @@ class Browser:
         return self.pdf_to_text(pdf_path)
 
     def extract_text(self):
-        return self.page.evaluate("() => document.body.innerText")    
+        return self.page.evaluate("() => document.body.innerText")
 
     def close(self):
         self.page.close()

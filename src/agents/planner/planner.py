@@ -1,8 +1,9 @@
-from jinja2 import Environment, BaseLoader
+from jinja2 import BaseLoader, Environment
 
 from src.llm import LLM
 
 PROMPT = open("src/agents/planner/prompt.jinja2").read().strip()
+
 
 class Planner:
     def __init__(self, base_model: str):
@@ -12,18 +13,12 @@ class Planner:
         env = Environment(loader=BaseLoader())
         template = env.from_string(PROMPT)
         return template.render(prompt=prompt)
-    
+
     def validate_response(self, response: str) -> bool:
         return True
-    
+
     def parse_response(self, response: str):
-        result = {
-            "project": "",
-            "reply": "",
-            "focus": "",
-            "plans": {},
-            "summary": ""
-        }
+        result = {"project": "", "reply": "", "focus": "", "plans": {}, "summary": ""}
 
         current_section = None
         current_step = None
@@ -33,7 +28,7 @@ class Planner:
 
             if line.startswith("Project Name:"):
                 current_section = "project"
-                result["project"] = line.split(":", 1)[1].strip()            
+                result["project"] = line.split(":", 1)[1].strip()
             elif line.startswith("Your Reply to the Human Prompter:"):
                 current_section = "reply"
                 result["reply"] = line.split(":", 1)[1].strip()
@@ -63,7 +58,7 @@ class Planner:
         result["focus"] = result["focus"].strip()
         result["summary"] = result["summary"].strip()
 
-        return result    
+        return result
 
     def execute(self, prompt: str, project_name: str) -> str:
         prompt = self.render(prompt)

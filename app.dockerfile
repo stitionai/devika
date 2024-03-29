@@ -9,7 +9,7 @@ USER root
 WORKDIR /home/nonroot/client
 RUN groupadd -r nonroot && useradd -r -g nonroot -d /home/nonroot/client -s /bin/bash nonroot
 
-# install node js 
+# install node js
 RUN apt-get update && apt-get upgrade
 RUN apt-get install -y build-essential software-properties-common curl sudo wget git
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -

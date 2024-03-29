@@ -1,16 +1,19 @@
-import os
 import json
+import os
 import zipfile
 from datetime import datetime
 from typing import Optional
+
 from sqlmodel import Field, Session, SQLModel, create_engine
 
 from src.config import Config
+
 
 class Projects(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     project: str
     message_stack_json: str
+
 
 class ProjectManager:
     def __init__(self):
@@ -22,12 +25,8 @@ class ProjectManager:
 
     def new_message(self):
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        
-        return {
-            "from_devika": True,
-            "message": None,
-            "timestamp": timestamp
-        }
+
+        return {"from_devika": True, "message": None, "timestamp": timestamp}
 
     def create_project(self, project: str):
         with Session(self.engine) as session:
@@ -37,14 +36,18 @@ class ProjectManager:
 
     def delete_project(self, project: str):
         with Session(self.engine) as session:
-            project_state = session.query(Projects).filter(Projects.project == project).first()
+            project_state = (
+                session.query(Projects).filter(Projects.project == project).first()
+            )
             if project_state:
                 session.delete(project_state)
                 session.commit()
 
     def add_message_to_project(self, project: str, message: dict):
         with Session(self.engine) as session:
-            project_state = session.query(Projects).filter(Projects.project == project).first()
+            project_state = (
+                session.query(Projects).filter(Projects.project == project).first()
+            )
             if project_state:
                 message_stack = json.loads(project_state.message_stack_json)
                 message_stack.append(message)
@@ -52,7 +55,9 @@ class ProjectManager:
                 session.commit()
             else:
                 message_stack = [message]
-                project_state = Projects(project=project, message_stack_json=json.dumps(message_stack))
+                project_state = Projects(
+                    project=project, message_stack_json=json.dumps(message_stack)
+                )
                 session.add(project_state)
                 session.commit()
 
@@ -60,7 +65,7 @@ class ProjectManager:
         new_message = self.new_message()
         new_message["message"] = message
         self.add_message_to_project(project, new_message)
-        
+
     def add_message_from_user(self, project: str, message: str):
         new_message = self.new_message()
         new_message["message"] = message
@@ -69,14 +74,18 @@ class ProjectManager:
 
     def get_messages(self, project: str):
         with Session(self.engine) as session:
-            project_state = session.query(Projects).filter(Projects.project == project).first()
+            project_state = (
+                session.query(Projects).filter(Projects.project == project).first()
+            )
             if project_state:
                 return json.loads(project_state.message_stack_json)
             return None
-        
+
     def get_latest_message_from_user(self, project: str):
         with Session(self.engine) as session:
-            project_state = session.query(Projects).filter(Projects.project == project).first()
+            project_state = (
+                session.query(Projects).filter(Projects.project == project).first()
+            )
             if project_state:
                 message_stack = json.loads(project_state.message_stack_json)
                 for message in reversed(message_stack):
@@ -86,7 +95,9 @@ class ProjectManager:
 
     def validate_last_message_is_from_user(self, project: str):
         with Session(self.engine) as session:
-            project_state = session.query(Projects).filter(Projects.project == project).first()
+            project_state = (
+                session.query(Projects).filter(Projects.project == project).first()
+            )
             if project_state:
                 message_stack = json.loads(project_state.message_stack_json)
                 if message_stack:
@@ -95,7 +106,9 @@ class ProjectManager:
 
     def get_latest_message_from_devika(self, project: str):
         with Session(self.engine) as session:
-            project_state = session.query(Projects).filter(Projects.project == project).first()
+            project_state = (
+                session.query(Projects).filter(Projects.project == project).first()
+            )
             if project_state:
                 message_stack = json.loads(project_state.message_stack_json)
                 for message in reversed(message_stack):
@@ -107,12 +120,14 @@ class ProjectManager:
         with Session(self.engine) as session:
             projects = session.query(Projects).all()
             return [project.project for project in projects]
-        
+
     def get_all_messages_formatted(self, project: str):
         formatted_messages = []
-        
+
         with Session(self.engine) as session:
-            project_state = session.query(Projects).filter(Projects.project == project).first()
+            project_state = (
+                session.query(Projects).filter(Projects.project == project).first()
+            )
             if project_state:
                 message_stack = json.loads(project_state.message_stack_json)
                 for message in message_stack:
@@ -120,23 +135,25 @@ class ProjectManager:
                         formatted_messages.append(f"Devika: {message['message']}")
                     else:
                         formatted_messages.append(f"User: {message['message']}")
-                        
+
             return formatted_messages
 
     def get_project_path(self, project: str):
         return os.path.join(self.project_path, project.lower().replace(" ", "-"))
-    
+
     def project_to_zip(self, project: str):
         project_path = self.get_project_path(project)
         zip_path = f"{project_path}.zip"
 
-        with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
+        with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zipf:
             for root, dirs, files in os.walk(project_path):
                 for file in files:
-                    relative_path = os.path.relpath(os.path.join(root, file), os.path.join(project_path, '..'))
+                    relative_path = os.path.relpath(
+                        os.path.join(root, file), os.path.join(project_path, "..")
+                    )
                     zipf.write(os.path.join(root, file), arcname=relative_path)
-                    
+
         return zip_path
-    
+
     def get_zip_path(self, project: str):
         return f"{self.get_project_path(project)}.zip"

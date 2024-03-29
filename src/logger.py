@@ -5,11 +5,14 @@ from flask import request
 
 from src.config import Config
 
+
 class Logger:
     def __init__(self, filename="devika_agent.log"):
         config = Config()
         logs_dir = config.get_logs_dir()
-        self.logger = LogInit(pathName=logs_dir + "/" + filename, console=True, colors=True)
+        self.logger = LogInit(
+            pathName=logs_dir + "/" + filename, console=True, colors=True
+        )
 
     def read_log_file(self) -> str:
         with open(self.logger.pathName, "r") as file:
@@ -61,10 +64,14 @@ def route_logger(logger: Logger):
             try:
                 if log_enabled:
                     response_summary = response.get_data(as_text=True)
-                    logger.debug(f"{request.path} {request.method} - Response: {response_summary}")
+                    logger.debug(
+                        f"{request.path} {request.method} - Response: {response_summary}"
+                    )
             except Exception as e:
                 logger.exception(f"{request.path} {request.method} - {e})")
 
             return response
+
         return wrapper
+
     return decorator

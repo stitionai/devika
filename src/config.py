@@ -1,5 +1,6 @@
-import toml
 from os import environ
+
+import toml
 
 
 class Config:
@@ -22,15 +23,22 @@ class Config:
 
     def get_bing_api_endpoint(self):
         return environ.get("BING_API_ENDPOINT", self.config["API_ENDPOINTS"]["BING"])
-    
+
     def get_google_search_api_key(self):
-        return environ.get("GOOGLE_SEARCH_API_KEY", self.config["API_KEYS"]["GOOGLE_SEARCH"])
+        return environ.get(
+            "GOOGLE_SEARCH_API_KEY", self.config["API_KEYS"]["GOOGLE_SEARCH"]
+        )
 
     def get_google_search_engine_id(self):
-        return environ.get("GOOGLE_SEARCH_ENGINE_ID", self.config["API_KEYS"]["GOOGLE_SEARCH_ENGINE_ID"])
+        return environ.get(
+            "GOOGLE_SEARCH_ENGINE_ID",
+            self.config["API_KEYS"]["GOOGLE_SEARCH_ENGINE_ID"],
+        )
 
     def get_google_search_api_endpoint(self):
-        return environ.get("GOOGLE_SEARCH_API_ENDPOINT", self.config["API_ENDPOINTS"]["GOOGLE_SEARCH"])
+        return environ.get(
+            "GOOGLE_SEARCH_API_ENDPOINT", self.config["API_ENDPOINTS"]["GOOGLE_SEARCH"]
+        )
 
     def get_ollama_api_endpoint(self):
         return environ.get(
@@ -42,19 +50,19 @@ class Config:
 
     def get_openai_api_key(self):
         return environ.get("OPENAI_API_KEY", self.config["API_KEYS"]["OPENAI"])
-    
+
     def get_gemini_api_key(self):
         return environ.get("GEMINI_API_KEY", self.config["API_KEYS"]["GEMINI"])
-    
+
     def get_gemini_api_key(self):
         return self.config["API_KEYS"]["GEMINI"]
-    
+
     def get_netlify_api_key(self):
         return environ.get("NETLIFY_API_KEY", self.config["API_KEYS"]["NETLIFY"])
-    
+
     def get_groq_api_key(self):
         return environ.get("GROQ_API_KEY", self.config["API_KEYS"]["GROQ"])
-      
+
     def get_sqlite_db(self):
         return environ.get("SQLITE_DB_PATH", self.config["STORAGE"]["SQLITE_DB"])
 
@@ -75,7 +83,7 @@ class Config:
 
     def get_web_search(self):
         return environ.get("WEB_SEARCH", self.config["STORAGE"]["WEB_SEARCH"])
-    
+
     def get_logging_rest_api(self):
         return self.config["LOGGING"]["LOG_REST_API"] == "true"
 
@@ -126,24 +134,24 @@ class Config:
         self.config["STORAGE"]["SQLITE_DB"] = db
         self.save_config()
 
-    def set_screenshots_dir(self, dir):
-        self.config["STORAGE"]["SCREENSHOTS_DIR"] = dir
+    def set_screenshots_dir(self, dirname):
+        self.config["STORAGE"]["SCREENSHOTS_DIR"] = dirname
         self.save_config()
 
-    def set_pdfs_dir(self, dir):
-        self.config["STORAGE"]["PDFS_DIR"] = dir
+    def set_pdfs_dir(self, dirname):
+        self.config["STORAGE"]["PDFS_DIR"] = dirname
         self.save_config()
 
-    def set_projects_dir(self, dir):
-        self.config["STORAGE"]["PROJECTS_DIR"] = dir
+    def set_projects_dir(self, dirname):
+        self.config["STORAGE"]["PROJECTS_DIR"] = dirname
         self.save_config()
 
-    def set_logs_dir(self, dir):
-        self.config["STORAGE"]["LOGS_DIR"] = dir
+    def set_logs_dir(self, dirname):
+        self.config["STORAGE"]["LOGS_DIR"] = dirname
         self.save_config()
 
-    def set_repos_dir(self, dir):
-        self.config["STORAGE"]["REPOS_DIR"] = dir
+    def set_repos_dir(self, dirname):
+        self.config["STORAGE"]["REPOS_DIR"] = dirname
         self.save_config()
 
     def set_logging_rest_api(self, value):

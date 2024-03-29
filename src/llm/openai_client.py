@@ -2,6 +2,7 @@ from openai import OpenAI as OAI
 
 from src.config import Config
 
+
 class OpenAI:
     def __init__(self):
         config = Config()
@@ -9,7 +10,7 @@ class OpenAI:
         self.client = OAI(
             api_key=api_key,
         )
-        
+
     def inference(self, model_id: str, prompt: str) -> str:
         chat_completion = self.client.chat.completions.create(
             messages=[

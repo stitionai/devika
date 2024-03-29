@@ -1,5 +1,6 @@
 import git as GitPython
 
+
 class Git:
     def __init__(self, path):
         self.repo = GitPython.Repo(path)
@@ -17,4 +18,4 @@ class Git:
         return self.repo.commit(commit)
 
     def get_file(self, commit, file):
-        return self.repo.git.show(f'{commit}:{file}')
+        return self.repo.git.show(f"{commit}:{file}")

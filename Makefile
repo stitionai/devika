@@ -1,7 +1,7 @@
 
 .PHONY = setup deps compose-up compose-down compose-destroy
 
-# to check if docker is installed on the machine 
+# to check if docker is installed on the machine
 DOCKER := $(shell command -v docker)
 DOCKER_COMPOSE := $(shell command -v docker-compose)
 deps:

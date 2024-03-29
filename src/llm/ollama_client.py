@@ -1,7 +1,7 @@
 import httpx
 from ollama import Client
-from src.config import Config
 
+from src.config import Config
 from src.logger import Logger
 
 logger = Logger()
@@ -15,7 +15,9 @@ class Ollama:
         try:
             return client.list()["models"]
         except httpx.ConnectError:
-            logger.warning("Ollama server not running, please start the server to use models from Ollama.")
+            logger.warning(
+                "Ollama server not running, please start the server to use models from Ollama."
+            )
         except Exception as e:
             logger.error(f"Failed to list Ollama models: {e}")
         return []
@@ -23,7 +25,7 @@ class Ollama:
     def inference(self, model_id: str, prompt: str) -> str:
         try:
             response = client.generate(model=model_id, prompt=prompt.strip())
-            return response['response']
+            return response["response"]
         except Exception as e:
             logger.error(f"Error during model inference: {e}")
         return ""

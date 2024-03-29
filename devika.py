@@ -1,20 +1,18 @@
-from flask import Flask, request, jsonify, send_file, make_response
-from flask_cors import CORS
-import os
 import logging
+import os
 from threading import Thread
 
 import tiktoken
+from flask import Flask, jsonify, make_response, request, send_file
+from flask_cors import CORS
 
-from src.init import init_devika
+from src.agents import Agent
 from src.config import Config
-
+from src.init import init_devika
+from src.llm import LLM
 from src.logger import Logger, route_logger
 from src.project import ProjectManager
 from src.state import AgentState
-
-from src.agents import Agent
-from src.llm import LLM
 
 app = Flask(__name__)
 log = logging.getLogger("werkzeug")
@@ -45,14 +43,16 @@ def execute_agent():
     base_model = data.get("base_model")
     project_name = data.get("project_name")
     web_search = None
-    if(data.get("web_search")):
+    if data.get("web_search"):
         web_search = data.get("a")
 
     if not base_model:
         return jsonify({"error": "base_model is required"})
 
     thread = Thread(
-        target=lambda: Agent(base_model=base_model).execute(prompt, project_name, web_search)
+        target=lambda: Agent(base_model=base_model).execute(
+            prompt, project_name, web_search
+        )
     )
     thread.start()
 
@@ -83,7 +83,7 @@ def download_project_pdf():
     pdf_path = os.path.join(pdf_dir, f"{project_name}.pdf")
 
     response = make_response(send_file(pdf_path))
-    response.headers['Content-Type'] = 'application/pdf'
+    response.headers["Content-Type"] = "application/pdf"
     return response
 
 
@@ -111,7 +111,9 @@ def send_message():
 
     if AgentState().is_agent_completed(project_name):
         thread = Thread(
-            target=lambda: Agent(base_model=base_model).subsequent_execute(message, project_name)
+            target=lambda: Agent(base_model=base_model).subsequent_execute(
+                message, project_name
+            )
         )
         thread.start()
 

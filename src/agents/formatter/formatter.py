@@ -1,8 +1,9 @@
-from jinja2 import Environment, BaseLoader
+from jinja2 import BaseLoader, Environment
 
 from src.llm import LLM
 
 PROMPT = open("src/agents/formatter/prompt.jinja2").read().strip()
+
 
 class Formatter:
     def __init__(self, base_model: str):
@@ -12,7 +13,7 @@ class Formatter:
         env = Environment(loader=BaseLoader())
         template = env.from_string(PROMPT)
         return template.render(raw_text=raw_text)
-    
+
     def validate_response(self, response: str) -> bool:
         return True
 

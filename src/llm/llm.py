@@ -1,21 +1,19 @@
 from enum import Enum
 from typing import List, Tuple
 
-from .ollama_client import Ollama
-from .claude_client import Claude
-from .openai_client import OpenAI
-from .gemini_client import Gemini
-from .groq_client import Groq
-
 from src.state import AgentState
-
-import tiktoken
 
 from ..config import Config
 from ..logger import Logger
+from .claude_client import Claude
+from .gemini_client import Gemini
+from .groq_client import Groq
+from .ollama_client import Ollama
+from .openai_client import OpenAI
 
 TOKEN_USAGE = 0
 TIKTOKEN_ENC = tiktoken.get_encoding("cl100k_base")
+
 
 class Model(Enum):
     CLAUDE_3_OPUS = ("Claude 3 Opus", "claude-3-opus-20240229")
@@ -39,19 +37,24 @@ class Model(Enum):
 
 logger = Logger(filename="devika_prompts.log")
 
+
 class LLM:
     def __init__(self, model_id: str = None):
         self.model_id = model_id
         self.log_prompts = Config().get_logging_prompts()
-    
+
     def list_models(self) -> List[Tuple[str, str]]:
         return [model.value for model in Model if model.name != "OLLAMA_MODELS"] + list(
             Model.OLLAMA_MODELS.value
         )
 
     def model_id_to_enum_mapping(self):
-        models = {model.value[1]: model for model in Model if model.name != "OLLAMA_MODELS"}
-        ollama_models = {model[1]: "OLLAMA_MODELS" for model in Model.OLLAMA_MODELS.value}
+        models = {
+            model.value[1]: model for model in Model if model.name != "OLLAMA_MODELS"
+        }
+        ollama_models = {
+            model[1]: "OLLAMA_MODELS" for model in Model.OLLAMA_MODELS.value
+        }
         models.update(ollama_models)
         return models
 
@@ -59,11 +62,9 @@ class LLM:
         token_usage = len(TIKTOKEN_ENC.encode(string))
         AgentState().update_token_usage(project_name, token_usage)
 
-    def inference(
-        self, prompt: str, project_name: str
-    ) -> str:
+    def inference(self, prompt: str, project_name: str) -> str:
         self.update_global_token_usage(prompt, project_name)
-        
+
         model = self.model_id_to_enum_mapping()[self.model_id]
 
         if self.log_prompts:
@@ -86,5 +87,5 @@ class LLM:
             logger.debug(f"Response ({model}): --> {response}")
 
         self.update_global_token_usage(response, project_name)
-        
+
         return response

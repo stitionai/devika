@@ -2,6 +2,7 @@ from anthropic import Anthropic
 
 from src.config import Config
 
+
 class Claude:
     def __init__(self):
         config = Config()

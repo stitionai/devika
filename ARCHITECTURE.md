@@ -8,7 +8,7 @@ Devika is an advanced AI software engineer that can understand high-level human 
 2. [Agent Core](#agent-core)
 3. [Agents](#agents)
    - [Planner](#planner)
-   - [Researcher](#researcher) 
+   - [Researcher](#researcher)
    - [Coder](#coder)
    - [Action](#action)
    - [Runner](#runner)
@@ -17,7 +17,7 @@ Devika is an advanced AI software engineer that can understand high-level human 
    - [Reporter](#reporter)
    - [Decision](#decision)
 4. [Language Models](#language-models)
-5. [Browser Interaction](#browser-interaction) 
+5. [Browser Interaction](#browser-interaction)
 6. [Project Management](#project-management)
 7. [Agent State Management](#agent-state-management)
 8. [Services](#services)
@@ -29,10 +29,10 @@ Devika is an advanced AI software engineer that can understand high-level human 
 At a high level, Devika consists of the following key components:
 
 - **Agent Core**: Orchestrates the overall AI planning, reasoning and execution process. Communicates with various sub-agents.
-- **Agents**: Specialized sub-agents that handle specific tasks like planning, research, coding, patching, reporting etc.  
+- **Agents**: Specialized sub-agents that handle specific tasks like planning, research, coding, patching, reporting etc.
 - **Language Models**: Leverages large language models (LLMs) like Claude, GPT-4, GPT-3 for natural language understanding and generation.
 - **Browser Interaction**: Enables web browsing, information gathering, and interaction with web elements.
-- **Project Management**: Handles organization and persistence of project-related data. 
+- **Project Management**: Handles organization and persistence of project-related data.
 - **Agent State Management**: Tracks and persists the dynamic state of the AI agent across interactions.
 - **Services**: Integrations with external services like GitHub, Netlify for enhanced capabilities.
 - **Utilities**: Supporting modules for configuration, logging, vector search, PDF generation etc.
@@ -43,10 +43,10 @@ Let's dive into each of these components in more detail.
 
 The `Agent` class serves as the central engine that drives Devika's AI planning and execution loop. Here's how it works:
 
-1. When a user provides a high-level prompt, the `execute` method is invoked on the Agent. 
+1. When a user provides a high-level prompt, the `execute` method is invoked on the Agent.
 2. The prompt is first passed to the Planner agent to generate a step-by-step plan.
 3. The Researcher agent then takes this plan and extracts relevant search queries and context.
-4. The Agent performs web searches using Bing Search API and crawls the top results. 
+4. The Agent performs web searches using Bing Search API and crawls the top results.
 5. The raw crawled content is passed through the Formatter agent to extract clean, relevant information.
 6. This researched context, along with the step-by-step plan, is fed to the Coder agent to generate code.
 7. The generated code is saved to the project directory on disk.
@@ -57,7 +57,7 @@ The `Agent` class serves as the central engine that drives Devika's AI planning 
 
 Throughout this process, the Agent Core is responsible for:
 - Managing conversation history and project-specific context
-- Updating agent state and internal monologue 
+- Updating agent state and internal monologue
 - Accumulating context keywords across agent prompts
 - Emulating the "thinking" process of the AI through timed agent state updates
 - Handling special commands through the Decision agent (e.g. git clone, browser interaction session)
@@ -72,7 +72,7 @@ Devika's cognitive abilities are powered by a collection of specialized sub-agen
 - Uses few-shot prompting to provide examples of the expected response format
 
 ### Researcher
-- Takes the generated plan and extracts relevant search queries 
+- Takes the generated plan and extracts relevant search queries
 - Ranks and filters queries based on relevance and specificity
 - Prompts the user for additional context if required
 - Aims to maximize information gain while minimizing number of searches
@@ -90,7 +90,7 @@ Devika's cognitive abilities are powered by a collection of specialized sub-agen
 - Provides a human-like confirmation of the action to the user
 
 ### Runner
-- Executes the written code in a sandboxed environment 
+- Executes the written code in a sandboxed environment
 - Handles different OS environments (Mac, Linux, Windows)
 - Streams command output to user in real-time
 - Gracefully handles errors and exceptions
@@ -147,7 +147,7 @@ Devika can interact with webpages in an automated fashion to gather information 
 The `Browser` class uses Playwright to provide high-level web automation primitives:
 - Spawning a browser instance (Chromium)
 - Navigating to a URL
-- Querying DOM elements 
+- Querying DOM elements
 - Extracting page content as text, Markdown, PDF etc.
 - Taking a screenshot of the page
 
@@ -157,7 +157,7 @@ The `Crawler` class defines an agent that can interact with a webpage based on n
 - LLM to determine the best action to take based on current page content and objective
 
 The `start_interaction` function sets up a loop where:
-1. The current page content and objective is passed to the LLM 
+1. The current page content and objective is passed to the LLM
 2. The LLM returns the next best action to take (e.g. "CLICK 12" or "TYPE 7 machine learning")
 3. The Crawler executes this action on the live page
 4. The process repeats from the updated page state
@@ -186,7 +186,7 @@ This allows the agent to work on multiple projects simultaneously and retain con
 
 As the AI agent works on a task, we need to track and display its internal state to the user. The `AgentState` class handles this by providing an interface to:
 
-- Initialize a new agent state 
+- Initialize a new agent state
 - Add a state to the current sequence of states for a project
 - Update the latest state for a project
 - Query the latest state or entire state history for a project
@@ -215,23 +215,23 @@ Devika integrates with external services to augment its capabilities:
 - **GitHub**: Performing git operations like clone/pull, listing repos/commits/files etc.
 - **Netlify**: Deploying web apps and sites seamlessly
 
-The `GitHub` and `Netlify` classes provide lightweight wrappers around the respective service APIs. 
+The `GitHub` and `Netlify` classes provide lightweight wrappers around the respective service APIs.
 They handle authentication, making HTTP requests, and parsing responses.
 
 This allows Devika to perform actions like:
 - Cloning a repo given a GitHub URL
-- Listing a user's GitHub repos 
+- Listing a user's GitHub repos
 - Creating a new Netlify site
-- Deploying a directory to Netlify 
+- Deploying a directory to Netlify
 - Providing the deployed site URL to the user
 
 Integrations are done in a modular way so that new services can be added easily.
 
-## Utilities  
+## Utilities
 
 Devika makes use of several utility modules to support its functioning:
 
-- `Config`: Loads and provides access to configuration settings (API keys, folder paths etc.) 
+- `Config`: Loads and provides access to configuration settings (API keys, folder paths etc.)
 - `Logger`: Sets up logging to console and file, with support for log levels and colors
 - `ReadCode`: Recursively reads code files in a directory and converts them into a Markdown format
 - `SentenceBERT`: Extracts keywords and semantic information from text using SentenceBERT embeddings
@@ -244,7 +244,7 @@ The utility modules aim to provide reusable functionality that is used across di
 Devika is a complex system that combines multiple AI and automation techniques to deliver an intelligent programming assistant. Key design principles include:
 
 - Modularity: Breaking down functionality into specialized agents and services
-- Flexibility: Supporting different LLMs, services and domains in a pluggable fashion  
+- Flexibility: Supporting different LLMs, services and domains in a pluggable fashion
 - Persistence: Storing project and agent state in a DB to enable pause/resume and auditing
 - Transparency: Surfacing agent thought process and interactions to user in real-time
 

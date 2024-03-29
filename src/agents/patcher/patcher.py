@@ -1,8 +1,8 @@
 import os
 import time
+from typing import Dict, List, Union
 
-from jinja2 import Environment, BaseLoader
-from typing import List, Dict, Union
+from jinja2 import BaseLoader, Environment
 
 from src.config import Config
 from src.llm import LLM
@@ -10,11 +10,12 @@ from src.state import AgentState
 
 PROMPT = open("src/agents/patcher/prompt.jinja2", "r").read().strip()
 
+
 class Patcher:
     def __init__(self, base_model: str):
         config = Config()
         self.project_dir = config.get_projects_dir()
-        
+
         self.llm = LLM(model_id=base_model)
 
     def render(
@@ -22,8 +23,8 @@ class Patcher:
         conversation: list,
         code_markdown: str,
         commands: list,
-        error :str,
-        system_os: str
+        error: str,
+        system_os: str,
     ) -> str:
         env = Environment(loader=BaseLoader())
         template = env.from_string(PROMPT)
@@ -32,14 +33,14 @@ class Patcher:
             code_markdown=code_markdown,
             commands=commands,
             error=error,
-            system_os=system_os
+            system_os=system_os,
         )
 
     def validate_response(self, response: str) -> Union[List[Dict[str, str]], bool]:
         response = response.strip()
 
         response = response.split("~~~", 1)[1]
-        response = response[:response.rfind("~~~")]
+        response = response[: response.rfind("~~~")]
         response = response.strip()
 
         result = []
@@ -50,7 +51,9 @@ class Patcher:
         for line in response.split("\n"):
             if line.startswith("File: "):
                 if current_file and current_code:
-                    result.append({"file": current_file, "code": "\n".join(current_code)})
+                    result.append(
+                        {"file": current_file, "code": "\n".join(current_code)}
+                    )
                 current_file = line.split("`")[1].strip()
                 current_code = []
                 code_block = False
@@ -70,12 +73,12 @@ class Patcher:
 
         for file in response:
             file_path = f"{self.project_dir}/{project_name}/{file['file']}"
-            file_path_dir = file_path[:file_path.rfind("/")]
+            file_path_dir = file_path[: file_path.rfind("/")]
             os.makedirs(file_path_dir, exist_ok=True)
 
             with open(file_path, "w") as f:
                 f.write(file["code"])
-    
+
         return file_path_dir
 
     def get_project_path(self, project_name: str):
@@ -83,7 +86,9 @@ class Patcher:
         return f"{self.project_dir}/{project_name}"
 
     def response_to_markdown_prompt(self, response: List[Dict[str, str]]) -> str:
-        response = "\n".join([f"File: `{file['file']}`:\n```\n{file['code']}\n```" for file in response])
+        response = "\n".join(
+            [f"File: `{file['file']}`:\n```\n{file['code']}\n```" for file in response]
+        )
         return f"~~~\n{response}\n~~~"
 
     def emulate_code_writing(self, code_set: list, project_name: str):
@@ -106,30 +111,19 @@ class Patcher:
         commands: list,
         error: str,
         system_os: dict,
-        project_name: str
+        project_name: str,
     ) -> str:
-        prompt = self.render(
-            conversation,
-            code_markdown,
-            commands,
-            error,
-            system_os
-        )
+        prompt = self.render(conversation, code_markdown, commands, error, system_os)
         response = self.llm.inference(prompt, project_name)
-        
+
         valid_response = self.validate_response(response)
-        
+
         while not valid_response:
             print("Invalid response from the model, trying again...")
             return self.execute(
-                conversation,
-                code_markdown,
-                commands,
-                error,
-                system_os,
-                project_name
+                conversation, code_markdown, commands, error, system_os, project_name
             )
-        
+
         self.emulate_code_writing(valid_response, project_name)
 
         return valid_response
