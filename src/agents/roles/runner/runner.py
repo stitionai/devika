@@ -5,7 +5,8 @@ import time
 
 from jinja2 import BaseLoader, Environment
 
-from src.agents.patcher import Patcher
+from src.agents.roles.patcher import Patcher
+
 from src.llm import LLM
 from src.project import ProjectManager
 from src.state import AgentState

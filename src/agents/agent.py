@@ -18,18 +18,18 @@ from src.project import ProjectManager
 from src.services import Netlify
 from src.state import AgentState
 
-from .action import Action
-from .answer import Answer
-from .coder import Coder
-from .decision import Decision
-from .feature import Feature
-from .formatter import Formatter
-from .internal_monologue import InternalMonologue
-from .patcher import Patcher
-from .planner import Planner
-from .reporter import Reporter
-from .researcher import Researcher
-from .runner import Runner
+from .roles.action import Action
+from .roles.answer import Answer
+from .roles.coder import Coder
+from .roles.decision import Decision
+from .roles.feature import Feature
+from .roles.formatter import Formatter
+from .roles.internal_monologue import InternalMonologue
+from .roles.patcher import Patcher
+from .roles.planner import Planner
+from .roles.reporter import Reporter
+from .roles.researcher import Researcher
+from .roles.runner import Runner
 
 
 class Agent:
