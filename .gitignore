@@ -14,7 +14,6 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
 lib64/
 parts/
 sdist/
@@ -165,3 +164,4 @@ db/
 screenshots/
 pdfs/
 projects/
+config.toml

@@ -42,16 +42,16 @@ class Researcher:
                 "ask_user": response["ask_user"]
             }
 
-    def execute(self, step_by_step_plan: str, contextual_keywords: List[str]) -> str:
-        contextual_keywords = ", ".join(map(lambda k: k.capitalize(), contextual_keywords))
-        step_by_step_plan = self.render(step_by_step_plan, contextual_keywords)
+    def execute(self, step_by_step_plan: str, contextual_keywords: List[str], project_name: str) -> str:
+        contextual_keywords_str = ", ".join(map(lambda k: k.capitalize(), contextual_keywords))
+        prompt = self.render(step_by_step_plan, contextual_keywords_str)
         
-        response = self.llm.inference(step_by_step_plan)
+        response = self.llm.inference(prompt, project_name)
         
         valid_response = self.validate_response(response)
 
         while not valid_response:
             print("Invalid response from the model, trying again...")
-            return self.execute(step_by_step_plan, contextual_keywords)
+            return self.execute(step_by_step_plan, contextual_keywords, project_name)
 
         return valid_response

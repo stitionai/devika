@@ -103,7 +103,7 @@ class Feature:
         project_name: str
     ) -> str:
         prompt = self.render(conversation, code_markdown, system_os)
-        response = self.llm.inference(prompt)
+        response = self.llm.inference(prompt, project_name)
         
         valid_response = self.validate_response(response)
         

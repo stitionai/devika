@@ -76,7 +76,7 @@ The easiest way to run the project locally:
 2. Install `bun` - JavaScript runtime (https://bun.sh/)
 3. Install and setup `Ollama` (https://ollama.com/)
 
-Set the API Keys in the `config.toml` file. (This will soon be moving to the UI where you can set these keys from the UI itself without touching the command-line, want to implement it? See this issue: https://github.com/stitionai/devika/issues/3)
+Set the API Keys in the `config.toml` file (Rename `sample.config.toml` to `config.toml`). (This will soon be moving to the UI where you can set these keys from the UI itself without touching the command-line, want to implement it? See this issue: https://github.com/stitionai/devika/issues/3)
 
 Then execute the following set of command:
 
@@ -85,6 +85,7 @@ ollama serve
 git clone https://github.com/stitionai/devika.git
 cd devika/
 uv venv
+source .venv/bin/activate
 uv pip install -r requirements.txt
 cd ui/
 bun install
@@ -143,14 +144,18 @@ To start using Devika, follow these steps:
 
 ## Configuration
 
-Devika requires certain configuration settings and API keys to function properly. Update the `config.toml` file with the following information:
+Devika requires certain configuration settings and API keys to function properly. Rename the `sample.config.toml` to `config.toml` and update the file with the following information:
 
-- `OPENAI_API_KEY`: Your OpenAI API key for accessing GPT models.
-- `CLAUDE_API_KEY`: Your Anthropic API key for accessing Claude models.
-- `BING_API_KEY`: Your Bing Search API key for web searching capabilities.
-- `DATABASE_URL`: The URL for your database connection.
-- `LOG_DIRECTORY`: The directory where Devika's logs will be stored.
-- `PROJECT_DIRECTORY`: The directory where Devika's projects will be stored.
+- `SQLITE_DB`: The path to the SQLite database file for storing Devika's data.
+- `SCREENSHOTS_DIR`: The directory where screenshots captured by Devika will be stored.
+- `PDFS_DIR`: The directory where PDF files processed by Devika will be stored.
+- `PROJECTS_DIR`: The directory where Devika's projects will be stored.
+- `LOGS_DIR`: The directory where Devika's logs will be stored.
+- `REPOS_DIR`: The directory where Git repositories cloned by Devika will be stored.
+- `BING`: Your Bing Search API key for web searching capabilities.
+- `CLAUDE`: Your Anthropic API key for accessing Claude models.
+- `NETLIFY`: Your Netlify API key for deploying and managing web projects.
+- `OPENAI`: Your OpenAI API key for accessing GPT models.
 
 Make sure to keep your API keys secure and do not share them publicly.
 
@@ -217,11 +222,23 @@ To join the Devika community Discord server, [click here](https://discord.com/in
 
 ## Contributing
 
-We welcome contributions to enhance Devika's capabilities and improve its performance. To contribute, please see the `CONTRIBUTING.md` file for steps.
+We welcome contributions to enhance Devika's capabilities and improve its performance. To contribute, please see the [`CONTRIBUTING.md`](CONTRIBUTING.md) file for steps.
 
 ## License
 
 Devika is released under the [MIT License](https://opensource.org/licenses/MIT). See the `LICENSE` file for more information.
+
+## Star History
+
+<div align="center">
+<a href="https://star-history.com/#stitionai/devika&Date">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=stitionai/devika&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=stitionai/devika&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=stitionai/devika&type=Date" />
+ </picture>
+</a>
+</div>
 
 ---
 
