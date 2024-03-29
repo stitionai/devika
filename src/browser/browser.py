@@ -12,14 +12,14 @@ class Browser:
     def __init__(self):
         self.playwright = sync_playwright().start()
         chromium = self.playwright.chromium
-        self.browser = chromium.launch()
+        self.browser = chromium.launch(headless=True)
         self.page = self.browser.new_page()
 
     def new_page(self):
         return self.browser.new_page()
 
     def go_to(self, url):
-        self.page.goto(url)
+        self.page.goto(url, wait_until="load")
 
     def screenshot(self, project_name):
         screenshots_save_path = Config().get_screenshots_dir()

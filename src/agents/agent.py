@@ -282,16 +282,16 @@ class Agent:
     
         self.agent_state.set_agent_active(project_name, True)
 
-        print("\n plans:: ", plans)
+        print("\nplans:: ", plans)
         self.project_manager.add_message_from_devika(project_name, reply)
         self.project_manager.add_message_from_devika(project_name, json.dumps(plans, indent=4))
         # self.project_manager.add_message_from_devika(project_name, f"In summary: {summary}")
 
         self.update_contextual_keywords(focus)
-        print("\n context_keywords :: ", self.collected_context_keywords)
+        print("\ncontext_keywords :: ", self.collected_context_keywords)
 
         internal_monologue = self.internal_monologue.execute(current_prompt=plan)
-        print("\n internal_monologue :: ", internal_monologue)
+        print("\ninternal_monologue :: ", internal_monologue)
         print("=====" * 10)
 
         new_state = self.agent_state.new_state()
@@ -299,7 +299,7 @@ class Agent:
         self.agent_state.add_to_current_state(project_name, new_state)
 
         research = self.researcher.execute(plan, self.collected_context_keywords)
-        print("\n research :: ", research)
+        print("\nresearch :: ", research)
         print("=====" * 10)
 
         queries = research["queries"]
