@@ -81,8 +81,8 @@ class Agent:
             """
             Search for the query and get the first link
             """
-            bing_search.search(query)
-            link = bing_search.get_first_link()
+            web_search.search(query)
+            link = web_search.get_first_link()
 
             """
             Browse to the link and take a screenshot, then extract the text
