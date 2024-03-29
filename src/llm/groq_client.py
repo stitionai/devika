@@ -1,6 +1,7 @@
 """Groq client for interacting with Groq API."""
 
 from groq import Groq as _Groq
+from groq import RateLimitError
 
 from src.config import Config
 from .base import BaseLLMModel
@@ -29,18 +30,19 @@ class Groq(BaseLLMModel):
         self.client = _Groq(api_key=api_key, timeout=timeout)
 
     def _inference(self, prompt: str) -> str:
-        chat_completion = self.client.chat.completions.create(
-            messages=[
-                {
-                    "role": "user",
-                    "content": prompt.strip(),
-                }
-            ],
-            model=self.model_id,
-        )
 
-        if chat_completion.choices[0].finish_reason in ["max_tokens", "length"]:
-            raise TokenUsageExceeded("Token usage exceeded for Groq.")
+        try:
+            chat_completion = self.client.chat.completions.create(
+                messages=[
+                    {
+                        "role": "user",
+                        "content": prompt.strip(),
+                    }
+                ],
+                model=self.model_id,
+            )
+        except RateLimitError as e:
+            raise TokenUsageExceeded("Token usage exceeded for Groq.") from e
 
         return chat_completion.choices[0].message.content
 
