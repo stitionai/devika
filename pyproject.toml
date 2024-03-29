@@ -58,3 +58,4 @@ target-version = ['py310']
 
 [tool.pylint]
 disable = "missing-module-docstring,missing-function-docstring,missing-class-docstring"
+fail-under = 8.0

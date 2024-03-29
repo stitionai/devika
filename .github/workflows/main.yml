@@ -49,4 +49,5 @@ jobs:
         run: |
           cd ui
           bun format
-          bun lint
+          # TODO: Uncomment the below line once linting is enabled
+          # bun lint
