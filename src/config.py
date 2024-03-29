@@ -64,6 +64,9 @@ class Config:
     def get_logging_prompts(self):
         return self.config["LOGGING"]["LOG_PROMPTS"] == "true"
 
+    def get_search_engine_type(self):
+        return self.config["SEARCH_ENGINE"]["DEFAULT"]
+
     def set_bing_api_key(self, key):
         self.config["API_KEYS"]["BING"] = key
         self.save_config()
