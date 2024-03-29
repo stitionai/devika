@@ -2,7 +2,7 @@ import os
 import time
 from typing import Dict, List, Union
 
-from src.agents import BaseWriterAgent
+from src.agents.base import BaseWriterAgent
 from src.state import AgentState
 
 

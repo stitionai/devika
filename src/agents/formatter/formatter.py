@@ -2,7 +2,7 @@
 
 import os
 
-from src.agents import BaseAgent
+from src.agents.base import BaseAgent
 
 
 # TODO: Confirm the Formatter agent class inherits from the BaseAgent class

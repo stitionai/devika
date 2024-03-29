@@ -4,7 +4,7 @@ import json
 import os
 from typing import List
 
-from src.agents import BaseAgent
+from src.agents.base import BaseAgent
 from src.browser.search import BingSearch
 
 

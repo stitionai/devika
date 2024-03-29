@@ -1,6 +1,6 @@
 import os
 
-from src.agents import BaseAgent
+from src.agents.base import BaseAgent
 
 
 class Planner(BaseAgent):
