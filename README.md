@@ -155,6 +155,7 @@ Devika requires certain configuration settings and API keys to function properly
 - `CLAUDE`: Your Anthropic API key for accessing Claude models.
 - `NETLIFY`: Your Netlify API key for deploying and managing web projects.
 - `OPENAI`: Your OpenAI API key for accessing GPT models.
+- `GEMINI`: Your Google Gemini API key for accessing GPT models.
 
 Make sure to keep your API keys secure and do not share them publicly.
 

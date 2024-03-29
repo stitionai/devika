@@ -33,6 +33,9 @@ class Config:
 
     def get_openai_api_key(self):
         return environ.get("OPENAI_API_KEY", self.config["API_KEYS"]["OPENAI"])
+    
+    def get_gemini_api_key(self):
+        return environ.get("GEMINI_API_KEY", self.config["API_KEYS"]["GEMINI"])
 
     def get_netlify_api_key(self):
         return environ.get("NETLIFY_API_KEY", self.config["API_KEYS"]["NETLIFY"])
@@ -82,6 +85,10 @@ class Config:
 
     def set_openai_api_key(self, key):
         self.config["API_KEYS"]["OPENAI"] = key
+        self.save_config()
+    
+    def set_gemini_api_key(self, key):
+        self.config["API_KEYS"]["GEMINI"] = key
         self.save_config()
 
     def set_netlify_api_key(self, key):
