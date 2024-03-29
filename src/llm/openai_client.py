@@ -4,6 +4,7 @@ from openai import OpenAI as OAI
 from openai import RateLimitError
 
 from src.config import Config
+
 from .base import BaseLLMModel
 from .exception import ModelNotSupported, TokenUsageExceeded
 

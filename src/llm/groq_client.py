@@ -4,6 +4,7 @@ from groq import Groq as _Groq
 from groq import RateLimitError
 
 from src.config import Config
+
 from .base import BaseLLMModel
 from .exception import ModelNotSupported, TokenUsageExceeded
 
