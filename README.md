@@ -76,7 +76,7 @@ The easiest way to run the project locally:
 2. Install `bun` - JavaScript runtime (https://bun.sh/)
 3. Install and setup `Ollama` (https://ollama.com/)
 
-Set the API Keys in the `config.toml` file. (This will soon be moving to the UI where you can set these keys from the UI itself without touching the command-line, want to implement it? See this issue: https://github.com/stitionai/devika/issues/3)
+Set the API Keys in the `config.toml` file (Rename `sample.config.toml` to `config.toml`). (This will soon be moving to the UI where you can set these keys from the UI itself without touching the command-line, want to implement it? See this issue: https://github.com/stitionai/devika/issues/3)
 
 Then execute the following set of command:
 
@@ -85,6 +85,7 @@ ollama serve
 git clone https://github.com/stitionai/devika.git
 cd devika/
 uv venv
+source .venv/bin/activate
 uv pip install -r requirements.txt
 cd ui/
 bun install
