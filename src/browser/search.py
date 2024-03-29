@@ -1,5 +1,5 @@
 from enum import Enum
-# from src.config import Config
+from src.config import Config
 from .search_engines import BingSearch , DuckDuckGoSearch
 
 
@@ -10,12 +10,12 @@ class SearchEngine(Enum):
 
 class WebSearch:
     def __init__(self):
-        # self.config = Config()
-        self.search_engine = SearchEngine.DUCKDUCKGO.value
+        self.config = Config()
+        self.search_engine = self.load_search_engine()
         self.query_result = None
         
-    def set_search_engine(self, search_engine : SearchEngine):
-        self.search_engine = search_engine.value
+    def load_search_engine(self):
+        return SearchEngine[self.config.get_search_engine_type()].value
 
     def search(self, query):
         self.query_result = self.search_engine.search(query)
