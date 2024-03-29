@@ -1,6 +1,7 @@
 """Base class for the llm module."""
 
 from abc import abstractmethod
+from typing import Dict
 
 
 class BaseLLMModel:
@@ -8,6 +9,7 @@ class BaseLLMModel:
 
     _model_id: str = ""
     _model_name: str = ""
+    SUPPORTED_MODELS: Dict[str, str] = {}
 
     @property
     def model_id(self):

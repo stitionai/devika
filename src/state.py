@@ -181,7 +181,6 @@ class AgentState:
                 .filter(AgentStateModel.project == project)
                 .first()
             )
-            print(agent_state)
             if agent_state:
                 state_stack = json.loads(agent_state.state_stack_json)
                 state_stack[-1]["token_usage"] += token_usage
