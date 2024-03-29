@@ -4,6 +4,7 @@ from typing import List, Tuple
 from .ollama_client import Ollama
 from .claude_client import Claude
 from .openai_client import OpenAI
+from .gemini_client import Gemini
 from .groq_client import Groq
 
 from src.state import AgentState
@@ -22,6 +23,8 @@ class Model(Enum):
     CLAUDE_3_HAIKU = ("Claude 3 Haiku", "claude-3-haiku-20240307")
     GPT_4_TURBO = ("GPT-4 Turbo", "gpt-4-0125-preview")
     GPT_3_5 = ("GPT-3.5", "gpt-3.5-turbo-0125")
+    GEMINI_1_0_PRO = ("Gemini 1.0 Pro", "gemini-1.0-pro")
+    GEMINI_1_5_PRO = ("Gemini 1.5 Pro", "gemini-1.5-pro")
     OLLAMA_MODELS = [
         (
             model["name"].split(":")[0],
@@ -74,6 +77,8 @@ class LLM:
             response = OpenAI().inference(self.model_id, prompt).strip()
         elif "GROQ" in str(model):
             response = Groq().inference(self.model_id, prompt).strip()
+        elif "GEMINI" in str(model):
+            response = Gemini().inference(self.model_id, prompt).strip()
         else:
             raise ValueError(f"Model {model} not supported")
 
