@@ -1,28 +1,20 @@
-from jinja2 import Environment, BaseLoader
 import os
 
-from src.llm import LLM
+from src.agents import BaseAgent
 
-PROMPT = (
-    open(
-        os.path.join(os.path.dirname(__file__), "prompt.jinja2"), "r", encoding="utf-8"
+
+class Planner(BaseAgent):
+    """Planner agent class"""
+
+    _prompt = (
+        open(
+            os.path.join(os.path.dirname(__file__), "prompt.jinja2"),
+            "r",
+            encoding="utf-8",
+        )
+        .read()
+        .strip()
     )
-    .read()
-    .strip()
-)
-
-
-class Planner:
-    def __init__(self, base_model: str):
-        self.llm = LLM(model_id=base_model)
-
-    def render(self, prompt: str) -> str:
-        env = Environment(loader=BaseLoader())
-        template = env.from_string(PROMPT)
-        return template.render(prompt=prompt)
-
-    def validate_response(self, response: str) -> bool:
-        return True
 
     def parse_response(self, response: str):
         result = {"project": "", "reply": "", "focus": "", "plans": {}, "summary": ""}
@@ -68,6 +60,6 @@ class Planner:
         return result
 
     def execute(self, prompt: str, project_name: str) -> str:
-        prompt = self.render(prompt)
+        prompt = self.render(prompt=prompt)
         response = self.llm.inference(prompt, project_name)
         return response
