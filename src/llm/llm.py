@@ -1,6 +1,8 @@
 from enum import Enum
 from typing import List, Tuple
 
+import tiktoken
+
 from src.state import AgentState
 
 from ..config import Config
