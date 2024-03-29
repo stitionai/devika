@@ -1,7 +1,7 @@
 """Devika agents module"""
 
 from .agent import Agent
-from .base import BaseAgent
+from .base import BaseAgent, BaseWriterAgent
 
 from .planner import Planner
 from .internal_monologue import InternalMonologue

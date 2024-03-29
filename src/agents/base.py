@@ -1,6 +1,9 @@
 """Base class for all agents"""
 
 import json
+import os
+from typing import List, Dict
+
 from jinja2 import Environment, BaseLoader
 
 from src.llm import LLM
@@ -18,6 +21,7 @@ class BaseAgent:
         self._config = Config()
         self.llm = LLM(model_id=base_model)
         self._environment = Environment(loader=BaseLoader())
+        self._project_dir = self._config.get_projects_dir()
 
         if self._prompt is None:
             raise ValueError(
@@ -78,3 +82,36 @@ class BaseAgent:
         """Post validate the response from the model"""
 
         return response
+
+
+class BaseWriterAgent(BaseAgent):
+    """Base class for all writer agents"""
+
+    # TODO: Add emulate_code_writing method to the base class
+
+    def save_code_to_project(self, response: List[Dict[str, str]], project_name: str):
+        """Save the code to the project directory"""
+        file_path_dir = None
+        project_name = project_name.lower().replace(" ", "-")
+
+        for file in response:
+            file_path = f"{self._project_dir}/{project_name}/{file['file']}"
+            file_path_dir = file_path[: file_path.rfind("/")]
+            os.makedirs(file_path_dir, exist_ok=True)
+
+            with open(file_path, "w", encoding="utf-8") as f:
+                f.write(file["code"])
+
+        return file_path_dir
+
+    def get_project_path(self, project_name: str):
+        """Get the project path"""
+        project_name = project_name.lower().replace(" ", "-")
+        return f"{self._project_dir}/{project_name}"
+
+    def response_to_markdown_prompt(self, response: List[Dict[str, str]]) -> str:
+        """Response to markdown prompt"""
+        response = "\n".join(
+            [f"File: `{file['file']}`:\n```\n{file['code']}\n```" for file in response]
+        )
+        return f"~~~\n{response}\n~~~"
