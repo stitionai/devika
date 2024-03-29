@@ -1,6 +1,7 @@
 """LLM class to handle inference for different models."""
 
 from typing import Dict
+
 import tiktoken
 
 from src.state import AgentState
@@ -8,13 +9,12 @@ from src.state import AgentState
 from ..config import Config
 from .claude_client import Claude
 from .gemini_client import Gemini
+from .exception import ModelNotSupported
 from .groq_client import Groq
 from .ollama_client import Ollama
 from .openai_client import OpenAI
-from .exception import ModelNotSupported
 
 # TODO: Add prompt logging
-# TODO: Bug in getting ollama supported models
 
 
 class LLM:
@@ -28,13 +28,13 @@ class LLM:
         self.log_prompts = Config().get_logging_prompts()
 
         # Check which client to use based on model_id
-        self._client = self._get_model_client(model_id)
-        self.tiktoken_encoder = tiktoken.get_encoding("cl100k_base")
+        self._supported_models = self._get_supported_models()
 
-        if self._client is None:
+        if model_id not in self._supported_models:
             raise ModelNotSupported(f"Model {model_id} is not supported.")
 
-        self._supported_models = self._get_supported_models()
+        self._client = self._get_model_client(model_id)
+        self.tiktoken_encoder = tiktoken.get_encoding("cl100k_base")
 
     def _get_supported_models(self) -> Dict[str, str]:
         """Get supported models from all clients."""
