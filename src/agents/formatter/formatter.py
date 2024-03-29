@@ -18,3 +18,6 @@ class Formatter(BaseAgent):
         .read()
         .strip()
     )
+
+    def execute(self, raw_text: str, project_name: str):
+        return self._execute(raw_text=raw_text, project_name=project_name)

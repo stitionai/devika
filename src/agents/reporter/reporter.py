@@ -17,3 +17,10 @@ class Reporter(BaseAgent):
         .read()
         .strip()
     )
+
+    def execute(self, conversation: list, code_markdown: str, project_name: str):
+        return self._execute(
+            conversation=conversation,
+            code_markdown=code_markdown,
+            project_name=project_name,
+        )

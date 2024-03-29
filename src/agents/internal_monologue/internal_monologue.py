@@ -19,3 +19,7 @@ class InternalMonologue(BaseAgent):
     )
 
     _response_key = "internal_monologue"
+
+    def execute(self, current_prompt: str, project_name: str):
+        """Execute the agent"""
+        return self._execute(current_prompt=current_prompt, project_name=project_name)

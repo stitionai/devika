@@ -26,3 +26,6 @@ class Decision(BaseAgent):
             if item not in ["function", "args", "reply"]:
                 return False
         return response
+
+    def execute(self, prompt: str, project_name: str):
+        return self._execute(prompt=prompt, project_name=project_name)

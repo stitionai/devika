@@ -19,3 +19,7 @@ class Action(BaseAgent):
     )
 
     _response_key = "action"
+
+    def execute(self, conversation: list, project_name: str):
+        """Execute the agent"""
+        return self._execute(conversation=conversation, project_name=project_name)

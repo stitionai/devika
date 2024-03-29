@@ -26,12 +26,10 @@ class BaseAgent:
 
         self._template = self._environment.from_string(self._prompt)
 
-    def render(self, conversation: str, code_markdown: str):
+    def render(self, **kwargs):
         """Render the prompt template"""
 
-        return self._template.render(
-            conversation=conversation, code_markdown=code_markdown
-        )
+        return self._template.render(**kwargs)
 
     def validate_response(self, response: str):
         """Validate the response from the model"""
@@ -59,18 +57,22 @@ class BaseAgent:
 
         return response["response"], response[self._response_key]
 
-    def execute(self, conversation: list, code_markdown: str, project_name: str):
+    def _execute(self, project_name: str, **kwargs):
         """Execute the agent"""
 
-        prompt = self.render(conversation, code_markdown)
+        prompt = self.render(**kwargs)
         response = self.llm.inference(prompt, project_name)
 
         valid_response = self.validate_response(response)
 
         while not valid_response:
-            return self.execute(conversation, code_markdown, project_name)
+            return self._execute(project_name, **kwargs)
 
         return valid_response
+
+    def execute(self, **kwargs):
+        """Action execution method to be inherited by the child classes"""
+        self._execute(**kwargs)
 
     def _post_validate_response(self, response: str):
         """Post validate the response from the model"""
