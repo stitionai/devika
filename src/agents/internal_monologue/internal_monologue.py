@@ -20,7 +20,10 @@ class InternalMonologue:
         
         if response.startswith("```") and response.endswith("```"):
             response = response[3:-3].strip()
- 
+        # llama doesn't close
+        if not response.endswith("}"):
+            response += "}"
+
         try:
             response = json.loads(response)
         except Exception as _:
