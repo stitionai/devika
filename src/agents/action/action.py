@@ -1,11 +1,12 @@
 import json
+import os
 
 from jinja2 import BaseLoader, Environment
 
 from src.config import Config
 from src.llm import LLM
 
-PROMPT = open("src/agents/action/prompt.jinja2", "r").read().strip()
+PROMPT = open(os.path.join(os.path.dirname(__file__), "prompt.jinja2"), "r", encoding="utf-8").read().strip()
 
 
 class Action:

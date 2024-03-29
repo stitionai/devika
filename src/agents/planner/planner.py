@@ -1,8 +1,15 @@
-from jinja2 import BaseLoader, Environment
+from jinja2 import Environment, BaseLoader
+import os
 
 from src.llm import LLM
 
-PROMPT = open("src/agents/planner/prompt.jinja2").read().strip()
+PROMPT = (
+    open(
+        os.path.join(os.path.dirname(__file__), "prompt.jinja2"), "r", encoding="utf-8"
+    )
+    .read()
+    .strip()
+)
 
 
 class Planner:

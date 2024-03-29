@@ -8,7 +8,13 @@ from src.config import Config
 from src.llm import LLM
 from src.state import AgentState
 
-PROMPT = open("src/agents/patcher/prompt.jinja2", "r").read().strip()
+PROMPT = (
+    open(
+        os.path.join(os.path.dirname(__file__), "prompt.jinja2"), "r", encoding="utf-8"
+    )
+    .read()
+    .strip()
+)
 
 
 class Patcher:
