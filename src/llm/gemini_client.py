@@ -2,7 +2,6 @@ import google.generativeai as genai
 
 from src.config import Config
 
-
 class Gemini:
     def __init__(self):
         config = Config()

@@ -11,6 +11,7 @@ from .patcher import Patcher
 from .reporter import Reporter
 from .decision import Decision
 
+from src.config import Config
 from src.project import ProjectManager
 from src.state import AgentState
 from src.socket_instance import emit_agent
@@ -18,7 +19,7 @@ from src.logger import Logger
 
 from src.bert.sentence import SentenceBert
 from src.memory import KnowledgeBase
-from src.browser.search import BingSearch, GoogleSearch
+from src.browser.search import BingSearch,DuckDuckGoSearch,GoogleSearch
 from src.browser import Browser
 from src.browser import start_interaction
 from src.filesystem import ReadCode
@@ -64,14 +65,26 @@ class Agent:
         self.engine = search_engine
         self.tokenizer = tiktoken.get_encoding("cl100k_base")
 
-    def search_queries(self, queries: list, project_name: str) -> dict:
+    def search_queries(self, queries: list, project_name: str, requested_web_search: str) -> dict:
         results = {}
 
         knowledge_base = KnowledgeBase()
-        if self.engine == "Google":
-            engine = GoogleSearch()
+
+        web_search = None
+        web_search_type = Config().get_web_search()
+        if requested_web_search:
+            web_search_type = requested_web_search 
+
+        if web_search_type == "bing":
+            web_search = BingSearch()
+        elif web_search_type == "google":
+            web_search = GoogleSearch()
+        elif web_search_type == "ddgs":
+            web_search = DuckDuckGoSearch()
         else:
-            engine = BingSearch()
+            web_search = DuckDuckGoSearch()
+        
+        self.logger.info(web_search_type)
         browser = Browser()
 
         for query in queries:
@@ -84,9 +97,10 @@ class Agent:
             #     continue
 
             """ Search for the query and get the first link """
-            engine.search(query)
-            link = engine.get_first_link()
+            web_search.search(query)
+            link = web_search.get_first_link()
             print("Link :: ", link)
+
             """ Browse to the link and take a screenshot, then extract the text """
             browser.go_to(link)
             browser.screenshot(project_name)
@@ -259,11 +273,11 @@ class Agent:
         self.agent_state.set_agent_active(project_name, False)
         self.agent_state.set_agent_completed(project_name, True)
 
-    def execute(self, prompt: str, project_name_from_user: str = None):
-        """
-            Agentic flow of execution
-        """
 
+    def execute(self, prompt: str, project_name_from_user: str = None, web_search: str = None) -> str:
+        """
+        Agentic flow of execution
+        """
         if project_name_from_user:
             self.project_manager.add_message_from_user(project_name_from_user, prompt)
 
@@ -339,6 +353,10 @@ class Agent:
                     got_user_query = True
                     self.project_manager.add_message_from_devika(project_name, "Thanks! 🙌")
                 time.sleep(5)
+                
+        AgentState().set_agent_active(project_name, True)
+        
+        search_results = self.search_queries(queries, project_name, web_search)
 
         self.agent_state.set_agent_active(project_name, True)
 
@@ -363,3 +381,5 @@ class Agent:
 
         self.agent_state.set_agent_active(project_name, False)
         self.agent_state.set_agent_completed(project_name, True)
+        self.project_manager.add_message_from_devika(project_name, "I have completed the coding task. You can now run the project.")
+

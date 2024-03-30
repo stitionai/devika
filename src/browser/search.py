@@ -1,5 +1,6 @@
 import requests
 from src.config import Config
+from duckduckgo_search import DDGS
 
 
 class BingSearch:
@@ -23,20 +24,20 @@ class BingSearch:
 
     def get_first_link(self):
         return self.query_result["webPages"]["value"][0]["url"]
-
+    
 
 class GoogleSearch:
     def __init__(self):
         self.config = Config()
-        self.google_api_key = self.config.get_google_api_key()
-        self.google_api_endpoint = self.config.get_google_api_endpoint()
-        self.google_cx = self.config.get_google_cx()
+        self.google_search_api_key = self.config.get_google_search_api_key()
+        self.google_search_engine_ID = self.config.get_google_search_engine_id()
+        self.google_search_api_endpoint = self.config.get_google_search_api_endpoint()
         self.query_result = None
-
+    
     def search(self, query):
         params = {
-            "key": self.google_api_key,
-            "cx": self.google_cx,
+            "key": self.google_search_api_key,
+            "cx": self.google_search_engine_ID,
             "q": query
         }
         try:
@@ -48,4 +49,22 @@ class GoogleSearch:
             return error
 
     def get_first_link(self):
-        return self.query_result["items"][0]["link"]
+        item = ""
+        if 'items' in self.query_result:
+            item = self.query_result['items'][0]['link']
+        return item
+    
+
+class DuckDuckGoSearch:
+    def __init__(self):
+        self.query_result = None
+        
+    def search(self, query):
+        try:
+            self.query_result = DDGS().text(query, max_results=5)
+            return self.query_result
+        except Exception as err:
+            print(err)
+
+    def get_first_link(self):
+        return self.query_result[0]["href"]

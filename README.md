@@ -89,6 +89,7 @@ cd devika/
 uv venv
 source .venv/bin/activate
 uv pip install -r requirements.txt
+playwright install --with-deps
 cd ui/
 bun install
 bun run dev
