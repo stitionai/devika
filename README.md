@@ -165,7 +165,7 @@ Make sure to keep your API keys secure and do not share them publicly.
 
 ### Configuring web search method
 
-Deviak currently supports bing, google, and ddgs(DuckDuckGo) for web searches. You can configure the web search method using the following options:
+Devika currently supports bing, google, and ddgs(DuckDuckGo) for web searches. You can configure the web search method using the following options:
 
 1. **Using config.toml**: Modify the value of WEB_SEARCH in config.toml to your preferred method.
 2. **Using CLI**: Change the web search method using the command line interface by specifying the --websearch attribute when starting the server.
