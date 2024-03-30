@@ -33,15 +33,15 @@ class InternalMonologue:
         else:
             return response["internal_monologue"]
 
-    def execute(self, current_prompt: str) -> str:
-        current_prompt = self.render(current_prompt)
-        response = self.llm.inference(current_prompt)
+    def execute(self, current_prompt: str, project_name: str) -> str:
+        rendered_prompt = self.render(current_prompt)
+        response = self.llm.inference(rendered_prompt, project_name)
         
         valid_response = self.validate_response(response)
         
         while not valid_response:
             print("Invalid response from the model, trying again...")
-            return self.execute(current_prompt)
+            return self.execute(current_prompt, project_name)
 
         return valid_response
 

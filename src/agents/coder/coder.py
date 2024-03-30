@@ -102,13 +102,13 @@ class Coder:
         project_name: str
     ) -> str:
         prompt = self.render(step_by_step_plan, user_context, search_results)
-        response = self.llm.inference(prompt)
+        response = self.llm.inference(prompt, project_name)
         
         valid_response = self.validate_response(response)
         
         while not valid_response:
             print("Invalid response from the model, trying again...")
-            return self.execute(step_by_step_plan, user_context, search_results)
+            return self.execute(step_by_step_plan, user_context, search_results, project_name)
         
         print(valid_response)
         

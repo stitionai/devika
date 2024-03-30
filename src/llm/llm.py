@@ -1,4 +1,5 @@
 import tiktoken
+from typing import List, Tuple
 
 from src.socket_instance import emit_agent
 from .ollama_client import Ollama
@@ -6,16 +7,23 @@ from .claude_client import Claude
 from .openai_client import OpenAi
 from .gemini_client import Gemini
 from .mistral_client import MistralAi
+from .groq_client import Groq
 
-TOKEN_USAGE = 0
+from src.state import AgentState
+
+from src.config import Config
+from src.logger import Logger
+
 TIKTOKEN_ENC = tiktoken.get_encoding("cl100k_base")
 
 ollama = Ollama()
+logger = Logger()
 
 
 class LLM:
     def __init__(self, model_id: str = None):
         self.model_id = model_id
+        self.log_prompts = Config().get_logging_prompts()
         self.models = {
             "CLAUDE": [
                 ("Claude 3 Opus", "claude-3-opus-20240229"),
@@ -36,6 +44,11 @@ class LLM:
                 ("Mistral Small", "mistral-small-latest"),
                 ("Mistral Large", "mistral-large-latest"),
             ],
+            "GROQ": [
+                ("GROQ Mixtral", "mixtral-8x7b-32768"),
+                ("GROQ LLAMA2-70B", "llama2-70b-4096"),
+                ("GROQ GEMMA-7B-IT", "gemma-7b-it"),
+            ],
             "OLLAMA_MODELS": []
         }
         if ollama:
@@ -53,14 +66,13 @@ class LLM:
         return mapping
 
     @staticmethod
-    def update_global_token_usage(string: str):
-        global TOKEN_USAGE
-        TOKEN_USAGE += len(TIKTOKEN_ENC.encode(string))
-        emit_agent("tokens", {"token_usage": TOKEN_USAGE})
-        print(f"Token usage: {TOKEN_USAGE}")
+    def update_global_token_usage(string: str, project_name: str):
+        token_usage = len(TIKTOKEN_ENC.encode(string))
+        emit_agent("tokens", {"token_usage": token_usage})
+        AgentState().update_token_usage(project_name, token_usage)
 
-    def inference(self, prompt: str) -> str:
-        self.update_global_token_usage(prompt)
+    def inference(self, prompt: str, project_name: str) -> str:
+        self.update_global_token_usage(prompt, project_name)
 
         model_enum = self.model_id_to_enum_mapping().get(self.model_id)
         if model_enum is None:
@@ -71,7 +83,8 @@ class LLM:
             "CLAUDE": Claude(),
             "OPENAI": OpenAi(),
             "GOOGLE": Gemini(),
-            "MISTRAL": MistralAi()
+            "MISTRAL": MistralAi(),
+            "GROQ": Groq()
         }
 
         try:
@@ -80,6 +93,9 @@ class LLM:
         except KeyError:
             raise ValueError(f"Model {model_enum} not supported")
 
-        self.update_global_token_usage(response)
+        if self.log_prompts:
+            logger.debug(f"Response ({model}): --> {response}")
+
+        self.update_global_token_usage(response, project_name)
 
         return response

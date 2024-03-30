@@ -87,10 +87,12 @@ ollama serve
 git clone https://github.com/stitionai/devika.git
 cd devika/
 uv venv
+source .venv/bin/activate
 uv pip install -r requirements.txt
 cd ui/
 bun install
 bun run dev
+cd ..
 python3 devika.py
 ```
 
@@ -226,11 +228,23 @@ To join the Devika community Discord server, [click here](https://discord.com/in
 
 ## Contributing
 
-We welcome contributions to enhance Devika's capabilities and improve its performance. To contribute, please see the `CONTRIBUTING.md` file for steps.
+We welcome contributions to enhance Devika's capabilities and improve its performance. To contribute, please see the [`CONTRIBUTING.md`](CONTRIBUTING.md) file for steps.
 
 ## License
 
 Devika is released under the [MIT License](https://opensource.org/licenses/MIT). See the `LICENSE` file for more information.
+
+## Star History
+
+<div align="center">
+<a href="https://star-history.com/#stitionai/devika&Date">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=stitionai/devika&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=stitionai/devika&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=stitionai/devika&type=Date" />
+ </picture>
+</a>
+</div>
 
 ---
 

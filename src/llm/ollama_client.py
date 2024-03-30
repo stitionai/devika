@@ -1,5 +1,6 @@
 import ollama
 from src.logger import Logger
+from src.config import Config
 
 log = Logger()
 
@@ -7,7 +8,7 @@ log = Logger()
 class Ollama:
     def __init__(self):
         try:
-            self.client = ollama.Client()
+            self.client = ollama.Client(host=Config().get_ollama_api_endpoint())
             log.info("Ollama available")
         except:
             self.client = None

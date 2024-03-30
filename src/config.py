@@ -1,9 +1,15 @@
 import toml
+from os import environ
 
 
 class Config:
-    def __init__(self):
-        self.config = toml.load("config.toml")
+    _instance = None
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance.config = toml.load("config.toml")
+        return cls._instance
 
     def get_config(self):
         return self.config
@@ -22,6 +28,9 @@ class Config:
 
     def get_bing_api_key(self):
         return self.config["API_KEYS"]["BING"]
+
+    def get_ollama_api_endpoint(self):
+        return self.config["API_ENDPOINTS"]["OLLAMA"]
 
     def get_claude_api_key(self):
         return self.config["API_KEYS"]["CLAUDE"]
@@ -56,12 +65,22 @@ class Config:
     def get_repos_dir(self):
         return self.config["STORAGE"]["REPOS_DIR"]
 
+    def get_logging_rest_api(self):
+        return self.config["LOGGING"]["LOG_REST_API"] == "true"
+
+    def get_logging_prompts(self):
+        return self.config["LOGGING"]["LOG_PROMPTS"] == "true"
+
     def set_bing_api_key(self, key):
         self.config["API_KEYS"]["BING"] = key
         self.save_config()
 
     def set_bing_api_endpoint(self, endpoint):
         self.config["API_ENDPOINTS"]["BING"] = endpoint
+        self.save_config()
+
+    def set_ollama_api_endpoint(self, endpoint):
+        self.config["API_ENDPOINTS"]["OLLAMA"] = endpoint
         self.save_config()
 
     def set_claude_api_key(self, key):
@@ -98,6 +117,14 @@ class Config:
 
     def set_repos_dir(self, dir):
         self.config["STORAGE"]["REPOS_DIR"] = dir
+        self.save_config()
+
+    def set_logging_rest_api(self, value):
+        self.config["LOGGING"]["LOG_REST_API"] = "true" if value else "false"
+        self.save_config()
+
+    def set_logging_prompts(self, value):
+        self.config["LOGGING"]["LOG_PROMPTS"] = "true" if value else "false"
         self.save_config()
 
     def save_config(self):

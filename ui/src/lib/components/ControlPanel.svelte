@@ -39,7 +39,7 @@
   }
 
   async function createNewProject() {
-    const projectName = prompt("Enter the project name:");
+    const projectName = prompt('Enter the project name:');
     if (projectName) {
       await createProject(projectName);
       selectProject(projectName);
@@ -140,7 +140,6 @@
       </div>
     </div>
   </div>
-
   <div
     class="right-controls"
     style="display: flex; align-items: center; gap: 20px"

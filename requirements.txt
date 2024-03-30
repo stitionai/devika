@@ -25,3 +25,4 @@ xhtml2pdf
 mistralai
 Flask-SocketIO
 eventlet
+groq
