@@ -87,9 +87,19 @@ class ProjectManager:
 
     # Methods for retrieving messages
     def get_messages(self, project: str):
-        with self._create_session() as session:
-            project_state = self._get_project_state(session, project)
-            return self._get_message_stack(project_state)
+    with Session(self.engine) as session:
+        project_state = session.query(Projects).filter(Projects.project == project).first()
+        if project_state:
+            message_stack = json.loads(project_state.message_stack_json)
+            unique_messages = []
+            seen_messages = set()
+            for message in message_stack:
+                message_text = message['message']
+                if message_text not in seen_messages:
+                    unique_messages.append(message)
+                    seen_messages.add(message_text)
+            return unique_messages
+        return None
 
     def _get_latest_message(self, project_state, from_devika: bool):
         message_stack = self._get_message_stack(project_state)
