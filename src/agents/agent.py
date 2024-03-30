@@ -364,5 +364,7 @@ class Agent:
 
         self.coder.save_code_to_project(code, project_name)
 
+        ProjectManager().add_message_from_devika(project_name, "I have completed the coding task. You can now run the project.")
+
         AgentState().set_agent_active(project_name, False)
         AgentState().set_agent_completed(project_name, True)
