@@ -2,12 +2,12 @@
 
 import json
 import os
-from typing import List, Dict
+from typing import Dict, List
 
-from jinja2 import Environment, BaseLoader
+from jinja2 import BaseLoader, Environment
 
-from src.llm import LLM
 from src.config import Config
+from src.llm import LLM
 
 
 class BaseAgent:

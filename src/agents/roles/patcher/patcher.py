@@ -2,8 +2,8 @@ import os
 import time
 from typing import Dict, List, Union
 
-from src.state import AgentState
 from src.agents.base import BaseWriterAgent
+from src.state import AgentState
 
 
 class Patcher(BaseWriterAgent):

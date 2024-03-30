@@ -8,7 +8,7 @@ import tiktoken
 
 from src.bert.sentence import SentenceBert
 from src.browser import Browser, start_interaction
-from src.browser.search import BingSearch, GoogleSearch, DuckDuckGoSearch
+from src.browser.search import BingSearch, DuckDuckGoSearch, GoogleSearch
 from src.config import Config
 from src.documenter.pdf import PDF
 from src.filesystem import ReadCode
