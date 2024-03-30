@@ -76,7 +76,7 @@ The easiest way to run the project locally:
 2. Install `bun` - JavaScript runtime (https://bun.sh/)
 3. Install and setup `Ollama` (https://ollama.com/)
 
-Set the API Keys in the `config.toml` file. (This will soon be moving to the UI where you can set these keys from the UI itself without touching the command-line, want to implement it? See this issue: https://github.com/stitionai/devika/issues/3)
+Set the API Keys in the `config.toml` file (Rename `sample.config.toml` to `config.toml`). (This will soon be moving to the UI where you can set these keys from the UI itself without touching the command-line, want to implement it? See this issue: https://github.com/stitionai/devika/issues/3)
 
 Then execute the following set of command:
 
@@ -85,7 +85,9 @@ ollama serve
 git clone https://github.com/stitionai/devika.git
 cd devika/
 uv venv
+source .venv/bin/activate
 uv pip install -r requirements.txt
+playwright install --with-deps
 cd ui/
 bun install
 bun run dev
@@ -151,12 +153,28 @@ Devika requires certain configuration settings and API keys to function properly
 - `PROJECTS_DIR`: The directory where Devika's projects will be stored.
 - `LOGS_DIR`: The directory where Devika's logs will be stored.
 - `REPOS_DIR`: The directory where Git repositories cloned by Devika will be stored.
+- `WEB_SEARCH`: This determines the default web search method for browsing the web. Accepted values are: google, bing, or ddgs.
 - `BING`: Your Bing Search API key for web searching capabilities.
+- `GOOGLE_SEARCH`: Your Google Search API key for web searching capabilities.
+- `GOOGLE_SEARCH_ENGINE_ID`: Your Google Search Engine Id for web searching using google.
 - `CLAUDE`: Your Anthropic API key for accessing Claude models.
 - `NETLIFY`: Your Netlify API key for deploying and managing web projects.
 - `OPENAI`: Your OpenAI API key for accessing GPT models.
 
 Make sure to keep your API keys secure and do not share them publicly.
+
+### Configuring web search method
+
+Devika currently supports Bing, Google, and DuckDuckGo for web searches. You can configure the web search method using the following options:
+
+1. **Using config.toml**: Modify the value of WEB_SEARCH in config.toml to your preferred method.
+2. **Using CLI**: Change the web search method using the command line interface by specifying the --websearch attribute when starting the server.
+```bash
+   python devika.py --websearch bing
+```
+3. **Using rest api**: Change the web search method through the REST API. Simply include the web_search parameter in the /api/execute-agent endpoint.
+
+Accepted values are `bing`,`google` and `ddgs`.
 
 ## Under The Hood
 
@@ -226,6 +244,18 @@ We welcome contributions to enhance Devika's capabilities and improve its perfor
 ## License
 
 Devika is released under the [MIT License](https://opensource.org/licenses/MIT). See the `LICENSE` file for more information.
+
+## Star History
+
+<div align="center">
+<a href="https://star-history.com/#stitionai/devika&Date">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=stitionai/devika&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=stitionai/devika&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=stitionai/devika&type=Date" />
+ </picture>
+</a>
+</div>
 
 ---
 

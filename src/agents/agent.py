@@ -12,12 +12,13 @@ from .reporter import Reporter
 from .decision import Decision
 
 from src.logger import Logger
+from src.config import Config
 from src.project import ProjectManager
 from src.state import AgentState
 
 from src.bert.sentence import SentenceBert
 from src.memory import KnowledgeBase
-from src.browser.search import BingSearch
+from src.browser.search import BingSearch,DuckDuckGoSearch,GoogleSearch
 from src.browser import Browser
 from src.browser import start_interaction
 from src.filesystem import ReadCode
@@ -59,11 +60,26 @@ class Agent:
 
         self.tokenizer = tiktoken.get_encoding("cl100k_base")
 
-    def search_queries(self, queries: list, project_name: str) -> dict:
+    def search_queries(self, queries: list, project_name: str, requested_web_search: str) -> dict:
         results = {}
         
         knowledge_base = KnowledgeBase()
-        bing_search = BingSearch()
+
+        web_search = None
+        web_search_type = Config().get_web_search()
+        if requested_web_search:
+            web_search_type = requested_web_search 
+
+        if web_search_type == "bing":
+            web_search = BingSearch()
+        elif web_search_type == "google":
+            web_search = GoogleSearch()
+        elif web_search_type == "ddgs":
+            web_search = DuckDuckGoSearch()
+        else:
+            web_search = DuckDuckGoSearch()
+        
+        self.logger.info(web_search_type)
         browser = Browser()
 
         for query in queries:
@@ -80,8 +96,8 @@ class Agent:
             """
             Search for the query and get the first link
             """
-            bing_search.search(query)
-            link = bing_search.get_first_link()
+            web_search.search(query)
+            link = web_search.get_first_link()
 
             """
             Browse to the link and take a screenshot, then extract the text
@@ -259,7 +275,7 @@ class Agent:
     """
     Agentic flow of execution
     """
-    def execute(self, prompt: str, project_name_from_user: str = None) -> str:
+    def execute(self, prompt: str, project_name_from_user: str = None, web_search: str = None) -> str:
         if project_name_from_user:
             ProjectManager().add_message_from_user(project_name_from_user, prompt)
         
@@ -332,7 +348,7 @@ class Agent:
                 
         AgentState().set_agent_active(project_name, True)
         
-        search_results = self.search_queries(queries, project_name)
+        search_results = self.search_queries(queries, project_name, web_search)
 
         print(json.dumps(search_results, indent=4))
         print("=====" * 10)
@@ -347,6 +363,8 @@ class Agent:
         print("=====" * 10)
 
         self.coder.save_code_to_project(code, project_name)
+
+        ProjectManager().add_message_from_devika(project_name, "I have completed the coding task. You can now run the project.")
 
         AgentState().set_agent_active(project_name, False)
         AgentState().set_agent_completed(project_name, True)

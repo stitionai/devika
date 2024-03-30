@@ -1,6 +1,6 @@
 import os
 
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import sync_playwright, TimeoutError
 from markdownify import markdownify as md
 from pdfminer.high_level import extract_text
 
@@ -18,7 +18,12 @@ class Browser:
         return self.browser.new_page()
 
     def go_to(self, url):
-        self.page.goto(url)
+        try:
+            self.page.goto(url, timeout=30000)
+        except TimeoutError as e:
+            print(f"TimeoutError: {e} when trying to navigate to {url}")
+            return False
+        return True
 
     def screenshot(self, project_name):
         screenshots_save_path = Config().get_screenshots_dir()
