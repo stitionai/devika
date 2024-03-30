@@ -8,7 +8,6 @@ from src.state import AgentState
 
 from ..config import Config
 from .claude_client import Claude
-from .gemini_client import Gemini
 from .exception import ModelNotSupported
 from .groq_client import Groq
 from .ollama_client import Ollama
