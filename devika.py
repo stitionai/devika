@@ -200,12 +200,30 @@ def get_terminal_session():
 
 @app.route("/api/run-code", methods=["POST"])
 @route_logger(logger)
+@app.route("/api/run-code", methods=["POST"])
+@route_logger(logger)
 def run_code():
     data = request.json
     project_name = data.get("project_name")
     code = data.get("code")
-    # TODO: Implement code execution logic
-    return jsonify({"message": "Code execution started"})
+    
+    # Assuming 'code' is a Python code string
+    exec_locals = {}
+    try:
+        exec(code, globals(), exec_locals)
+        # Retrieve any output or result from execution
+        result = exec_locals.get('result')
+        # You can customize the response message based on the execution result
+        if result is not None:
+            message = f"Code executed successfully with result: {result}"
+        else:
+            message = "Code executed successfully"
+    except Exception as e:
+        # Handle any exceptions that occur during code execution
+        message = f"Error occurred during code execution: {str(e)}"
+    
+    return jsonify({"message": message})
+
 
 
 @app.route("/api/set-settings", methods=["POST"])
