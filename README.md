@@ -165,7 +165,7 @@ Make sure to keep your API keys secure and do not share them publicly.
 
 ### Configuring web search method
 
-Devika currently supports bing, google, and ddgs(DuckDuckGo) for web searches. You can configure the web search method using the following options:
+Devika currently supports Bing, Google, and DuckDuckGo for web searches. You can configure the web search method using the following options:
 
 1. **Using config.toml**: Modify the value of WEB_SEARCH in config.toml to your preferred method.
 2. **Using CLI**: Change the web search method using the command line interface by specifying the --websearch attribute when starting the server.
@@ -173,6 +173,8 @@ Devika currently supports bing, google, and ddgs(DuckDuckGo) for web searches. Y
    python devika.py --websearch bing
 ```
 3. **Using rest api**: Change the web search method through the REST API. Simply include the web_search parameter in the /api/execute-agent endpoint.
+
+Accepted values are `bing`,`google` and `ddgs`.
 
 ## Under The Hood
 
