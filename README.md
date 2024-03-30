@@ -153,12 +153,28 @@ Devika requires certain configuration settings and API keys to function properly
 - `PROJECTS_DIR`: The directory where Devika's projects will be stored.
 - `LOGS_DIR`: The directory where Devika's logs will be stored.
 - `REPOS_DIR`: The directory where Git repositories cloned by Devika will be stored.
+- `WEB_SEARCH`: This determines the default web search method for browsing the web. Accepted values are: google, bing, or ddgs.
 - `BING`: Your Bing Search API key for web searching capabilities.
+- `GOOGLE_SEARCH`: Your Google Search API key for web searching capabilities.
+- `GOOGLE_SEARCH_ENGINE_ID`: Your Google Search Engine Id for web searching using google.
 - `CLAUDE`: Your Anthropic API key for accessing Claude models.
 - `NETLIFY`: Your Netlify API key for deploying and managing web projects.
 - `OPENAI`: Your OpenAI API key for accessing GPT models.
 
 Make sure to keep your API keys secure and do not share them publicly.
+
+### Configuring web search method
+
+Devika currently supports Bing, Google, and DuckDuckGo for web searches. You can configure the web search method using the following options:
+
+1. **Using config.toml**: Modify the value of WEB_SEARCH in config.toml to your preferred method.
+2. **Using CLI**: Change the web search method using the command line interface by specifying the --websearch attribute when starting the server.
+```bash
+   python devika.py --websearch bing
+```
+3. **Using rest api**: Change the web search method through the REST API. Simply include the web_search parameter in the /api/execute-agent endpoint.
+
+Accepted values are `bing`,`google` and `ddgs`.
 
 ## Under The Hood
 
