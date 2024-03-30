@@ -1,6 +1,7 @@
 """Base class for the llm module."""
 
 from abc import abstractmethod
+from multiprocessing import RLock
 from typing import Dict
 
 
@@ -10,6 +11,8 @@ class BaseLLMModel:
     _model_id: str = ""
     _model_name: str = ""
     SUPPORTED_MODELS: Dict[str, str] = {}
+
+    _lock = RLock()
 
     @property
     def model_id(self):
@@ -23,7 +26,9 @@ class BaseLLMModel:
 
     def inference(self, prompt: str) -> str:
         """Inference using the model."""
-        return self._inference(prompt)
+        # TODO: Remove this lock once we have a proper way to handle multiple parallel requests.
+        with self._lock:
+            return self._inference(prompt)
 
     @abstractmethod
     def _inference(self, prompt: str) -> str:
