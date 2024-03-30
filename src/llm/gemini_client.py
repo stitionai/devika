@@ -3,6 +3,7 @@ import google.generativeai as genai
 from src.config import Config
 
 
+# TODO: Ectend support for this model later
 class Gemini:
     def __init__(self):
         config = Config()
