@@ -24,15 +24,31 @@ class Coder:
     def render(self, step_by_step_plan: str, user_context: str, search_results: dict) -> str:
         return self.template.render(step_by_step_plan=step_by_step_plan, user_context=user_context, search_results=search_results)
 
-    # Validate and parse the model response to extract code snippets
     def validate_response(self, response: str) -> Union[List[Dict[str, str]], bool]:
-        response = response.strip().split("~~~", 1)[-1].strip()
-        response = response[:response.rfind("~~~")].strip()
+        # Validate the response received from the model
+        response = response.strip()
+    
+        # Check if the response contains the expected delimiter
+        if "~~~" not in response:
+            self.logger.error("Response format is invalid")
+            return False
+    
+        response = response.split("~~~", 1)[1]
+    
+        # Check if the response contains any content after splitting
+        if not response:
+            self.logger.error("Response content is empty")
+            return False
+    
+        response = response[:response.rfind("~~~")]
+        response = response.strip()
+    
+        # Proceed with further processing
         result = []
         current_file = None
         current_code = []
         code_block = False
-
+    
         for line in response.split("\n"):
             if line.startswith("File: "):
                 if current_file and current_code:
@@ -42,13 +58,15 @@ class Coder:
                 code_block = False
             elif line.startswith("```"):
                 code_block = not code_block
-            elif not code_block:
+            else:
                 current_code.append(line)
-
+    
         if current_file and current_code:
             result.append({"file": current_file, "code": "\n".join(current_code)})
-
+    
         return result
+
+    
 
     # Save code snippets to the specified project directory
     def save_code_to_project(self, response: List[Dict[str, str]], project_name: str):
