@@ -1,13 +1,20 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-		%sveltekit.head%
-	</head>
-	<body data-sveltekit-preload-data="hover" class="bg-slate-950 text-white font-sans">
-		<div style="display: contents">%sveltekit.body%</div>
-	</body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="%sveltekit.assets%/favicon.png" type="image/png">
+    <!-- Load Font Awesome asynchronously -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" async>
+    <!-- Additional stylesheets or metadata can be included here -->
+    %sveltekit.head%
+</head>
+<body class="bg-slate-950 text-white font-sans" data-sveltekit-preload-data="hover">
+    <!-- Your content goes here -->
+    <div style="display: contents">
+        %sveltekit.body%
+    </div>
+
+    <!-- JavaScript files can be included at the end of the body for better performance -->
+</body>
 </html>
