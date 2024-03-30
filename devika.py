@@ -44,12 +44,15 @@ def execute_agent():
     prompt = data.get("prompt")
     base_model = data.get("base_model")
     project_name = data.get("project_name")
+    web_search = None
+    if(data.get("web_search")):
+        web_search = data.get("a")
 
     if not base_model:
         return jsonify({"error": "base_model is required"})
 
     thread = Thread(
-        target=lambda: Agent(base_model=base_model).execute(prompt, project_name)
+        target=lambda: Agent(base_model=base_model).execute(prompt, project_name, web_search)
     )
     thread.start()
 

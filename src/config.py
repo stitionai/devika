@@ -22,6 +22,15 @@ class Config:
 
     def get_bing_api_endpoint(self):
         return environ.get("BING_API_ENDPOINT", self.config["API_ENDPOINTS"]["BING"])
+    
+    def get_google_search_api_key(self):
+        return environ.get("GOOGLE_SEARCH_API_KEY", self.config["API_KEYS"]["GOOGLE_SEARCH"])
+
+    def get_google_search_engine_id(self):
+        return environ.get("GOOGLE_SEARCH_ENGINE_ID", self.config["API_KEYS"]["GOOGLE_SEARCH_ENGINE_ID"])
+
+    def get_google_search_api_endpoint(self):
+        return environ.get("GOOGLE_SEARCH_API_ENDPOINT", self.config["API_ENDPOINTS"]["GOOGLE_SEARCH"])
 
     def get_ollama_api_endpoint(self):
         return environ.get(
@@ -33,7 +42,13 @@ class Config:
 
     def get_openai_api_key(self):
         return environ.get("OPENAI_API_KEY", self.config["API_KEYS"]["OPENAI"])
-
+    
+    def get_gemini_api_key(self):
+        return environ.get("GEMINI_API_KEY", self.config["API_KEYS"]["GEMINI"])
+    
+    def get_gemini_api_key(self):
+        return self.config["API_KEYS"]["GEMINI"]
+    
     def get_netlify_api_key(self):
         return environ.get("NETLIFY_API_KEY", self.config["API_KEYS"]["NETLIFY"])
     
@@ -58,6 +73,9 @@ class Config:
     def get_repos_dir(self):
         return environ.get("REPOS_DIR", self.config["STORAGE"]["REPOS_DIR"])
 
+    def get_web_search(self):
+        return environ.get("WEB_SEARCH", self.config["STORAGE"]["WEB_SEARCH"])
+    
     def get_logging_rest_api(self):
         return self.config["LOGGING"]["LOG_REST_API"] == "true"
 
@@ -72,6 +90,18 @@ class Config:
         self.config["API_ENDPOINTS"]["BING"] = endpoint
         self.save_config()
 
+    def set_google_search_api_key(self, key):
+        self.config["API_KEYS"]["GOOGLE_SEARCH"] = key
+        self.save_config()
+
+    def set_google_search_engine_id(self, key):
+        self.config["API_KEYS"]["GOOGLE_SEARCH_ENGINE_ID"] = key
+        self.save_config()
+
+    def set_google_search_api_endpoint(self, endpoint):
+        self.config["API_ENDPOINTS"]["GOOGLE_SEARCH"] = endpoint
+        self.save_config()
+
     def set_ollama_api_endpoint(self, endpoint):
         self.config["API_ENDPOINTS"]["OLLAMA"] = endpoint
         self.save_config()
@@ -82,6 +112,10 @@ class Config:
 
     def set_openai_api_key(self, key):
         self.config["API_KEYS"]["OPENAI"] = key
+        self.save_config()
+
+    def set_openai_api_key(self, key):
+        self.config["API_KEYS"]["GEMINI"] = key
         self.save_config()
 
     def set_netlify_api_key(self, key):
@@ -118,6 +152,10 @@ class Config:
 
     def set_logging_prompts(self, value):
         self.config["LOGGING"]["LOG_PROMPTS"] = "true" if value else "false"
+        self.save_config()
+
+    def set_web_search(self, value):
+        self.config["STORAGE"]["WEB_SEARCH"] = value
         self.save_config()
 
     def save_config(self):
