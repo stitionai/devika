@@ -88,10 +88,10 @@ class Agent:
             """
             Check if the knowledge base already has the query learned
             """
-            # knowledge = knowledge_base.get_knowledge(tag=query)
-            # if knowledge:
-            #     results[query] = knowledge
-            #     continue
+            knowledge = knowledge_base.get_knowledge(tag=query)
+            if knowledge:
+                results[query] = knowledge
+                continue
 
             """
             Search for the query and get the first link
@@ -116,7 +116,7 @@ class Agent:
             """
             Add the newly acquired data to the knowledge base
             """
-            # knowledge_base.add_knowledge(tag=query, contents=results[query])
+            knowledge_base.add_knowledge(tag=query, contents=results[query])
 
         return results
 

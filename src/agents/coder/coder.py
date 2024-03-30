@@ -30,11 +30,11 @@ class Coder:
 
     def validate_response(self, response: str) -> Union[List[Dict[str, str]], bool]:
         response = response.strip()
-
-        response = response.split("~~~", 1)[1]
-        response = response[:response.rfind("~~~")]
-        response = response.strip()
-
+        try:
+            response = response.split("~~~", 1)[1]
+            response = response[:response.rfind("~~~")]
+        except:
+            response = response.strip()
         result = []
         current_file = None
         current_code = []
