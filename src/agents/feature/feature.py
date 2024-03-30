@@ -82,19 +82,20 @@ class Feature:
             yield file
 
     def save_code_to_project(self, response: List[Dict[str, str]], project_name: str):
-        # Save the generated code to the specified project directory
-        file_path_dir = None
-        project_name = project_name.lower().replace(" ", "-")
+    # Save the generated code to the specified project directory
+    project_name = project_name.lower().replace(" ", "-")
+    project_dir = f"{self.project_dir}/{project_name}"
+    os.makedirs(project_dir, exist_ok=True)
 
-        for file in response:
-            file_path = f"{self.project_dir}/{project_name}/{file['file']}"
-            file_path_dir = file_path[:file_path.rfind("/")]
-            os.makedirs(file_path_dir, exist_ok=True)
+    for file in response:
+        file_path = os.path.join(project_dir, file['file'])
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        
+        with open(file_path, "w") as f:
+            f.write(file["code"])
 
-            with self.open_file(file_path, "w") as f:
-                f.write(file["code"])
-    
-        return file_path_dir
+    return project_dir
+
 
     def get_project_path(self, project_name: str):
         # Get the path to the specified project directory
