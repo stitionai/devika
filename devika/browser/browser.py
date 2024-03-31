@@ -2,7 +2,8 @@ import os
 
 from markdownify import markdownify as md
 from pdfminer.high_level import extract_text
-from playwright.sync_api import TimeoutError, sync_playwright
+from playwright.sync_api import TimeoutError as FetchTimeoutError
+from playwright.sync_api import sync_playwright
 
 from devika.config import Config
 from devika.state import AgentState
@@ -20,8 +21,8 @@ class Browser:
 
     def go_to(self, url):
         try:
-            self.page.goto(url, timeout=30000)
-        except TimeoutError as e:
+            self.page.goto(url, timeout=10000)
+        except FetchTimeoutError as e:
             print(f"TimeoutError: {e} when trying to navigate to {url}")
             return False
         return True
