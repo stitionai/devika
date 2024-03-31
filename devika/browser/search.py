@@ -63,16 +63,26 @@ class BaseSearch:
 
 
 class BingSearch(BaseSearch):
+    """Bing search engine class"""
+
     def __init__(self):
         self.config = Config()
         self.bing_api_key = self.config.get_bing_api_key()
         self.bing_api_endpoint = self.config.get_bing_api_endpoint()
-        self.query_result = None
+
+        super().__init__()
 
     def search(self, query):
+
+        if not self.validate_query(query):
+            return []
+
         headers = {"Ocp-Apim-Subscription-Key": self.bing_api_key}
         params = {"q": query, "mkt": "en-US"}
 
+        # TODO: handle HHTP errors
+        # TODO: handle API limit
+        # TODO: Handle the case when the search result is empty
         try:
             response = requests.get(
                 self.bing_api_endpoint,
@@ -83,11 +93,19 @@ class BingSearch(BaseSearch):
             response.raise_for_status()
             self.query_result = response.json()
             return self.query_result
-        except requests.exceptions.RequestException as err:
-            return err
+        except requests.exceptions.RequestException:
+            return []
 
     def get_first_link(self):
         return self.query_result["webPages"]["value"][0]["url"]
+
+    def get_expected_result_fields(self):
+        # Map the expected fields to the actual fields
+        return {
+            "url": "url",
+            "title": "name",
+            "body": "snippet",
+        }
 
 
 class GoogleSearch(BaseSearch):
@@ -102,6 +120,9 @@ class GoogleSearch(BaseSearch):
         super().__init__()
 
     def search(self, query):
+        if not self.validate_query(query):
+            return []
+
         try:
             params = {
                 "q": query,
