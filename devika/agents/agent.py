@@ -10,7 +10,7 @@ from devika.bert.sentence import SentenceBert
 from devika.browser import Browser, start_interaction
 from devika.browser.search import BingSearch, DuckDuckGoSearch, GoogleSearch
 from devika.config import Config
-from devika.documenter.pdf import PDF
+from devika.documenter.pdf import PDFGenerator
 from devika.filesystem import CodeToMarkdownConvertor
 from devika.logger import Logger
 from devika.memory import KnowledgeBase
@@ -144,7 +144,7 @@ class Agent:
                 user_prompt = args["user_prompt"]
                 # Call the reporter agent to generate the PDF document
                 markdown = self.reporter.execute([user_prompt], "", project_name)
-                _out_pdf_file = PDF().markdown_to_pdf(markdown, project_name)
+                _out_pdf_file = PDFGenerator().markdown_to_pdf(markdown, project_name)
 
                 project_name_space_url = project_name.replace(" ", "%20")
                 pdf_download_url = "http://127.0.0.1:1337/api/download-project-pdf?project_name={}".format(  # pylint: disable=line-too-long
@@ -254,7 +254,7 @@ class Agent:
         elif action == "report":
             markdown = self.reporter.execute(conversation, code_markdown, project_name)
 
-            _out_pdf_file = PDF().markdown_to_pdf(markdown, project_name)
+            _out_pdf_file = PDFGenerator().markdown_to_pdf(markdown, project_name)
 
             project_name_space_url = project_name.replace(" ", "%20")
             pdf_download_url = "http://127.0.0.1:1337/api/download-project-pdf?project_name={}".format(  # pylint: disable=line-too-long
