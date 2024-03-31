@@ -1,7 +1,11 @@
+"""Git service to interact with git repositories."""
+
 import git as GitPython
 
 
 class Git:
+    """Git service to interact with git repositories."""
+
     def __init__(self, path):
         self.repo = GitPython.Repo(path)
 
