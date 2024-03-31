@@ -6,13 +6,13 @@ import tiktoken
 from flask import Flask, jsonify, make_response, request, send_file
 from flask_cors import CORS
 
-from src.agents import Agent
-from src.config import Config
-from src.init import init_devika
-from src.llm import LLM
-from src.logger import Logger, route_logger
-from src.project import ProjectManager
-from src.state import AgentState
+from devika.agents import Agent
+from devika.config import Config
+from devika.init import init_devika
+from devika.llm import LLM
+from devika.logger import Logger, route_logger
+from devika.project import ProjectManager
+from devika.state import AgentState
 
 app = Flask(__name__)
 log = logging.getLogger("werkzeug")

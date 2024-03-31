@@ -22,4 +22,5 @@ repos:
     rev: v3.1.0
     hooks:
       - id: pylint
+        args: [--rcfile=pyproject.toml, devika]
 # TODO: Add formatting and linting for UI code
