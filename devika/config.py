@@ -1,88 +1,93 @@
-from os import environ
+"""Config module to manage the configuration of the application."""
 
-import toml
+import os
+
+import toml  # type: ignore
+
+CONFIG_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "config.toml")
 
 
 class Config:
+    """Config class to manage the configuration of the application."""
+
     _instance = None
 
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
-            cls._instance.config = toml.load("config.toml")
         return cls._instance
 
     def __init__(self):
-        self.config = toml.load("config.toml")
+        if not hasattr(self, "config"):
+            self.config = toml.load("config.toml")
 
     def get_config(self):
         return self.config
 
     def get_bing_api_key(self):
-        return environ.get("BING_API_KEY", self.config["API_KEYS"]["BING"])
+        return os.environ.get("BING_API_KEY", self.config["API_KEYS"]["BING"])
 
     def get_bing_api_endpoint(self):
-        return environ.get("BING_API_ENDPOINT", self.config["API_ENDPOINTS"]["BING"])
+        return os.environ.get("BING_API_ENDPOINT", self.config["API_ENDPOINTS"]["BING"])
 
     def get_google_search_api_key(self):
-        return environ.get(
+        return os.environ.get(
             "GOOGLE_SEARCH_API_KEY", self.config["API_KEYS"]["GOOGLE_SEARCH"]
         )
 
     def get_google_search_engine_id(self):
-        return environ.get(
+        return os.environ.get(
             "GOOGLE_SEARCH_ENGINE_ID",
             self.config["API_KEYS"]["GOOGLE_SEARCH_ENGINE_ID"],
         )
 
     def get_google_search_api_endpoint(self):
-        return environ.get(
+        return os.environ.get(
             "GOOGLE_SEARCH_API_ENDPOINT", self.config["API_ENDPOINTS"]["GOOGLE_SEARCH"]
         )
 
     def get_ollama_api_endpoint(self):
-        return environ.get(
+        return os.environ.get(
             "OLLAMA_API_ENDPOINT", self.config["API_ENDPOINTS"]["OLLAMA"]
         )
 
     def get_claude_api_key(self):
-        return environ.get("CLAUDE_API_KEY", self.config["API_KEYS"]["CLAUDE"])
+        return os.environ.get("CLAUDE_API_KEY", self.config["API_KEYS"]["CLAUDE"])
 
     def get_openai_api_key(self):
-        return environ.get("OPENAI_API_KEY", self.config["API_KEYS"]["OPENAI"])
+        return os.environ.get("OPENAI_API_KEY", self.config["API_KEYS"]["OPENAI"])
 
     def get_gemini_api_key(self):
-        return environ.get("GEMINI_API_KEY", self.config["API_KEYS"]["GEMINI"])
-
-    def get_gemini_api_key(self):
-        return self.config["API_KEYS"]["GEMINI"]
+        return os.environ.get("GEMINI_API_KEY", self.config["API_KEYS"]["GEMINI"])
 
     def get_netlify_api_key(self):
-        return environ.get("NETLIFY_API_KEY", self.config["API_KEYS"]["NETLIFY"])
+        return os.environ.get("NETLIFY_API_KEY", self.config["API_KEYS"]["NETLIFY"])
 
     def get_groq_api_key(self):
-        return environ.get("GROQ_API_KEY", self.config["API_KEYS"]["GROQ"])
+        return os.environ.get("GROQ_API_KEY", self.config["API_KEYS"]["GROQ"])
 
     def get_sqlite_db(self):
-        return environ.get("SQLITE_DB_PATH", self.config["STORAGE"]["SQLITE_DB"])
+        return os.environ.get("SQLITE_DB_PATH", self.config["STORAGE"]["SQLITE_DB"])
 
     def get_screenshots_dir(self):
-        return environ.get("SCREENSHOTS_DIR", self.config["STORAGE"]["SCREENSHOTS_DIR"])
+        return os.environ.get(
+            "SCREENSHOTS_DIR", self.config["STORAGE"]["SCREENSHOTS_DIR"]
+        )
 
     def get_pdfs_dir(self):
-        return environ.get("PDFS_DIR", self.config["STORAGE"]["PDFS_DIR"])
+        return os.environ.get("PDFS_DIR", self.config["STORAGE"]["PDFS_DIR"])
 
     def get_projects_dir(self):
-        return environ.get("PROJECTS_DIR", self.config["STORAGE"]["PROJECTS_DIR"])
+        return os.environ.get("PROJECTS_DIR", self.config["STORAGE"]["PROJECTS_DIR"])
 
     def get_logs_dir(self):
-        return environ.get("LOGS_DIR", self.config["STORAGE"]["LOGS_DIR"])
+        return os.environ.get("LOGS_DIR", self.config["STORAGE"]["LOGS_DIR"])
 
     def get_repos_dir(self):
-        return environ.get("REPOS_DIR", self.config["STORAGE"]["REPOS_DIR"])
+        return os.environ.get("REPOS_DIR", self.config["STORAGE"]["REPOS_DIR"])
 
     def get_web_search(self):
-        return environ.get("WEB_SEARCH", self.config["STORAGE"]["WEB_SEARCH"])
+        return os.environ.get("WEB_SEARCH", self.config["STORAGE"]["WEB_SEARCH"])
 
     def get_logging_rest_api(self):
         return self.config["LOGGING"]["LOG_REST_API"] == "true"
@@ -120,10 +125,6 @@ class Config:
 
     def set_openai_api_key(self, key):
         self.config["API_KEYS"]["OPENAI"] = key
-        self.save_config()
-
-    def set_openai_api_key(self, key):
-        self.config["API_KEYS"]["GEMINI"] = key
         self.save_config()
 
     def set_netlify_api_key(self, key):
@@ -167,5 +168,12 @@ class Config:
         self.save_config()
 
     def save_config(self):
-        with open("config.toml", "w") as f:
+        with open(CONFIG_PATH, "w", encoding="utf-8") as f:
             toml.dump(self.config, f)
+
+    def reload_config(self):
+        self.config = toml.load(CONFIG_PATH)
+        return self.config
+
+    def __str__(self):
+        return str(self.config)
