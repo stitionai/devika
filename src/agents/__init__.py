@@ -1,8 +1,11 @@
-from .action import Action
+"""Devika agents module"""
+
 from .agent import Agent
-from .coder import Coder
-from .formatter import Formatter
-from .internal_monologue import InternalMonologue
-from .planner import Planner
-from .researcher import Researcher
-from .runner import Runner
+from .base import BaseAgent, BaseWriterAgent
+from .roles.action import Action
+from .roles.coder import Coder
+from .roles.formatter import Formatter
+from .roles.internal_monologue import InternalMonologue
+from .roles.planner import Planner
+from .roles.researcher import Researcher
+from .roles.runner import Runner

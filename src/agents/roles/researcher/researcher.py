@@ -1,25 +1,29 @@
+"""Researcher agent module"""
+
 import json
+import os
 from typing import List
 
-from jinja2 import BaseLoader, Environment
-
+from src.agents.base import BaseAgent
 from src.browser.search import BingSearch
-from src.llm import LLM
-
-PROMPT = open("src/agents/researcher/prompt.jinja2").read().strip()
 
 
-class Researcher:
-    def __init__(self, base_model: str):
-        self.bing_search = BingSearch()
-        self.llm = LLM(model_id=base_model)
+class Researcher(BaseAgent):
+    """Researcher agent class"""
 
-    def render(self, step_by_step_plan: str, contextual_keywords: str) -> str:
-        env = Environment(loader=BaseLoader())
-        template = env.from_string(PROMPT)
-        return template.render(
-            step_by_step_plan=step_by_step_plan, contextual_keywords=contextual_keywords
+    _prompt = (
+        open(
+            os.path.join(os.path.dirname(__file__), "prompt.jinja2"),
+            "r",
+            encoding="utf-8",
         )
+        .read()
+        .strip()
+    )
+
+    def __init__(self, base_model: str):
+        super().__init__(base_model)
+        self.bing_search = BingSearch()
 
     def validate_response(self, response: str):
         response = response.strip().replace("```json", "```")
@@ -29,7 +33,7 @@ class Researcher:
 
         try:
             response = json.loads(response)
-        except Exception as _:
+        except json.JSONDecodeError:
             return False
 
         response = {k.replace("\\", ""): v for k, v in response.items()}
@@ -45,7 +49,9 @@ class Researcher:
         contextual_keywords_str = ", ".join(
             map(lambda k: k.capitalize(), contextual_keywords)
         )
-        prompt = self.render(step_by_step_plan, contextual_keywords_str)
+        prompt = self.render(
+            step_by_step_plan=step_by_step_plan, keywords=contextual_keywords_str
+        )
 
         response = self.llm.inference(prompt, project_name)
 

@@ -1,3 +1,5 @@
+"""Meta agent that orchestrates the flow of execution"""
+
 import json
 import platform
 import time
@@ -16,35 +18,33 @@ from src.project import ProjectManager
 from src.services import Netlify
 from src.state import AgentState
 
-from .action import Action
-from .answer import Answer
-from .coder import Coder
-from .decision import Decision
-from .feature import Feature
-from .formatter import Formatter
-from .internal_monologue import InternalMonologue
-from .patcher import Patcher
-from .planner import Planner
-from .reporter import Reporter
-from .researcher import Researcher
-from .runner import Runner
+from .roles.action import Action
+from .roles.answer import Answer
+from .roles.coder import Coder
+from .roles.decision import Decision
+from .roles.feature import Feature
+from .roles.formatter import Formatter
+from .roles.internal_monologue import InternalMonologue
+from .roles.patcher import Patcher
+from .roles.planner import Planner
+from .roles.reporter import Reporter
+from .roles.researcher import Researcher
+from .roles.runner import Runner
 
 
 class Agent:
+    """Meta agent that orchestrates the flow of execution"""
+
     def __init__(self, base_model: str):
         if not base_model:
             raise ValueError("base_model is required")
 
         self.logger = Logger()
 
-        """
-        Accumulate contextual keywords from chained prompts of all preparation agents
-        """
+        # Accumulate contextual keywords from chained prompts of all preparation agents
         self.collected_context_keywords = set()
 
-        """
-        Agents
-        """
+        # Initialize all the agents
         self.planner = Planner(base_model=base_model)
         self.researcher = Researcher(base_model=base_model)
         self.formatter = Formatter(base_model=base_model)
@@ -87,45 +87,35 @@ class Agent:
         for query in queries:
             query = query.strip().lower()
 
-            """
-            Check if the knowledge base already has the query learned
-            """
+            # Check if the knowledge base already has the query learned
+
             # knowledge = knowledge_base.get_knowledge(tag=query)
             # if knowledge:
             #     results[query] = knowledge
             #     continue
 
-            """
-            Search for the query and get the first link
-            """
+            # Search for the query and get the first link
             web_search.search(query)
             link = web_search.get_first_link()
 
-            """
-            Browse to the link and take a screenshot, then extract the text
-            """
+            # Browse to the link and take a screenshot, then extract the text
             browser.go_to(link)
             browser.screenshot(project_name)
 
-            """
-            Formatter Agent is invoked to format and learn from the contents
-            """
+            # Formatter Agent is invoked to format and learn from the contents
             results[query] = self.formatter.execute(
                 browser.extract_text(), project_name
             )
 
-            """
-            Add the newly acquired data to the knowledge base
-            """
+            # Add the newly acquired data to the knowledge base
             # knowledge_base.add_knowledge(tag=query, contents=results[query])
 
         return results
 
-    """
-    Update the context keywords with the latest sentence/prompt
-    """
-
     def update_contextual_keywords(self, sentence: str):
+        """
+        Update the context keywords with the latest sentence/prompt
+        """
         keywords = SentenceBert(sentence).extract_keywords()
 
         for keyword in keywords:
@@ -133,11 +123,10 @@ class Agent:
 
         return self.collected_context_keywords
 
-    """
-    Decision making Agent
-    """
-
     def make_decision(self, prompt: str, project_name: str) -> str:
+        """
+        Decision making Agent
+        """
         decision = self.decision.execute(prompt, project_name)
 
         for item in decision:
@@ -158,10 +147,10 @@ class Agent:
                 _out_pdf_file = PDF().markdown_to_pdf(markdown, project_name)
 
                 project_name_space_url = project_name.replace(" ", "%20")
-                pdf_download_url = "http://127.0.0.1:1337/api/download-project-pdf?project_name={}".format(
+                pdf_download_url = "http://127.0.0.1:1337/api/download-project-pdf?project_name={}".format(  # pylint: disable=line-too-long
                     project_name_space_url
                 )
-                response = f"I have generated the PDF document. You can download it from here: {pdf_download_url}"
+                response = f"I have generated the PDF document. You can download it from here: {pdf_download_url}"  # pylint: disable=line-too-long
 
                 Browser().go_to(pdf_download_url)
                 Browser().screenshot(project_name)
@@ -192,11 +181,10 @@ class Agent:
                 )
                 self.coder.save_code_to_project(code, project_name)
 
-    """
-    Subsequent flow of execution
-    """
-
     def subsequent_execute(self, prompt: str, project_name: str) -> str:
+        """
+        Subsequent flow of execution
+        """
         AgentState().set_agent_active(project_name, True)
 
         conversation = ProjectManager().get_all_messages_formatted(project_name)
@@ -269,12 +257,10 @@ class Agent:
             _out_pdf_file = PDF().markdown_to_pdf(markdown, project_name)
 
             project_name_space_url = project_name.replace(" ", "%20")
-            pdf_download_url = (
-                "http://127.0.0.1:1337/api/download-project-pdf?project_name={}".format(
-                    project_name_space_url
-                )
+            pdf_download_url = "http://127.0.0.1:1337/api/download-project-pdf?project_name={}".format(  # pylint: disable=line-too-long
+                project_name_space_url
             )
-            response = f"I have generated the PDF document. You can download it from here: {pdf_download_url}"
+            response = f"I have generated the PDF document. You can download it from here: {pdf_download_url}"  # pylint: disable=line-too-long
 
             Browser().go_to(pdf_download_url)
             Browser().screenshot(project_name)
@@ -284,13 +270,12 @@ class Agent:
         AgentState().set_agent_active(project_name, False)
         AgentState().set_agent_completed(project_name, True)
 
-    """
-    Agentic flow of execution
-    """
-
     def execute(
         self, prompt: str, project_name_from_user: str = None, web_search: str = None
     ) -> str:
+        """
+        Agentic flow of execution
+        """
         if project_name_from_user:
             ProjectManager().add_message_from_user(project_name_from_user, prompt)
 
@@ -345,7 +330,7 @@ class Agent:
 
         ProjectManager().add_message_from_devika(
             project_name,
-            f"I am browsing the web to research the following queries: {queries_combined}. If I need anything, I will make sure to ask you.",
+            f"I am browsing the web to research the following queries: {queries_combined}. If I need anything, I will make sure to ask you.",  # pylint: disable=line-too-long
         )
 
         ask_user_prompt = "Nothing from the user."
