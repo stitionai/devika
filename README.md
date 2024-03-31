@@ -74,11 +74,11 @@ The easiest way to run the project locally:
 
 1. Install `uv` - Python Package manager (https://github.com/astral-sh/uv)
 2. Install `bun` - JavaScript runtime (https://bun.sh/docs/installation)
-3. Install and setup `Ollama` (https://ollama.com/) 
+3. Install and setup `Ollama` (https://ollama.com/) (if you want don't want to use the local models then you can skip this step)
 
-For ollama you need to install the [models](https://ollama.com/models)
+For ollama you need to install the [models](https://ollama.com/models)<br>
 For API models, configure the API keys in the `config.toml` file. For this, we provide `sample.config.toml` <br><br>
-create and set the API Keys in the `config.toml` file. (This will soon be moving to the UI where you can set these keys from the UI itself without touching the command-line, want to implement it? See this issue: https://github.com/stitionai/devika/issues/3)
+create and set the API Keys in the `config.toml` file. you can also set the API keys via the settings page in the UI.<br>
 
 Then execute the following set of command:
 
@@ -124,7 +124,7 @@ To install Devika, follow these steps:
    pip install -r requirements.txt
    playwright install --with-deps # installs browsers in playwright (and their deps) if required
    ```
-5. Set up the necessary API keys and configuration (see [Configuration](#configuration) section).
+5. Set up the necessary API keys and  [Configuration](#configuration) 
 6. Start the Devika server:
    ```bash
    python devika.py
@@ -152,19 +152,33 @@ To start using Devika, follow these steps:
 
 ## Configuration
 
-Devika requires certain configuration settings and API keys to function properly. use the `sample.config.toml` file with the following information:
+Devika requires certain configuration settings and API keys to function properly. use the `sample.config.toml` file and create `config.toml`:
 
-- create a `config.toml` file in the root directory of the project.
-- `OPENAI_API_KEY`: Your OpenAI API key for accessing GPT models.
-- `CLAUDE_API_KEY`: Your Anthropic API key for accessing Claude models.
-- `GEMINI_API_KEY`: Your Gemini API key for accessing Gemini models.
-- `MISTRAL_API_KEY`: Your Mistral API key for accessing Mistral models.
-- `BING_API_KEY`: Your Bing Search API key for web searching capabilities.
-- `DATABASE_URL`: The URL for your database connection.
-- `LOG_DIRECTORY`: The directory where Devika's logs will be stored.
-- `PROJECT_DIRECTORY`: The directory where Devika's projects will be stored.
+- STORAGE
+   - `SQLITE_DB`: The path to the SQLite database file for storing Devika's data.
+   - `SCREENSHOTS_DIR`: The directory where screenshots captured by Devika will be stored.
+   - `PDFS_DIR`: The directory where PDF files processed by Devika will be stored.
+   - `PROJECTS_DIR`: The directory where Devika's projects will be stored.
+   - `LOGS_DIR`: The directory where Devika's logs will be stored.
+   - `REPOS_DIR`: The directory where Git repositories cloned by Devika will be stored.
+   - `WEB_SEARCH`: This determines the default web search method for browsing the web. Accepted values are: google, bing, or ddgs.
 
+- API KEYS
+   - `BING`: Your Bing Search API key for web searching capabilities.
+   - `GOOGLE_SEARCH`: Your Google Search API key for web searching capabilities.
+   - `GOOGLE_SEARCH_ENGINE_ID`: Your Google Search Engine Id for web searching using google.
+   - `OPENAI`: Your OpenAI API key for accessing GPT models.
+   - `GEMINI`: Your Gemini API key for accessing Gemini models.
+   - `CLAUDE`: Your Anthropic API key for accessing Claude models.
+   - `MISTRAL`: Your Mistral API key for accessing Mistral models.
+   - `GROQ`: Your Groq API key for accessing Groq models.
+   - `NETLIFY`: Your Netlify API key for deploying and managing web projects.
+   
 Make sure to keep your API keys secure and do not share them publicly.
+
+### Configuring web search method
+
+Devika currently supports Bing, Google, and DuckDuckGo for web searches. You can configure the web search method via UI.
 
 ## Under The Hood
 

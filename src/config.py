@@ -1,5 +1,5 @@
 import toml
-from os import environ
+import os
 
 
 class Config:
@@ -8,8 +8,16 @@ class Config:
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
-            cls._instance.config = toml.load("config.toml")
+            cls._instance._load_config()
         return cls._instance
+
+    def _load_config(self):
+        # If the config file doesn't exist, copy from the sample
+        if not os.path.exists("config.toml"):
+            with open("sample.config.toml", "r") as f_in, open("config.toml", "w") as f_out:
+                f_out.write(f_in.read())
+
+        self.config = toml.load("config.toml")
 
     def get_config(self):
         return self.config
@@ -68,9 +76,6 @@ class Config:
     def get_repos_dir(self):
         return self.config["STORAGE"]["REPOS_DIR"]
 
-    def get_web_search(self):
-        return self.config["STORAGE"]["WEB_SEARCH"]
-    
     def get_logging_rest_api(self):
         return self.config["LOGGING"]["LOG_REST_API"] == "true"
 
@@ -155,10 +160,6 @@ class Config:
 
     def set_logging_prompts(self, value):
         self.config["LOGGING"]["LOG_PROMPTS"] = "true" if value else "false"
-        self.save_config()
-
-    def set_web_search(self, value):
-        self.config["STORAGE"]["WEB_SEARCH"] = value
         self.save_config()
 
     def save_config(self):

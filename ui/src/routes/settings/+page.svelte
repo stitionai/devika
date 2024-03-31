@@ -8,6 +8,18 @@
 
   onMount(async () => {
     settings = await fetchSettings();
+    // this is for correcting order of apis shown in the settings page
+    settings["API_KEYS"] = {
+      "BING": settings["API_KEYS"]["BING"],
+      "GOOGLE_SEARCH": settings["API_KEYS"]["GOOGLE_SEARCH"],
+      "GOOGLE_SEARCH_ENGINE_ID": settings["API_KEYS"]["GOOGLE_SEARCH_ENGINE_ID"],
+      "CLAUDE": settings["API_KEYS"]["CLAUDE"],
+      "OPENAI": settings["API_KEYS"]["OPENAI"],
+      "GEMINI": settings["API_KEYS"]["GEMINI"],
+      "MISTRAL": settings["API_KEYS"]["MISTRAL"],
+      "GROQ": settings["API_KEYS"]["GROQ"],
+      "NETLIFY": settings["API_KEYS"]["NETLIFY"]
+    };
     // make a copy of the original settings
     original = JSON.parse(JSON.stringify(settings));
 
