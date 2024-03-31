@@ -12,6 +12,7 @@ import time
 
 from playwright.sync_api import sync_playwright
 
+from devika.browser.params import BrowserParams
 from devika.config import Config
 from devika.llm import LLM
 from devika.state import AgentState
@@ -222,7 +223,7 @@ class Crawler:
                 "(document.scrollingElement || document.body).scrollTop = (document.scrollingElement || document.body).scrollTop + window.innerHeight;"
             )
 
-    def click(self, id):
+    def click(self, element_id):
         # Inject javascript into the page which removes the target= attribute from all links
         js = """
 		links = document.getElementsByTagName("a");
@@ -232,7 +233,7 @@ class Crawler:
 		"""
         self.page.evaluate(js)
 
-        element = self.page_element_buffer.get(int(id))
+        element = self.page_element_buffer.get(int(element_id))
         if element:
             x = element.get("center_x")
             y = element.get("center_y")
@@ -241,8 +242,8 @@ class Crawler:
         else:
             print("Could not find element")
 
-    def type(self, id, text):
-        self.click(id)
+    def type(self, element_id, text):
+        self.click(element_id)
         self.page.keyboard.type(text)
 
     def enter(self):
@@ -538,6 +539,7 @@ class Crawler:
 
 def start_interaction(model_id, objective, project_name):
     _crawler = Crawler()
+    _llm = LLM(model_id=model_id)
 
     def print_help():
         print(
@@ -551,7 +553,7 @@ def start_interaction(model_id, objective, project_name):
         prompt = prompt.replace("$url", url[:100])
         prompt = prompt.replace("$previous_command", previous_command)
         prompt = prompt.replace("$browser_content", browser_content[:4500])
-        response = LLM(model_id=model_id).inference(prompt)
+        response = _llm.inference(prompt, project_name=project_name)
         return response
 
     def run_cmd(cmd):
@@ -578,12 +580,12 @@ def start_interaction(model_id, objective, project_name):
 
     gpt_cmd = ""
     prev_cmd = ""
-    _crawler.go_to_page("google.com")
+    _crawler.go_to_page("duckduckgo.com")
 
     try:
         visits = 0
 
-        while True and visits < 5:
+        while visits < BrowserParams.MAX_SEARCH_RESULTS:
             browser_content = "\n".join(_crawler.crawl())
             prev_cmd = gpt_cmd
 
