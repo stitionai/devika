@@ -1,8 +1,7 @@
 import os
-from io import BytesIO
 
-from markdown import markdown
-from xhtml2pdf import pisa
+from markdown import markdown  # type: ignore
+from xhtml2pdf import pisa  # type: ignore
 
 from devika.config import Config
 
@@ -20,6 +19,6 @@ class PDF:
             pisa_status = pisa.CreatePDF(html_string, dest=out_file)
 
         if pisa_status.err:
-            raise Exception("Error generating PDF")
+            raise IOError("Error generating PDF")
 
         return out_file_path
