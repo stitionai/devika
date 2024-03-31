@@ -1,16 +1,16 @@
-# TODO: Not Restrictive at the moment, but will be updated as the project grows
 [build-system]
-build-backend = "setuptools.build_meta"
-requires = ["setuptools", "wheel", "pip >= 23.0"]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
 
-[tool.setuptools]
-packages = ["devika"]
 
-[project]
-description = "Devika is an Agentic AI Software Engineer that can understand high-level human instructions, break them down into steps, research relevant information, and write code to achieve the given objective. Devika aims to be a competitive open-source alternative to Devin by Cognition AI."
+[tool.poetry]
 name = "devika"
 version = "0.0.1"
-requires-python = ">=3.10,<3.12"
+description = "Devika is an Agentic AI Software Engineer that can understand high-level human instructions, break them down into steps, research relevant information, and write code to achieve the given objective. Devika aims to be a competitive open-source alternative to Devin by Cognition AI."
+authors = ["Your Name <your.email@example.com>"]
+packages = [
+    { include = "devika" },
+]
 keywords = [
   "AI",
   "Software Engineer",
@@ -22,47 +22,43 @@ keywords = [
   "Open Source",
   "Alternative",
 ]
-classifiers = [
-  "Programming Language :: Python :: 3",
-]
 
-# TODO: break the requirements based on LLM API requirements
-dependencies = [
-  "flask",
-  "flask-cors",
-  "toml",
-  "urllib3",
-  "requests",
-  "colorama",
-  "fastlogging",
-  "Jinja2",
-  "mistletoe",
-  "markdownify",
-  "pdfminer.six",
-  "playwright",
-  "pytest-playwright",
-  "tiktoken",
-  "ollama",
-  "openai",
-  "anthropic",
-  "sqlmodel",
-  "keybert",
-  "GitPython",
-  "netlify-py",
-  "Markdown",
-  "xhtml2pdf",
-  "groq",
-  "google-generativeai",
-  "duckduckgo-search",
-]
 
-[project.optional-dependencies]
-dev = [
-  "black",
-  "isort",
-  "pylint",
-  "pre-commit",
-]
+[tool.poetry.dependencies]
+python = ">=3.10,<3.12"
+flask = "*"
+flask-cors = "*"
+toml = "*"
+urllib3 = "*"
+requests = "*"
+colorama = "*"
+fastlogging = "*"
+Jinja2 = "*"
+mistletoe = "*"
+markdownify = "*"
+pdfminer-six = "*"
+playwright = "*"
+pytest-playwright = "*"
+tiktoken = "*"
+ollama = "*"
+openai = "*"
+anthropic = "*"
+sqlmodel = "*"
+keybert = "*"
+GitPython = "*"
+netlify-py = "*"
+Markdown = "*"
+xhtml2pdf = "*"
+groq = "*"
+google-generativeai = "*"
+duckduckgo-search = "*"
+
+[tool.poetry.dev-dependencies]
+black = "*"
+isort = "*"
+pylint = "*"
+pre-commit = "*"
+
 
 [tool.isort]
 multi_line_output = 3
