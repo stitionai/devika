@@ -77,8 +77,7 @@ The easiest way to run the project locally:
 3. Install and setup `Ollama` (https://ollama.com/) (if you want don't want to use the local models then you can skip this step)
 
 For ollama you need to install the [models](https://ollama.com/models)<br>
-For API models, configure the API keys in the `config.toml` file. For this, we provide `sample.config.toml` <br><br>
-create and set the API Keys in the `config.toml` file. you can also set the API keys via the settings page in the UI.<br>
+For API models, configure the API keys via setting page in UI. <br><br>
 
 Then execute the following set of command:
 
@@ -152,7 +151,9 @@ To start using Devika, follow these steps:
 
 ## Configuration
 
-Devika requires certain configuration settings and API keys to function properly. use the `sample.config.toml` file and create `config.toml`:
+Devika requires certain configuration settings and API keys to function properly:
+
+when you first time run Devika, it will create a `config.toml` file for you in the root directory. You can configure the following settings in the settings page via UI:
 
 - STORAGE
    - `SQLITE_DB`: The path to the SQLite database file for storing Devika's data.
