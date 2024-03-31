@@ -1,16 +1,9 @@
 [build-system]
-requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
-
+requires = ["poetry-core>=1.0.0"]
 
 [tool.poetry]
-name = "devika"
-version = "0.0.2"
 description = "Devika is an Agentic AI Software Engineer that can understand high-level human instructions, break them down into steps, research relevant information, and write code to achieve the given objective. Devika aims to be a competitive open-source alternative to Devin by Cognition AI."
-authors = ["Your Name <your.email@example.com>"]
-packages = [
-    { include = "devika" },
-]
 keywords = [
   "AI",
   "Software Engineer",
@@ -22,43 +15,47 @@ keywords = [
   "Open Source",
   "Alternative",
 ]
-
+name = "devika"
+packages = [
+  {include = "devika"},
+]
+version = "0.0.2"
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.12"
+GitPython = "*"
+Jinja2 = "*"
+Markdown = "*"
+anthropic = "*"
+colorama = "*"
+duckduckgo-search = "*"
+fastlogging = "*"
 flask = "*"
 flask-cors = "*"
-toml = "*"
-urllib3 = "*"
-requests = "*"
-colorama = "*"
-fastlogging = "*"
-Jinja2 = "*"
-mistletoe = "*"
+google-generativeai = "*"
+groq = "*"
+keybert = "*"
 markdownify = "*"
+mistletoe = "*"
+netlify-py = "*"
+ollama = "*"
+openai = "*"
 pdfminer-six = "*"
 playwright = "*"
 pytest-playwright = "*"
-tiktoken = "*"
-ollama = "*"
-openai = "*"
-anthropic = "*"
+python = ">=3.10,<3.12"
+rank-bm25 = "*"
+requests = "*"
 sqlmodel = "*"
-keybert = "*"
-GitPython = "*"
-netlify-py = "*"
-Markdown = "*"
+tiktoken = "*"
+toml = "*"
+urllib3 = "*"
 xhtml2pdf = "*"
-groq = "*"
-google-generativeai = "*"
-duckduckgo-search = "*"
 
 [tool.poetry.dev-dependencies]
 black = "*"
 isort = "*"
-pylint = "*"
 pre-commit = "*"
-
+pylint = "*"
 
 [tool.isort]
 multi_line_output = 3
