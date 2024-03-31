@@ -5,7 +5,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "devika"
-version = "0.0.1"
+version = "0.0.2"
 description = "Devika is an Agentic AI Software Engineer that can understand high-level human instructions, break them down into steps, research relevant information, and write code to achieve the given objective. Devika aims to be a competitive open-source alternative to Devin by Cognition AI."
 authors = ["Your Name <your.email@example.com>"]
 packages = [
