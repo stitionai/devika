@@ -59,6 +59,9 @@ class BaseAgent:
         if not response:
             return False
 
+        if self._response_key is None:
+            return response["response"]
+
         return response["response"], response[self._response_key]
 
     def _execute(self, project_name: str, **kwargs):

@@ -22,4 +22,8 @@ class Action(BaseAgent):
 
     def execute(self, conversation: list, project_name: str):
         """Execute the agent"""
+
+        if isinstance(conversation, str):
+            conversation = [conversation]
+
         return self._execute(conversation=conversation, project_name=project_name)

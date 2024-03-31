@@ -19,6 +19,10 @@ class Answer(BaseAgent):
     )
 
     def execute(self, conversation: list, code_markdown: str, project_name: str):
+
+        if isinstance(conversation, str):
+            conversation = [conversation]
+
         return self._execute(
             conversation=conversation,
             code_markdown=code_markdown,
