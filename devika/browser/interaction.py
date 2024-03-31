@@ -4,10 +4,11 @@
 # https://github.com/nat/natbot
 #
 # MODIFIED FOR DEVIKA
+# pylint: disable=all
 
 import os
+import sys
 import time
-from sys import exit, platform
 
 from playwright.sync_api import sync_playwright
 
@@ -15,7 +16,7 @@ from devika.config import Config
 from devika.llm import LLM
 from devika.state import AgentState
 
-prompt_template = """
+PROMPT_TEMPLATE = """
 You are an agent controlling a browser. You are given:
 
 	(1) an objective that you are trying to achieve
@@ -255,7 +256,7 @@ class Crawler:
         page_state_as_text = []
 
         device_pixel_ratio = page.evaluate("window.devicePixelRatio")
-        if platform == "darwin" and device_pixel_ratio == 1:  # lies
+        if sys.platform == "darwin" and device_pixel_ratio == 1:  # lies
             device_pixel_ratio = 2
 
         win_scroll_x = page.evaluate("window.scrollX")
@@ -545,7 +546,7 @@ def start_interaction(model_id, objective, project_name):
         )
 
     def get_gpt_command(objective, url, previous_command, browser_content):
-        prompt = prompt_template
+        prompt = PROMPT_TEMPLATE
         prompt = prompt.replace("$objective", objective)
         prompt = prompt.replace("$url", url[:100])
         prompt = prompt.replace("$previous_command", previous_command)
@@ -599,4 +600,4 @@ def start_interaction(model_id, objective, project_name):
 
     except KeyboardInterrupt:
         print("\n[!] Ctrl+C detected, exiting gracefully.")
-        exit(0)
+        sys.exit(0)
