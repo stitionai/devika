@@ -167,7 +167,7 @@ def calculate_tokens():
 @route_logger(logger)
 def token_usage():
     project_name = request.args.get("project_name")
-    token_count = AgentState().get_latest_token_usage(project_name)
+    token_count = AgentState.get_latest_token_usage(project_name)
     return jsonify({"token_usage": token_count})
 
 
