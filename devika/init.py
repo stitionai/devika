@@ -1,6 +1,7 @@
 import os
 import sys
 
+from devika.bert.sentence import SentenceBert
 from devika.config import Config
 from devika.logger import Logger
 
@@ -49,9 +50,9 @@ def init_devika():
         f"Using {config.get_web_search()} as default if not specified in the request."
     )
 
-    from devika.bert.sentence import SentenceBert
-
     logger.info("Loading sentence-transformer BERT models...")
+
+    # Dummy call to load the BERT model
     prompt = "Light-weight keyword extraction excercise for BERT model loading.".strip()
-    SentenceBert(prompt).extract_keywords()
+    SentenceBert().extract_keywords(prompt)
     logger.info("BERT model loaded successfully.")

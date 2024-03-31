@@ -146,7 +146,7 @@ class ProjectManager:
         zip_path = f"{project_path}.zip"
 
         with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zipf:
-            for root, dirs, files in os.walk(project_path):
+            for root, _, files in os.walk(project_path):
                 for file in files:
                     relative_path = os.path.relpath(
                         os.path.join(root, file), os.path.join(project_path, "..")

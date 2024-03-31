@@ -1,6 +1,6 @@
 from functools import wraps
 
-from fastlogging import LogInit
+from fastlogging import LogInit  # type: ignore
 from flask import request
 
 from devika.config import Config
@@ -15,7 +15,7 @@ class Logger:
         )
 
     def read_log_file(self) -> str:
-        with open(self.logger.pathName, "r") as file:
+        with open(self.logger.pathName, "r", encoding="utf-8") as file:
             return file.read()
 
     def info(self, message: str):

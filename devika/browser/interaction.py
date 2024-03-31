@@ -172,6 +172,8 @@ black_listed_elements = set(
     ]
 )
 
+# FIXME: Web crawler is not closing the browser after the interaction is done
+
 
 class Crawler:
     def __init__(self):
