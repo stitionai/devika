@@ -1,4 +1,4 @@
-from netlify_py import NetlifyPy
+from netlify_py import NetlifyPy  # type: ignore
 
 from devika.config import Config
 from devika.project import ProjectManager
@@ -15,14 +15,8 @@ class Netlify:
 
         site = self.netlify.site.create_site()
 
-        print("===" * 10)
-        print(site)
-
         site_id = site["id"]
 
         deploy = self.netlify.deploys.deploy_site(site_id, project_path)
-
-        print("===" * 10)
-        print(deploy)
 
         return deploy
