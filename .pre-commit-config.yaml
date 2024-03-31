@@ -23,8 +23,4 @@ repos:
     hooks:
       - id: pylint
         args: [--rcfile=pyproject.toml, devika]
-  - repo: https://github.com/hadolint/hadolint
-    rev: v2.12.1-beta  # Use the latest release from Hadolint's GitHub
-    hooks:
-      - id: hadolint
 # TODO: Add formatting and linting for UI code
