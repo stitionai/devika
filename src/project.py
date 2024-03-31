@@ -3,14 +3,16 @@ import json
 import zipfile
 from datetime import datetime
 from typing import Optional
+from src.socket_instance import emit_agent
 from sqlmodel import Field, Session, SQLModel, create_engine
-
 from src.config import Config
+
 
 class Projects(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     project: str
     message_stack_json: str
+
 
 class ProjectManager:
     def __init__(self):
@@ -22,7 +24,7 @@ class ProjectManager:
 
     def new_message(self):
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        
+
         return {
             "from_devika": True,
             "message": None,
@@ -59,12 +61,14 @@ class ProjectManager:
     def add_message_from_devika(self, project: str, message: str):
         new_message = self.new_message()
         new_message["message"] = message
+        emit_agent("server-message", {"messages": new_message})
         self.add_message_to_project(project, new_message)
-        
+
     def add_message_from_user(self, project: str, message: str):
         new_message = self.new_message()
         new_message["message"] = message
         new_message["from_devika"] = False
+        emit_agent("server-message", {"messages": new_message})
         self.add_message_to_project(project, new_message)
 
     def get_messages(self, project: str):
@@ -73,7 +77,7 @@ class ProjectManager:
             if project_state:
                 return json.loads(project_state.message_stack_json)
             return None
-        
+
     def get_latest_message_from_user(self, project: str):
         with Session(self.engine) as session:
             project_state = session.query(Projects).filter(Projects.project == project).first()
@@ -107,10 +111,10 @@ class ProjectManager:
         with Session(self.engine) as session:
             projects = session.query(Projects).all()
             return [project.project for project in projects]
-        
+
     def get_all_messages_formatted(self, project: str):
         formatted_messages = []
-        
+
         with Session(self.engine) as session:
             project_state = session.query(Projects).filter(Projects.project == project).first()
             if project_state:
@@ -120,12 +124,12 @@ class ProjectManager:
                         formatted_messages.append(f"Devika: {message['message']}")
                     else:
                         formatted_messages.append(f"User: {message['message']}")
-                        
+
             return formatted_messages
 
     def get_project_path(self, project: str):
         return os.path.join(self.project_path, project.lower().replace(" ", "-"))
-    
+
     def project_to_zip(self, project: str):
         project_path = self.get_project_path(project)
         zip_path = f"{project_path}.zip"
@@ -135,8 +139,8 @@ class ProjectManager:
                 for file in files:
                     relative_path = os.path.relpath(os.path.join(root, file), os.path.join(project_path, '..'))
                     zipf.write(os.path.join(root, file), arcname=relative_path)
-                    
+
         return zip_path
-    
+
     def get_zip_path(self, project: str):
         return f"{self.get_project_path(project)}.zip"
