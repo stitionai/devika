@@ -3,6 +3,10 @@
   import { selectedProject, selectedModel, projectList, modelList, internet } from '$lib/store';
   import { createProject, fetchProjectList, getTokenUsage } from "$lib/api";
   import Dropdown from "./ui/Dropdown.svelte";
+  import CreateProjectPopup from './ui/CreateProjectPopup.svelte';
+  //import { writable } from 'svelte/store';
+
+  //const modal = writable(null);
 
   let tokenUsage = 0;
 
@@ -10,15 +14,17 @@
     tokenUsage = await getTokenUsage();
   }
 
-  async function createNewProject() {
-    const projectName = prompt('Enter the project name:');
-    if (projectName) {
-      await createProject(projectName);
-      await fetchProjectList();
+  //Commentinf this as new create project solution is added
+  // async function createNewProject() {
+  //   //const projectName = prompt('Enter the project name:');
+  //   const projectName = createNewProjectPopup();
+  //   if (projectName) {
+  //     await createProject(projectName);
+  //     await fetchProjectList();
 
-      selectedProject.set(projectName);
-    }
-  }
+  //     selectedProject.set(projectName);
+  //   }
+  // }
 
   onMount(() => {
     setInterval(updateTokenUsage, 1000);
@@ -26,19 +32,15 @@
 </script>
 
 <div class="control-panel bg-slate-900 border border-indigo-700 rounded">
+  
   <Dropdown options={Object.fromEntries($projectList.map((x) => [x, x]))} label="Select Project" bind:selection={$selectedProject}>
     <div slot="prefix-entries" let:closeDropdown={close}>
-      <button
-        class="text-white block px-4 py-2 text-sm hover:bg-slate-700 w-full text-left overflow-clip"
-        on:click|preventDefault={() => {
-          createNewProject();
-          close();
-        }}
-      >
-        + Create New Project
-      </button>
+      
     </div>
   </Dropdown>
+
+  <CreateProjectPopup></CreateProjectPopup>
+
   <div
     class="right-controls"
     style="display: flex; align-items: center; gap: 20px"

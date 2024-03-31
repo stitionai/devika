@@ -31,13 +31,15 @@ export async function fetchProjectList() {
 }
 
 export async function createProject(projectName) {
-  await fetch(`${API_BASE_URL}/api/create-project`, {
+  const response = await fetch(`${API_BASE_URL}/api/create-project`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ project_name: projectName }),
   });
+  const data = await response.json();
+  return data.message;
 }
 
 export async function fetchModelList() {

@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify, send_file, make_response
+import json
 from flask_cors import CORS
 import os
 import logging
@@ -33,8 +34,17 @@ os.environ["TOKENIZERS_PARALLELISM"] = "false"
 def create_project():
     data = request.json
     project_name = data.get("project_name")
-    ProjectManager().create_project(project_name)
-    return jsonify({"message": "Project created"})
+    projectAlreadyExists = False #Boolean to check if project already exists
+    pm = ProjectManager() #get the project manager instance
+    projectList = pm.get_project_list() #Get the project list
+    for project in projectList: #Loop through projects
+        if project_name == project: #Check if project-name == project from returned list
+            projectAlreadyExists = True #set project exists to true
+            break #break out of loop
+    if projectAlreadyExists == False: #Check if boolean is false
+        pm.create_project(project_name) #create the project
+        return jsonify({"message": "Project created"}) #return project created message
+    return jsonify({"message": "Project already exists"}) #return project already exists message
 
 
 @app.route("/api/execute-agent", methods=["POST"])
