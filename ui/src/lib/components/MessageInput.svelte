@@ -1,6 +1,7 @@
 <script>
-  import { API_BASE_URL,  socket } from "$lib/api";
+  import { socket } from "$lib/api";
   import { agentState, messages } from "$lib/store";
+  import { calculateTokens } from "$lib/token";
 
   let isAgentActive = false;
 
@@ -14,7 +15,7 @@
     const projectName = localStorage.getItem("selectedProject");
     const selectedModel = localStorage.getItem("selectedModel");
     const serachEngine = localStorage.getItem("selectedSearchEngine");
-    
+
     if (!projectName) {
       alert("Please select a project first!");
       return;
@@ -27,48 +28,33 @@
     if (messageInput.trim() !== "" && !isAgentActive) {
       if ($messages.length === 0) {
         console.log("Executing agent ... ", messageInput);
-        socket.emit("user-message", { 
+        socket.emit("user-message", {
           action: "execute_agent",
           message: messageInput,
           base_model: selectedModel,
           project_name: projectName,
-          search_engine: serachEngine
+          search_engine: serachEngine,
         });
       } else {
         console.log("Sending message", messageInput);
 
-        socket.emit("user-message", { 
+        socket.emit("user-message", {
           action: "continue",
           message: messageInput,
           base_model: selectedModel,
           project_name: projectName,
-          search_engine: serachEngine
-         });
+          search_engine: serachEngine,
+        });
       }
       messageInput = "";
     }
   }
 
-  function calculateTokens(event) {
+  function setTokenSize(event) {
     const prompt = event.target.value;
-    fetch(`${API_BASE_URL}/api/calculate-tokens`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ prompt }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        document.querySelector(".token-count").textContent =
-          `${data.token_usage} tokens`;
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+    let tokens = calculateTokens(prompt);
+    document.querySelector(".token-count").textContent = `${tokens} tokens`;
   }
-
-
 </script>
 
 <div class="expandable-input relative">
@@ -77,7 +63,7 @@
     class="w-full p-2 border-2 rounded-lg pr-20"
     placeholder="Type your message..."
     bind:value={messageInput}
-    on:input={calculateTokens}
+    on:input={setTokenSize}
     on:keydown={(e) => {
       if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
