@@ -10,6 +10,7 @@ from devika.config import Config
 from .params import BrowserParams
 
 
+# TODO: Add api limit handling
 class BaseSearch:
     """Base class for search engines"""
 
@@ -90,12 +91,15 @@ class BingSearch(BaseSearch):
 
 
 class GoogleSearch(BaseSearch):
+    """Google search engine class"""
+
     def __init__(self):
         self.config = Config()
         self.google_search_api_key = self.config.get_google_search_api_key()
         self.google_search_engine_id = self.config.get_google_search_engine_id()
         self.google_search_api_endpoint = self.config.get_google_search_api_endpoint()
-        self.query_result = None
+
+        super().__init__()
 
     def search(self, query):
         try:
@@ -109,15 +113,24 @@ class GoogleSearch(BaseSearch):
                 params=params,
                 timeout=BrowserParams.SEARCH_TIMEOUT / 1000,
             )
-            self.query_result = response.json()
-        except requests.exceptions.RequestException as err:
-            return err
+            self.query_result = response.json()["items"]
+            return self.validate_result()
+        except requests.exceptions.RequestException:
+            return []
 
     def get_first_link(self):
         item = ""
         if "items" in self.query_result:
             item = self.query_result["items"][0]["link"]
         return item
+
+    def get_expected_result_fields(self):
+        # Map the expected fields to the actual fields
+        return {
+            "url": "link",
+            "title": "title",
+            "body": "snippet",
+        }
 
 
 class DuckDuckGoSearch(BaseSearch):
