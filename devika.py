@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify, send_file, make_response
 from flask_cors import CORS
 import os
 import logging
-from threading import Thread
+from threading import Thread, Lock
 
 import tiktoken
 
@@ -27,6 +27,9 @@ TIKTOKEN_ENC = tiktoken.get_encoding("cl100k_base")
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
+# Define a dictionary to store locks for each project
+project_locks = {}
+
 
 @app.route("/api/create-project", methods=["POST"])
 @route_logger(logger)
@@ -44,19 +47,25 @@ def execute_agent():
     prompt = data.get("prompt")
     base_model = data.get("base_model")
     project_name = data.get("project_name")
-    web_search = None
-    if(data.get("web_search")):
-        web_search = data.get("a")
+    web_search = data.get("web_search")
 
     if not base_model:
         return jsonify({"error": "base_model is required"})
 
-    thread = Thread(
-        target=lambda: Agent(base_model=base_model).execute(prompt, project_name, web_search)
-    )
-    thread.start()
+    # Acquire a lock for the project
+    project_lock = project_locks.setdefault(project_name, Lock())
+    if not project_lock.acquire(blocking=False):
+        return jsonify({"message": "Agent is already running for this project"})
 
-    return jsonify({"message": "Started Devika Agent"})
+    try:
+        thread = Thread(
+            target=lambda: Agent(base_model=base_model).execute(prompt, project_name, web_search)
+        )
+        thread.start()
+        return jsonify({"message": "Started Devika Agent"})
+    finally:
+        # Release the lock after execution completes or in case of an error
+        project_lock.release()
 
 
 @app.route("/api/get-browser-snapshot", methods=["GET"])
@@ -200,8 +209,6 @@ def get_terminal_session():
 
 @app.route("/api/run-code", methods=["POST"])
 @route_logger(logger)
-@app.route("/api/run-code", methods=["POST"])
-@route_logger(logger)
 def run_code():
     data = request.json
     project_name = data.get("project_name")
@@ -223,7 +230,6 @@ def run_code():
         message = f"Error occurred during code execution: {str(e)}"
     
     return jsonify({"message": message})
-
 
 
 @app.route("/api/set-settings", methods=["POST"])
