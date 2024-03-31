@@ -11,6 +11,7 @@ copy ui /home/nonroot/client
 # Change Work directory
 WORKDIR /home/nonroot/client
 
+RUN npm install
 # Building APP bundle
 RUN npm run build
 
