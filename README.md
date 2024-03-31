@@ -240,7 +240,7 @@ We have a Discord server for the Devika community, where you can connect with ot
 - Contribute positively: Share your ideas, insights, and feedback to help improve Devika. Offer assistance to other community members when possible.
 - Maintain privacy: Respect the privacy of others and do not share personal information without their consent.
 
-To join the Devika community Discord server, [click here](https://discord.com/invite/8eYNbPuB).
+To join the Devika community Discord server, [click here](https://discord.gg/CYRp43878y).
 
 ## Contributing
 
