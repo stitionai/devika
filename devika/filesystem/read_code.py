@@ -1,13 +1,13 @@
+"""Code to Markdown Convertor."""
+
 import os
 
 from devika.config import Config
 
-"""
-TODO: Replace this with `code2prompt` - https://github.com/mufeedvh/code2prompt
-"""
 
+class CodeToMarkdownConvertor:
+    """Code to read the code from the project directory and convert it to markdown."""
 
-class ReadCode:
     def __init__(self, project_name: str):
         config = Config()
         project_path = config.get_projects_dir()
@@ -15,23 +15,24 @@ class ReadCode:
             project_path, project_name.lower().replace(" ", "-")
         )
 
-    def read_directory(self):
+    def _read_directory(self):
         files_list = []
-        for root, _dirs, files in os.walk(self.directory_path):
+        for root, _, files in os.walk(self.directory_path):
             for file in files:
                 try:
                     file_path = os.path.join(root, file)
-                    with open(file_path, "r") as file_content:
+                    with open(file_path, "r", encoding="utf-8") as file_content:
                         files_list.append(
                             {"filename": file_path, "code": file_content.read()}
                         )
-                except:
+                except FileNotFoundError:
                     pass
 
         return files_list
 
-    def code_set_to_markdown(self):
-        code_set = self.read_directory()
+    def convert(self):
+        """Collect all the codes of the project to a markdown file."""
+        code_set = self._read_directory()
         markdown = ""
         for code in code_set:
             markdown += f"### {code['filename']}:\n\n"

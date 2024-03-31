@@ -11,7 +11,7 @@ from devika.browser import Browser, start_interaction
 from devika.browser.search import BingSearch, DuckDuckGoSearch, GoogleSearch
 from devika.config import Config
 from devika.documenter.pdf import PDF
-from devika.filesystem import ReadCode
+from devika.filesystem import CodeToMarkdownConvertor
 from devika.logger import Logger
 from devika.memory import KnowledgeBase
 from devika.project import ProjectManager
@@ -188,7 +188,7 @@ class Agent:
         AgentState().set_agent_active(project_name, True)
 
         conversation = ProjectManager().get_all_messages_formatted(project_name)
-        code_markdown = ReadCode(project_name).code_set_to_markdown()
+        code_markdown = CodeToMarkdownConvertor(project_name).convert()
 
         response, action = self.action.execute(conversation, project_name)
 

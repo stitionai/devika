@@ -1,1 +1,1 @@
-from .read_code import ReadCode
+from .read_code import CodeToMarkdownConvertor
