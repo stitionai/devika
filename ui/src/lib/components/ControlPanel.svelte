@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte";
-  import { projectList, modelList, internet, tokenUsage, agentState, searchEngineList} from "$lib/store";
-  import { createProject, fetchMessages, fetchInitialData, deleteProject} from "$lib/api";
+  import { projectList, modelList, internet, tokenUsage, agentState, messages, searchEngineList} from "$lib/store";
+  import { createProject, fetchMessages, fetchInitialData, deleteProject, fetchAgentState} from "$lib/api";
   import { get } from "svelte/store";
 
   let selectedProject;
@@ -10,12 +10,14 @@
 
   const checkListAndSetItem = (list, itemKey, defaultItem) => {
     if (get(list) && get(list).length > 0) {
-      return localStorage.getItem(itemKey);
+      const item = localStorage.getItem(itemKey);
+      return item ? item : defaultItem;
     } else {
       localStorage.setItem(itemKey, "");
       return defaultItem;
     }
   };
+
   selectedProject = checkListAndSetItem( projectList, "selectedProject", "Select Project");
   selectedModel = checkListAndSetItem( modelList, "selectedModel", "Select Model");
   selectedSearchEngine = checkListAndSetItem( searchEngineList, "selectedSearchEngine", "Select Search Engine");
@@ -25,6 +27,7 @@
     selectedProject = project;
     localStorage.setItem("selectedProject", project);
     fetchMessages();
+    fetchAgentState();
     document.getElementById("project-dropdown").classList.add("hidden");
   }
   function selectModel(model) {
@@ -49,8 +52,11 @@
     if (confirm(`Are you sure you want to delete ${project}?`)) {
       await deleteProject(project);
       await fetchInitialData();
-      agentState.setItem(null);
-      selectProject("Select Project");
+      messages.set([]);
+      agentState.set(null);
+      tokenUsage.set(0);
+      selectedProject = "Select Project";
+      localStorage.setItem("selectedProject", "");
     }
   }
 
@@ -65,6 +71,8 @@
       const buttonElement = document.getElementById(button);
 
       if (
+        dropdownElement &&
+        buttonElement &&
         !dropdownElement.contains(event.target) &&
         !buttonElement.contains(event.target)
       ) {
@@ -72,8 +80,7 @@
       }
     });
   }
-
-  onMount(async () => {
+  onMount(() => {
     dropdowns.forEach(({ dropdown, button }) => {
       document.getElementById(button).addEventListener("click", function () {
         const dropdownElement = document.getElementById(dropdown);
@@ -119,12 +126,10 @@
         {#if $projectList !== null}
           {#each $projectList as project}
             <div
-              class="flex items-center px-4 hover:bg-gray-300 transition-colors
-            {selectedProject === project ? 'bg-gray-300' : ''}"
-            >
+              class="flex items-center px-4 hover:bg-gray-200 transition-colors">
               <button
                 href="#"
-                class="flex gap-2 items-center text-sm py-3 w-full text-clip"
+                class="flex gap-2 items-center text-sm py-3 w-full h-full overflow-x-visible"
                 on:click|preventDefault={() => selectProject(project)}
               >
                 {project}
@@ -177,7 +182,7 @@
         class="absolute left-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-gray-100 shadow-lg max-h-96 overflow-y-auto hidden"
         role="menu"
         aria-orientation="vertical"
-        aria-labelledby="model-button"
+        aria-labelledby="search-engine-button"
         tabindex="-1"
       >
         <div role="none" class="flex flex-col divide-y-2 w-full">

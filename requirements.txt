@@ -27,3 +27,4 @@ Flask-SocketIO
 eventlet
 groq
 duckduckgo-search
+orjson

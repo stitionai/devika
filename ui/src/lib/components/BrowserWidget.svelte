@@ -16,7 +16,7 @@
       class="flex-grow border-2 rounded-lg p-2 overflow-x-auto"
       placeholder="chrome://newtab"
       value={$agentState?.browser_session.url || ""}
-      readonly
+      
     />
   </div>
   <div id="browser-content" class="flex-grow overflow-y-auto">

@@ -6,6 +6,9 @@
   let terminalElement;
   let terminal;
   let fitAddon;
+  // agentState.subscribe((value) => {
+  //   $agentState = value;
+  // });
 
   onMount(async () => {
     let xterm = await import('xterm');
@@ -51,6 +54,10 @@
           previousState = { command, output, title };
         }
       }
+      else {
+        // Reset the terminal
+        terminal.reset();
+      }
 
       fitAddon.fit();
     });
@@ -91,21 +98,5 @@
     overflow-y: auto !important;
     height: 100%;
   }
-
-  #terminal-content::-webkit-scrollbar,
-  #terminal-content :global(.xterm-viewport)::-webkit-scrollbar {
-    width: 4px;
-  }
-
-  #terminal-content::-webkit-scrollbar-track,
-  #terminal-content :global(.xterm-viewport)::-webkit-scrollbar-track {
-    background: #020617;
-    border-radius: 10px;
-  }
-
-  #terminal-content::-webkit-scrollbar-thumb,
-  #terminal-content :global(.xterm-viewport)::-webkit-scrollbar-thumb {
-    background: #000000;
-    border-radius: 10px;
-  }
+  
 </style>

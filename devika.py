@@ -44,8 +44,6 @@ AgentState = AgentState()
 config = Config()
 logger = Logger()
 
-logger.mode = "on"
-
 
 # initial socket
 @socketio.on('socket_connect')
@@ -59,7 +57,7 @@ def test_connect(data):
 def data():
     project = manager.get_project_list()
     models = LLM().list_models()
-    search_engines = ["Bing", "Google"]
+    search_engines = ["Bing", "Google", "DuckDuckGo"]
     return jsonify({"projects": project, "models": models, "search_engines": search_engines})
 
 
@@ -78,7 +76,7 @@ def handle_message(data):
     message = data.get('message')
     base_model = data.get('base_model')
     project_name = data.get('project_name')
-    search_engine = data.get('search_engine')
+    search_engine = data.get('search_engine').lower()
 
     agent = Agent(base_model=base_model, search_engine=search_engine)
 
@@ -89,12 +87,11 @@ def handle_message(data):
         manager.add_message_to_project(project_name, new_message)
 
         if AgentState.is_agent_completed(project_name):
-            agent.subsequent_execute(message, project_name)
             thread = Thread(target=lambda: agent.subsequent_execute(message, project_name))
             thread.start()
 
     if action == 'execute_agent':
-        thread = Thread(target=lambda: agent.execute(message, project_name))
+        thread = Thread(target=lambda: agent.execute(message, project_name, search_engine))
         thread.start()
 
 
@@ -184,6 +181,7 @@ def real_time_logs():
 @route_logger(logger)
 def set_settings():
     data = request.json
+    print("Data: ", data)
     config.config.update(data)
     config.save_config()
     return jsonify({"message": "Settings updated"})

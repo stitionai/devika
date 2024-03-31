@@ -18,6 +18,7 @@ TIKTOKEN_ENC = tiktoken.get_encoding("cl100k_base")
 
 ollama = Ollama()
 logger = Logger()
+agentState = AgentState()
 
 
 class LLM:
@@ -46,14 +47,14 @@ class LLM:
             ],
             "GROQ": [
                 ("GROQ Mixtral", "mixtral-8x7b-32768"),
-                ("GROQ LLAMA2-70B", "llama2-70b-4096"),
-                ("GROQ GEMMA-7B-IT", "gemma-7b-it"),
+                ("GROQ LLAMA2 70B", "llama2-70b-4096"),
+                ("GROQ GEMMA 7B IT", "gemma-7b-it"),
             ],
-            "OLLAMA_MODELS": []
+            "OLLAMA": []
         }
-        if ollama:
-            self.models["OLLAMA_MODELS"] = [(model["name"].split(":")[0], model["name"]) for model in
-                                            ollama.list_models()]
+        if ollama.client:
+            self.models["OLLAMA"] = [(model["name"].split(":")[0], model["name"]) for model in
+                                     ollama.models]
 
     def list_models(self) -> dict:
         return self.models
@@ -68,8 +69,10 @@ class LLM:
     @staticmethod
     def update_global_token_usage(string: str, project_name: str):
         token_usage = len(TIKTOKEN_ENC.encode(string))
-        emit_agent("tokens", {"token_usage": token_usage})
-        AgentState().update_token_usage(project_name, token_usage)
+        agentState.update_token_usage(project_name, token_usage)
+
+        total = agentState.get_latest_token_usage(project_name) + token_usage
+        emit_agent("tokens", {"token_usage": total})
 
     def inference(self, prompt: str, project_name: str) -> str:
         self.update_global_token_usage(prompt, project_name)
@@ -79,7 +82,7 @@ class LLM:
             raise ValueError(f"Model {self.model_id} not supported")
 
         model_mapping = {
-            "OLLAMA_MODELS": ollama,
+            "OLLAMA": ollama,
             "CLAUDE": Claude(),
             "OPENAI": OpenAi(),
             "GOOGLE": Gemini(),

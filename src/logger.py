@@ -51,8 +51,6 @@ def route_logger(logger: Logger):
 
         @wraps(func)
         def wrapper(*args, **kwargs):
-            if logger.mode == "off":
-                return func(*args, **kwargs)
             # Log entry point
             if log_enabled:
                 logger.info(f"{request.path} {request.method}")

@@ -6,7 +6,7 @@
   ];
 </script>
 
-<div class="flex flex-col p-4 gap-4 items-center bg-gray-100">
+<div class="flex flex-col mx-2 my-4 gap-4 items-center bg-gray-200 rounded-lg py-4 px-2">
   {#each navItems as item (item.tooltip)}
   <a href = {item.route}>
     <div class="p-4 rounded nav-button relative">

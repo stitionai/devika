@@ -132,7 +132,6 @@ class AgentState:
                 session.commit()
             emit_agent("agent-state", state_stack)
 
-
     def is_agent_completed(self, project: str):
         with Session(self.engine) as session:
             agent_state = session.query(AgentStateModel).filter(AgentStateModel.project == project).first()
@@ -143,7 +142,6 @@ class AgentState:
     def update_token_usage(self, project: str, token_usage: int):
         with Session(self.engine) as session:
             agent_state = session.query(AgentStateModel).filter(AgentStateModel.project == project).first()
-            print(agent_state)
             if agent_state:
                 state_stack = json.loads(agent_state.state_stack_json)
                 state_stack[-1]["token_usage"] += token_usage

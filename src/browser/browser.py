@@ -12,7 +12,7 @@ class Browser:
     def __init__(self):
         self.playwright = sync_playwright().start()
         chromium = self.playwright.chromium
-        self.browser = chromium.launch(headless=True)
+        self.browser = chromium.launch()
         self.page = self.browser.new_page()
 
     def new_page(self):
@@ -20,7 +20,8 @@ class Browser:
 
     def go_to(self, url):
         try:
-            self.page.goto(url, wait_until="load", timeout=30000)
+            self.page.goto(url, timeout=20000)
+
         except TimeoutError as e:
             print(f"TimeoutError: {e} when trying to navigate to {url}")
             return False

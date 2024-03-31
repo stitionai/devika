@@ -1,11 +1,13 @@
 import {
   agentState,
   internet,
+  modelList,
+  projectList,
+  messages,
   searchEngineList,
 } from "./store";
 import { io } from "socket.io-client";
 
-export const socket = io(API_BASE_URL);
 
 const getApiBaseUrl = () => {
   if (typeof window !== 'undefined') {
@@ -23,6 +25,7 @@ const getApiBaseUrl = () => {
 };
 
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || getApiBaseUrl();
+export const socket = io(API_BASE_URL);
 
 
 export async function fetchInitialData() {

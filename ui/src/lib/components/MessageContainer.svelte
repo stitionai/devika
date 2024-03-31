@@ -11,7 +11,7 @@
       previousMessageCount = $messages.length;
     }
   });
-  console.log($messages);
+
 </script>
 
 <div

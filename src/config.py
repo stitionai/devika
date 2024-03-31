@@ -14,15 +14,6 @@ class Config:
     def get_config(self):
         return self.config
 
-    def get_google_api_endpoint(self):
-        return self.config["API_ENDPOINTS"]["GOOGLE"]
-
-    def get_google_api_key(self):
-        return self.config["API_KEYS"]["GOOGLE"]
-
-    def get_google_cx(self):
-        return self.config["API_KEYS"]["GOOGLE_CX"]
-
     def get_bing_api_endpoint(self):
         return self.config["API_ENDPOINTS"]["BING"]
 
@@ -53,6 +44,9 @@ class Config:
     def get_mistral_api_key(self):
         return self.config["API_KEYS"]["MISTRAL"]
 
+    def get_groq_api_key(self):
+        return self.config["API_KEYS"]["GROQ"]
+
     def get_netlify_api_key(self):
         return self.config["API_KEYS"]["NETLIFY"]
 
@@ -75,7 +69,7 @@ class Config:
         return self.config["STORAGE"]["REPOS_DIR"]
 
     def get_web_search(self):
-        return environ.get("WEB_SEARCH", self.config["STORAGE"]["WEB_SEARCH"])
+        return self.config["STORAGE"]["WEB_SEARCH"]
     
     def get_logging_rest_api(self):
         return self.config["LOGGING"]["LOG_REST_API"] == "true"
@@ -115,8 +109,16 @@ class Config:
         self.config["API_KEYS"]["OPENAI"] = key
         self.save_config()
 
-    def set_openai_api_key(self, key):
+    def set_gemini_api_key(self, key):
         self.config["API_KEYS"]["GEMINI"] = key
+        self.save_config()
+
+    def set_mistral_api_key(self, key):
+        self.config["API_KEYS"]["MISTRAL"] = key
+        self.save_config()
+
+    def set_groq_api_key(self, key):
+        self.config["API_KEYS"]["GROQ"] = key
         self.save_config()
 
     def set_netlify_api_key(self, key):
