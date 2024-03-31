@@ -1,12 +1,30 @@
 # TODO: Not Restrictive at the moment, but will be updated as the project grows
 [build-system]
 build-backend = "setuptools.build_meta"
-requires = ["setuptools", "wheel"]
+requires = ["setuptools", "wheel", "pip >= 23.0"]
+
+[tool.setuptools]
+packages = ["devika"]
 
 [project]
 description = "Devika is an Agentic AI Software Engineer that can understand high-level human instructions, break them down into steps, research relevant information, and write code to achieve the given objective. Devika aims to be a competitive open-source alternative to Devin by Cognition AI."
 name = "devika"
 version = "0.0.1"
+requires-python = ">=3.10,<3.12"
+keywords = [
+  "AI",
+  "Software Engineer",
+  "OpenAI",
+  "Devin",
+  "Cognition AI",
+  "Devika",
+  "Agentic AI",
+  "Open Source",
+  "Alternative",
+]
+classifiers = [
+  "Programming Language :: Python :: 3",
+]
 
 # TODO: break the requirements based on LLM API requirements
 dependencies = [
