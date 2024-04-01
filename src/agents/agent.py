@@ -63,7 +63,7 @@ class Agent:
         self.engine = search_engine
         self.tokenizer = tiktoken.get_encoding("cl100k_base")
 
-    def search_queries(self, queries: list, project_name: str, engine: str) -> dict:
+    async def search_queries(self, queries: list, project_name: str, engine: str) -> dict:
         results = {}
 
         knowledge_base = KnowledgeBase()
@@ -79,7 +79,7 @@ class Agent:
         self.logger.info(f"Search : {engine}")
 
         for query in queries:
-            browser = Browser()
+            browser = await Browser()
             query = query.strip().lower()
 
             # knowledge = knowledge_base.get_knowledge(tag=query)

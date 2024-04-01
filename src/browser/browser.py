@@ -1,6 +1,6 @@
 import os
 
-from playwright.sync_api import sync_playwright, TimeoutError
+from playwright.async_api import async_playwright, TimeoutError
 from markdownify import markdownify as md
 from pdfminer.high_level import extract_text
 
@@ -9,8 +9,8 @@ from src.state import AgentState
 
 
 class Browser:
-    def __init__(self):
-        self.playwright = sync_playwright().start()
+    async def __init__(self):
+        self.playwright = await async_playwright().start()
         chromium = self.playwright.chromium
         self.browser = chromium.launch()
         self.page = self.browser.new_page()
