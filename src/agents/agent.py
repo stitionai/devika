@@ -28,6 +28,7 @@ import json
 import time
 import platform
 import tiktoken
+import asyncio
 
 
 class Agent:
@@ -63,8 +64,11 @@ class Agent:
         self.engine = search_engine
         self.tokenizer = tiktoken.get_encoding("cl100k_base")
 
-    async def search_queries(self, queries: list, project_name: str, engine: str) -> dict:
+    def search_queries(self, queries: list, project_name: str, engine: str) -> dict:
         results = {}
+
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
 
         knowledge_base = KnowledgeBase()
         web_search = None
@@ -79,7 +83,7 @@ class Agent:
         self.logger.info(f"Search : {engine}")
 
         for query in queries:
-            browser = await Browser()
+            
             query = query.strip().lower()
 
             # knowledge = knowledge_base.get_knowledge(tag=query)
@@ -92,14 +96,17 @@ class Agent:
             link = web_search.get_first_link()
             print("\nLink :: ", link, '\n')
 
-            browser.go_to(link)
-            browser.screenshot(project_name)
+            browser = loop.run_until_complete(self.open_page(project_name, link))
 
-            results[query] = self.formatter.execute(browser.extract_text(), project_name)
+            results[query] = self.formatter.execute(
+                loop.run_until_complete(browser.extract_text()), 
+                project_name)
             # browser.close()
             self.logger.info(f"got the search results for : {query}")
 
             # knowledge_base.add_knowledge(tag=query, contents=results[query])
+        
+        loop.close()
         return results
 
     def update_contextual_keywords(self, sentence: str):
@@ -137,8 +144,7 @@ class Agent:
                     project_name_space_url)
                 response = f"I have generated the PDF document. You can download it from here: {pdf_download_url}"
 
-                Browser().go_to(pdf_download_url)
-                Browser().screenshot(project_name)
+                asyncio.run(self.open_page(project_name, pdf_download_url))
 
                 self.project_manager.add_message_from_devika(project_name, response)
 
@@ -163,6 +169,14 @@ class Agent:
                     project_name=project_name
                 )
                 self.coder.save_code_to_project(code, project_name)
+
+    async def open_page(self, project_name, pdf_download_url):
+        browser = await Browser().start()
+
+        await browser.go_to(pdf_download_url)
+        await browser.screenshot(project_name)
+
+        return browser
 
     def subsequent_execute(self, prompt: str, project_name: str):
         """
@@ -244,9 +258,7 @@ class Agent:
                 project_name_space_url)
             response = f"I have generated the PDF document. You can download it from here: {pdf_download_url}"
 
-            browser = Browser()
-            browser.go_to(pdf_download_url)
-            browser.screenshot(project_name)
+            asyncio.run(self.open_page(project_name, pdf_download_url))
 
             self.project_manager.add_message_from_devika(project_name, response)
 
@@ -334,7 +346,6 @@ class Agent:
 
         if queries and len(queries) > 0:
             search_results = self.search_queries(queries, project_name, engine)
-
         else:
             search_results = {}
 

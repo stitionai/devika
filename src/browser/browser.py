@@ -9,35 +9,40 @@ from src.state import AgentState
 
 
 class Browser:
-    async def __init__(self):
+    def __init__(self):
+        self.playwright = None
+        self.browser = None
+        self.page = None
+
+    async def start(self):
         self.playwright = await async_playwright().start()
-        chromium = self.playwright.chromium
-        self.browser = chromium.launch()
-        self.page = self.browser.new_page()
+        self.browser = await self.playwright.chromium.launch(headless=True)
+        self.page = await self.browser.new_page()
+        return self
 
     def new_page(self):
         return self.browser.new_page()
 
-    def go_to(self, url):
+    async def go_to(self, url):
         try:
-            self.page.goto(url, timeout=20000)
+            await self.page.goto(url, timeout=20000)
 
         except TimeoutError as e:
             print(f"TimeoutError: {e} when trying to navigate to {url}")
             return False
         return True
 
-    def screenshot(self, project_name):
+    async def screenshot(self, project_name):
         screenshots_save_path = Config().get_screenshots_dir()
 
-        page_metadata = self.page.evaluate("() => { return { url: document.location.href, title: document.title } }")
+        page_metadata = await self.page.evaluate("() => { return { url: document.location.href, title: document.title } }")
         page_url = page_metadata['url']
         random_filename = os.urandom(20).hex()
         filename_to_save = f"{random_filename}.png"
         path_to_save = os.path.join(screenshots_save_path, filename_to_save)
 
-        self.page.emulate_media(media="screen")
-        self.page.screenshot(path=path_to_save)
+        await self.page.emulate_media(media="screen")
+        await self.page.screenshot(path=path_to_save)
 
         new_state = AgentState().new_state()
         new_state["internal_monologue"] = "Browsing the web right now..."
