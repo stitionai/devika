@@ -2,10 +2,12 @@ from openai import OpenAI as OAI
 
 from src.config import Config
 
-class OpenAI:
+
+class OpenAi:
     def __init__(self):
         config = Config()
         api_key = config.get_openai_api_key()
+
         api_base = config.get_llm_endpoint_openai()
         self.client = OAI(
             api_key=api_key,
@@ -22,5 +24,4 @@ class OpenAI:
             ],
             model=model_id,
         )
-
         return chat_completion.choices[0].message.content

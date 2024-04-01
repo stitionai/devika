@@ -73,10 +73,11 @@ Read [**ARCHITECTURE.md**](https://github.com/stitionai/devika/blob/main/ARCHITE
 The easiest way to run the project locally:
 
 1. Install `uv` - Python Package manager (https://github.com/astral-sh/uv)
-2. Install `bun` - JavaScript runtime (https://bun.sh/)
-3. Install and setup `Ollama` (https://ollama.com/)
+2. Install `bun` - JavaScript runtime (https://bun.sh/docs/installation)
+3. Install and setup `Ollama` (https://ollama.com/) (if you want don't want to use the local models then you can skip this step)
 
-Set the API Keys in the `config.toml` file. (This will soon be moving to the UI where you can set these keys from the UI itself without touching the command-line, want to implement it? See this issue: https://github.com/stitionai/devika/issues/3)
+For ollama you need to install the [models](https://ollama.com/models)<br>
+For API models, configure the API keys via setting page in UI. <br><br>
 
 Then execute the following set of command:
 
@@ -85,7 +86,9 @@ ollama serve
 git clone https://github.com/stitionai/devika.git
 cd devika/
 uv venv
+source .venv/bin/activate
 uv pip install -r requirements.txt
+playwright install --with-deps
 cd ui/
 bun install
 bun run dev
@@ -110,23 +113,28 @@ To install Devika, follow these steps:
    ```bash
    cd devika
    ```
-3. Install the required dependencies:
+3. Create a virtual environment and install the required dependencies:
+   ```bash
+   uv venv
+   uv pip install -r requirements.txt
+   ```
+4. Install the required dependencies:
    ```bash
    pip install -r requirements.txt
    playwright install --with-deps # installs browsers in playwright (and their deps) if required
    ```
-4. Set up the necessary API keys and configuration (see [Configuration](#configuration) section).
-5. Start the Devika server:
+5. Set up the necessary API keys and  [Configuration](#configuration) 
+6. Start the Devika server:
    ```bash
    python devika.py
    ```
-6. Compile and run the UI server:
+7. Compile and run the UI server:
    ```bash
    cd ui/
    bun install
    bun run dev
    ```
-7. Access the Devika web interface by opening a browser and navigating to `http://127.0.0.1:3000`.
+8. Access the Devika web interface by opening a browser and navigating to `http://127.0.0.1:3000`.
 
 ## Getting Started
 
@@ -143,20 +151,35 @@ To start using Devika, follow these steps:
 
 ## Configuration
 
-Devika requires certain configuration settings and API keys to function properly. Update the `config.toml` file with the following information:
+Devika requires certain configuration settings and API keys to function properly:
 
-- `SQLITE_DB`: The path to the SQLite database file for storing Devika's data.
-- `SCREENSHOTS_DIR`: The directory where screenshots captured by Devika will be stored.
-- `PDFS_DIR`: The directory where PDF files processed by Devika will be stored.
-- `PROJECTS_DIR`: The directory where Devika's projects will be stored.
-- `LOGS_DIR`: The directory where Devika's logs will be stored.
-- `REPOS_DIR`: The directory where Git repositories cloned by Devika will be stored.
-- `BING`: Your Bing Search API key for web searching capabilities.
-- `CLAUDE`: Your Anthropic API key for accessing Claude models.
-- `NETLIFY`: Your Netlify API key for deploying and managing web projects.
-- `OPENAI`: Your OpenAI API key for accessing GPT models.
+when you first time run Devika, it will create a `config.toml` file for you in the root directory. You can configure the following settings in the settings page via UI:
 
+- STORAGE
+   - `SQLITE_DB`: The path to the SQLite database file for storing Devika's data.
+   - `SCREENSHOTS_DIR`: The directory where screenshots captured by Devika will be stored.
+   - `PDFS_DIR`: The directory where PDF files processed by Devika will be stored.
+   - `PROJECTS_DIR`: The directory where Devika's projects will be stored.
+   - `LOGS_DIR`: The directory where Devika's logs will be stored.
+   - `REPOS_DIR`: The directory where Git repositories cloned by Devika will be stored.
+   - `WEB_SEARCH`: This determines the default web search method for browsing the web. Accepted values are: google, bing, or ddgs.
+
+- API KEYS
+   - `BING`: Your Bing Search API key for web searching capabilities.
+   - `GOOGLE_SEARCH`: Your Google Search API key for web searching capabilities.
+   - `GOOGLE_SEARCH_ENGINE_ID`: Your Google Search Engine Id for web searching using google.
+   - `OPENAI`: Your OpenAI API key for accessing GPT models.
+   - `GEMINI`: Your Gemini API key for accessing Gemini models.
+   - `CLAUDE`: Your Anthropic API key for accessing Claude models.
+   - `MISTRAL`: Your Mistral API key for accessing Mistral models.
+   - `GROQ`: Your Groq API key for accessing Groq models.
+   - `NETLIFY`: Your Netlify API key for deploying and managing web projects.
+   
 Make sure to keep your API keys secure and do not share them publicly.
+
+### Configuring web search method
+
+Devika currently supports Bing, Google, and DuckDuckGo for web searches. You can configure the web search method via UI.
 
 ## Under The Hood
 
@@ -217,7 +240,7 @@ We have a Discord server for the Devika community, where you can connect with ot
 - Contribute positively: Share your ideas, insights, and feedback to help improve Devika. Offer assistance to other community members when possible.
 - Maintain privacy: Respect the privacy of others and do not share personal information without their consent.
 
-To join the Devika community Discord server, [click here](https://discord.com/invite/8eYNbPuB).
+To join the Devika community Discord server, [click here](https://discord.gg/CYRp43878y).
 
 ## Contributing
 
@@ -226,6 +249,18 @@ We welcome contributions to enhance Devika's capabilities and improve its perfor
 ## License
 
 Devika is released under the [MIT License](https://opensource.org/licenses/MIT). See the `LICENSE` file for more information.
+
+## Star History
+
+<div align="center">
+<a href="https://star-history.com/#stitionai/devika&Date">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=stitionai/devika&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=stitionai/devika&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=stitionai/devika&type=Date" />
+ </picture>
+</a>
+</div>
 
 ---
 
