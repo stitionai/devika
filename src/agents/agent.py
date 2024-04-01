@@ -11,14 +11,13 @@ from .patcher import Patcher
 from .reporter import Reporter
 from .decision import Decision
 
-from src.logger import Logger
-from src.config import Config
 from src.project import ProjectManager
 from src.state import AgentState
+from src.logger import Logger
 
 from src.bert.sentence import SentenceBert
 from src.memory import KnowledgeBase
-from src.browser.search import BingSearch,DuckDuckGoSearch,GoogleSearch
+from src.browser.search import BingSearch, GoogleSearch, DuckDuckGoSearch
 from src.browser import Browser
 from src.browser import start_interaction
 from src.filesystem import ReadCode
@@ -30,8 +29,9 @@ import time
 import platform
 import tiktoken
 
+
 class Agent:
-    def __init__(self, base_model: str):
+    def __init__(self, base_model: str, search_engine: str):
         if not base_model:
             raise ValueError("base_model is required")
 
@@ -40,8 +40,8 @@ class Agent:
         """
         Accumulate contextual keywords from chained prompts of all preparation agents
         """
-        self.collected_context_keywords = set()
-        
+        self.collected_context_keywords = []
+
         """
         Agents
         """
@@ -58,125 +58,104 @@ class Agent:
         self.reporter = Reporter(base_model=base_model)
         self.decision = Decision(base_model=base_model)
 
+        self.project_manager = ProjectManager()
+        self.agent_state = AgentState()
+        self.engine = search_engine
         self.tokenizer = tiktoken.get_encoding("cl100k_base")
 
-    def search_queries(self, queries: list, project_name: str, requested_web_search: str) -> dict:
+    def search_queries(self, queries: list, project_name: str, engine: str) -> dict:
         results = {}
-        
+
         knowledge_base = KnowledgeBase()
-
         web_search = None
-        web_search_type = Config().get_web_search()
-        if requested_web_search:
-            web_search_type = requested_web_search 
 
-        if web_search_type == "bing":
+        if engine == "bing":
             web_search = BingSearch()
-        elif web_search_type == "google":
+        elif engine == "google":
             web_search = GoogleSearch()
-        elif web_search_type == "ddgs":
-            web_search = DuckDuckGoSearch()
         else:
             web_search = DuckDuckGoSearch()
-        
-        self.logger.info(web_search_type)
-        browser = Browser()
+
+        self.logger.info(f"Search : {engine}")
 
         for query in queries:
+            browser = Browser()
             query = query.strip().lower()
-            
-            """
-            Check if the knowledge base already has the query learned
-            """
+
             # knowledge = knowledge_base.get_knowledge(tag=query)
             # if knowledge:
             #     results[query] = knowledge
             #     continue
 
-            """
-            Search for the query and get the first link
-            """
             web_search.search(query)
-            link = web_search.get_first_link()
 
-            """
-            Browse to the link and take a screenshot, then extract the text
-            """
+            link = web_search.get_first_link()
+            print("\nLink :: ", link, '\n')
+
             browser.go_to(link)
             browser.screenshot(project_name)
 
-            """
-            Formatter Agent is invoked to format and learn from the contents
-            """
-            results[query] = self.formatter.execute(
-                browser.extract_text(),
-                project_name
-            )
-            
-            """
-            Add the newly acquired data to the knowledge base
-            """
-            # knowledge_base.add_knowledge(tag=query, contents=results[query])
+            results[query] = self.formatter.execute(browser.extract_text(), project_name)
+            # browser.close()
+            self.logger.info(f"got the search results for : {query}")
 
+            # knowledge_base.add_knowledge(tag=query, contents=results[query])
         return results
 
-    """
-    Update the context keywords with the latest sentence/prompt
-    """
     def update_contextual_keywords(self, sentence: str):
+        """
+            Update the context keywords with the latest sentence/prompt
+        """
         keywords = SentenceBert(sentence).extract_keywords()
-        
         for keyword in keywords:
-            self.collected_context_keywords.add(keyword[0])
+            self.collected_context_keywords.append(keyword[0])
 
         return self.collected_context_keywords
 
-    """
-    Decision making Agent
-    """
     def make_decision(self, prompt: str, project_name: str) -> str:
         decision = self.decision.execute(prompt, project_name)
-        
+
         for item in decision:
             function = item["function"]
             args = item["args"]
             reply = item["reply"]
-            
-            ProjectManager().add_message_from_devika(project_name, reply)
-            
+
+            self.project_manager.add_message_from_devika(project_name, reply)
+
             if function == "git_clone":
                 url = args["url"]
                 # Implement git clone functionality here
-                
+
             elif function == "generate_pdf_document":
                 user_prompt = args["user_prompt"]
                 # Call the reporter agent to generate the PDF document
                 markdown = self.reporter.execute([user_prompt], "", project_name)
                 _out_pdf_file = PDF().markdown_to_pdf(markdown, project_name)
-                
+
                 project_name_space_url = project_name.replace(" ", "%20")
-                pdf_download_url = "http://127.0.0.1:1337/api/download-project-pdf?project_name={}".format(project_name_space_url)
+                pdf_download_url = "http://127.0.0.1:1337/api/download-project-pdf?project_name={}".format(
+                    project_name_space_url)
                 response = f"I have generated the PDF document. You can download it from here: {pdf_download_url}"
-                
+
                 Browser().go_to(pdf_download_url)
                 Browser().screenshot(project_name)
-                
-                ProjectManager().add_message_from_devika(project_name, response)
-                
+
+                self.project_manager.add_message_from_devika(project_name, response)
+
             elif function == "browser_interaction":
                 user_prompt = args["user_prompt"]
                 # Call the interaction agent to interact with the browser
                 start_interaction(self.base_model, user_prompt, project_name)
-                
+
             elif function == "coding_project":
                 user_prompt = args["user_prompt"]
                 # Call the planner, researcher, coder agents in sequence
                 plan = self.planner.execute(user_prompt, project_name)
                 planner_response = self.planner.parse_response(plan)
-                
+
                 research = self.researcher.execute(plan, self.collected_context_keywords, project_name)
                 search_results = self.search_queries(research["queries"], project_name)
-                
+
                 code = self.coder.execute(
                     step_by_step_plan=plan,
                     user_context=research["ask_user"],
@@ -185,34 +164,34 @@ class Agent:
                 )
                 self.coder.save_code_to_project(code, project_name)
 
-    """
-    Subsequent flow of execution
-    """
-    def subsequent_execute(self, prompt: str, project_name: str) -> str:
-        AgentState().set_agent_active(project_name, True)
-        
-        conversation = ProjectManager().get_all_messages_formatted(project_name)
+    def subsequent_execute(self, prompt: str, project_name: str):
+        """
+        Subsequent flow of execution
+        """
+
+        os_system = platform.platform()
+
+        self.agent_state.set_agent_active(project_name, True)
+
+        conversation = self.project_manager.get_all_messages_formatted(project_name)
         code_markdown = ReadCode(project_name).code_set_to_markdown()
 
         response, action = self.action.execute(conversation, project_name)
-        
-        ProjectManager().add_message_from_devika(project_name, response)
-        
-        print("=====" * 10)
-        print(action)
-        print("=====" * 10)
-        
+
+        self.project_manager.add_message_from_devika(project_name, response)
+
+        print("\naction :: ", action, '\n')
+
         if action == "answer":
             response = self.answer.execute(
                 conversation=conversation,
                 code_markdown=code_markdown,
                 project_name=project_name
             )
-            ProjectManager().add_message_from_devika(project_name, response)
-        elif action == "run":
-            os_system = platform.platform()
-            project_path = ProjectManager().get_project_path(project_name)
+            self.project_manager.add_message_from_devika(project_name, response)
 
+        elif action == "run":
+            project_path = self.project_manager.get_project_path(project_name)
             self.runner.execute(
                 conversation=conversation,
                 code_markdown=code_markdown,
@@ -220,17 +199,19 @@ class Agent:
                 project_path=project_path,
                 project_name=project_name
             )
+
         elif action == "deploy":
             deploy_metadata = Netlify().deploy(project_name)
             deploy_url = deploy_metadata["deploy_url"]
-            
+
             response = {
                 "message": "Done! I deployed your project on Netflify.",
                 "deploy_url": deploy_url
             }
             response = json.dumps(response, indent=4)
-            
-            ProjectManager().add_message_from_devika(project_name, response)
+
+            self.project_manager.add_message_from_devika(project_name, response)
+
         elif action == "feature":
             code = self.feature.execute(
                 conversation=conversation,
@@ -238,10 +219,9 @@ class Agent:
                 system_os=os_system,
                 project_name=project_name
             )
-            print(code)
-            print("=====" * 10)
-
+            print("\nfeature code :: ", code, '\n')
             self.feature.save_code_to_project(code, project_name)
+
         elif action == "bug":
             code = self.patcher.execute(
                 conversation=conversation,
@@ -251,37 +231,37 @@ class Agent:
                 system_os=os_system,
                 project_name=project_name
             )
-            print(code)
-            print("=====" * 10)
-
+            print("\nbug code :: ", code, '\n')
             self.patcher.save_code_to_project(code, project_name)
+
         elif action == "report":
             markdown = self.reporter.execute(conversation, code_markdown, project_name)
 
             _out_pdf_file = PDF().markdown_to_pdf(markdown, project_name)
 
             project_name_space_url = project_name.replace(" ", "%20")
-            pdf_download_url = "http://127.0.0.1:1337/api/download-project-pdf?project_name={}".format(project_name_space_url)
+            pdf_download_url = "http://127.0.0.1:1337/api/download-project-pdf?project_name={}".format(
+                project_name_space_url)
             response = f"I have generated the PDF document. You can download it from here: {pdf_download_url}"
 
-            Browser().go_to(pdf_download_url)
-            Browser().screenshot(project_name)
+            browser = Browser()
+            browser.go_to(pdf_download_url)
+            browser.screenshot(project_name)
 
-            ProjectManager().add_message_from_devika(project_name, response)
+            self.project_manager.add_message_from_devika(project_name, response)
 
-        AgentState().set_agent_active(project_name, False)
-        AgentState().set_agent_completed(project_name, True)
-            
-    """
-    Agentic flow of execution
-    """
-    def execute(self, prompt: str, project_name_from_user: str = None, web_search: str = None) -> str:
+        self.agent_state.set_agent_active(project_name, False)
+        self.agent_state.set_agent_completed(project_name, True)
+
+    def execute(self, prompt: str, project_name_from_user: str = None, engine: str = None) -> str:
+        """
+        Agentic flow of execution
+        """
         if project_name_from_user:
-            ProjectManager().add_message_from_user(project_name_from_user, prompt)
-        
+            self.project_manager.add_message_from_user(project_name_from_user, prompt)
+
         plan = self.planner.execute(prompt, project_name_from_user)
-        print(plan)
-        print("=====" * 10)
+        print("\nplan :: ", plan, '\n')
 
         planner_response = self.planner.parse_response(plan)
         project_name = planner_response["project"]
@@ -294,64 +274,69 @@ class Agent:
             project_name = project_name_from_user
         else:
             project_name = planner_response["project"]
-            ProjectManager().create_project(project_name)
-            ProjectManager().add_message_from_user(project_name, prompt)
+            self.project_manager.create_project(project_name)
+            self.project_manager.add_message_from_user(project_name, prompt)
 
-        AgentState().set_agent_active(project_name, True)
-        
-        ProjectManager().add_message_from_devika(project_name, reply)
-        ProjectManager().add_message_from_devika(project_name, json.dumps(plans, indent=4))
-        # ProjectManager().add_message_from_devika(project_name, f"In summary: {summary}")
+        self.agent_state.set_agent_active(project_name, True)
+
+        self.project_manager.add_message_from_devika(project_name, reply)
+        self.project_manager.add_message_from_devika(project_name, json.dumps(plans, indent=4))
+        # self.project_manager.add_message_from_devika(project_name, f"In summary: {summary}")
 
         self.update_contextual_keywords(focus)
-        print(self.collected_context_keywords)
-        
+        print("\ncontext_keywords :: ", self.collected_context_keywords, '\n')
+
         internal_monologue = self.internal_monologue.execute(current_prompt=plan, project_name=project_name)
-        print(internal_monologue)
-        print("=====" * 10)
+        print("\ninternal_monologue :: ", internal_monologue, '\n')
 
-        new_state = AgentState().new_state()
+        new_state = self.agent_state.new_state()
         new_state["internal_monologue"] = internal_monologue
-        AgentState().add_to_current_state(project_name, new_state)
+        self.agent_state.add_to_current_state(project_name, new_state)
 
-        research = self.researcher.execute(plan, self.collected_context_keywords, project_name)
-        print(research)
-        print("=====" * 10)
+        research = self.researcher.execute(plan, self.collected_context_keywords, project_name=project_name)
+        print("\nresearch :: ", research, '\n')
 
         queries = research["queries"]
         queries_combined = ", ".join(queries)
         ask_user = research["ask_user"]
 
-        ProjectManager().add_message_from_devika(
-            project_name,
-            f"I am browsing the web to research the following queries: {queries_combined}. If I need anything, I will make sure to ask you."
-        )
+        if (queries and len(queries) > 0) or ask_user != "":
+            self.project_manager.add_message_from_devika(
+                project_name,
+                f"I am browsing the web to research the following queries: {queries_combined}."
+                f"\n If I need anything, I will make sure to ask you."
+            )
+        if not queries and len(queries) == 0:
+            self.project_manager.add_message_from_devika(project_name,
+                                                         "I think I can proceed without searching the web.")
 
         ask_user_prompt = "Nothing from the user."
 
-        if ask_user != "":
-            ProjectManager().add_message_from_devika(project_name, ask_user)
-            AgentState().set_agent_active(project_name, False)
+        if ask_user != "" and ask_user is not None:
+            self.project_manager.add_message_from_devika(project_name, ask_user)
+            self.agent_state.set_agent_active(project_name, False)
             got_user_query = False
 
             while not got_user_query:
                 self.logger.info("Waiting for user query...")
 
-                latest_message_from_user = ProjectManager().get_latest_message_from_user(project_name)
-                validate_last_message_is_from_user = ProjectManager().validate_last_message_is_from_user(project_name)
-                
+                latest_message_from_user = self.project_manager.get_latest_message_from_user(project_name)
+                validate_last_message_is_from_user = self.project_manager.validate_last_message_is_from_user(
+                    project_name)
+
                 if latest_message_from_user and validate_last_message_is_from_user:
                     ask_user_prompt = latest_message_from_user["message"]
                     got_user_query = True
-                    ProjectManager().add_message_from_devika(project_name, "Thanks! 🙌")
+                    self.project_manager.add_message_from_devika(project_name, "Thanks! 🙌")
                 time.sleep(5)
-                
-        AgentState().set_agent_active(project_name, True)
-        
-        search_results = self.search_queries(queries, project_name, web_search)
 
-        print(json.dumps(search_results, indent=4))
-        print("=====" * 10)
+        self.agent_state.set_agent_active(project_name, True)
+
+        if queries and len(queries) > 0:
+            search_results = self.search_queries(queries, project_name, engine)
+
+        else:
+            search_results = {}
 
         code = self.coder.execute(
             step_by_step_plan=plan,
@@ -359,12 +344,13 @@ class Agent:
             search_results=search_results,
             project_name=project_name
         )
-        print(code)
-        print("=====" * 10)
+        print("\ncode :: ", code, '\n')
 
         self.coder.save_code_to_project(code, project_name)
 
-        ProjectManager().add_message_from_devika(project_name, "I have completed the coding task. You can now run the project.")
-
-        AgentState().set_agent_active(project_name, False)
-        AgentState().set_agent_completed(project_name, True)
+        self.agent_state.set_agent_active(project_name, False)
+        self.agent_state.set_agent_completed(project_name, True)
+        self.project_manager.add_message_from_devika(project_name,
+                                                     "I have completed the my task. 🚀 \n"
+                                                     "if you would like me to do anything else, please let me know. \n"
+                                                     )

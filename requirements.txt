@@ -15,12 +15,16 @@ tiktoken
 ollama
 openai
 anthropic
+google-generativeai
 sqlmodel
 keybert
 GitPython
 netlify-py
 Markdown
 xhtml2pdf
+mistralai
+Flask-SocketIO
+eventlet
 groq
-google-generativeai
 duckduckgo-search
+orjson

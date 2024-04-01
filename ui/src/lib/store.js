@@ -17,14 +17,17 @@ const getInitialSelectedModel = () => {
 export const messages = writable([]);
 
 export const selectedProject = writable(getInitialSelectedProject());
-export const projectList = writable([]);
-
 export const selectedModel = writable(getInitialSelectedModel());
-export const modelList = writable([]);
+
+export const projectList = writable([]);
+export const modelList = writable({});
+export const searchEngineList = writable([]);
 
 export const agentState = writable(null);
 
 export const internet = writable(true);
+export const tokenUsage = writable(0);
+
 
 selectedProject.subscribe((value) => {
   if (typeof window !== 'undefined' && window.localStorage) {
