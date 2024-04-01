@@ -32,14 +32,14 @@ class Decision:
         
         return response
 
-    def execute(self, prompt: str) -> str:
+    def execute(self, prompt: str, project_name: str) -> str:
         prompt = self.render(prompt)
-        response = self.llm.inference(prompt)
+        response = self.llm.inference(prompt, project_name)
         
         valid_response = self.validate_response(response)
         
         while not valid_response:
             print("Invalid response from the model, trying again...")
-            return self.execute(prompt)
+            return self.execute(prompt, project_name)
 
         return valid_response

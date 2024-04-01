@@ -1,6 +1,16 @@
 import toml
+from os import environ
+
 
 class Config:
+    _instance = None
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance.config = toml.load("config.toml")
+        return cls._instance
+
     def __init__(self):
         self.config = toml.load("config.toml")
 
@@ -8,48 +18,57 @@ class Config:
         return self.config
 
     def get_bing_api_key(self):
-        return self.config["API_KEYS"]["BING"]
-    
+        return environ.get("BING_API_KEY", self.config["API_KEYS"]["BING"])
+
     def get_bing_api_endpoint(self):
         return self.config["API_ENDPOINTS"]["BING"]
 
-    def get_llm_endpoint_ollama(self):
+    def get_ollama_api_endpoint(self):
         try:
-            return self.config["LLM_ENDPOINTS"]["OLLAMA"]
+            return self.config["API_ENDPOINTS"]["OLLAMA"]
         except: return None
 
-    def get_llm_endpoint_openai(self):
+    def get_openai_api_endpoint(self):
         try:
-            return self.config["LLM_ENDPOINTS"]["OLLAMA"]
+            return self.config["API_ENDPOINTS"]["OPENAI"]
         except: return None
     
     def get_claude_api_key(self):
-        return self.config["API_KEYS"]["CLAUDE"]
-    
+        return environ.get("CLAUDE_API_KEY", self.config["API_KEYS"]["CLAUDE"])
+
     def get_openai_api_key(self):
-        return self.config["API_KEYS"]["OPENAI"]
-    
+        return environ.get("OPENAI_API_KEY", self.config["API_KEYS"]["OPENAI"])
+
     def get_netlify_api_key(self):
-        return self.config["API_KEYS"]["NETLIFY"]
+        return environ.get("NETLIFY_API_KEY", self.config["API_KEYS"]["NETLIFY"])
     
+    def get_groq_api_key(self):
+        return environ.get("GROQ_API_KEY", self.config["API_KEYS"]["GROQ"])
+      
     def get_sqlite_db(self):
-        return self.config["STORAGE"]["SQLITE_DB"]
-    
+        return environ.get("SQLITE_DB_PATH", self.config["STORAGE"]["SQLITE_DB"])
+
     def get_screenshots_dir(self):
-        return self.config["STORAGE"]["SCREENSHOTS_DIR"]
-    
+        return environ.get("SCREENSHOTS_DIR", self.config["STORAGE"]["SCREENSHOTS_DIR"])
+
     def get_pdfs_dir(self):
-        return self.config["STORAGE"]["PDFS_DIR"]
-    
+        return environ.get("PDFS_DIR", self.config["STORAGE"]["PDFS_DIR"])
+
     def get_projects_dir(self):
-        return self.config["STORAGE"]["PROJECTS_DIR"]
-    
+        return environ.get("PROJECTS_DIR", self.config["STORAGE"]["PROJECTS_DIR"])
+
     def get_logs_dir(self):
-        return self.config["STORAGE"]["LOGS_DIR"]
-    
+        return environ.get("LOGS_DIR", self.config["STORAGE"]["LOGS_DIR"])
+
     def get_repos_dir(self):
-        return self.config["STORAGE"]["REPOS_DIR"]
-    
+        return environ.get("REPOS_DIR", self.config["STORAGE"]["REPOS_DIR"])
+
+    def get_logging_rest_api(self):
+        return self.config["LOGGING"]["LOG_REST_API"] == "true"
+
+    def get_logging_prompts(self):
+        return self.config["LOGGING"]["LOG_PROMPTS"] == "true"
+
     def set_bing_api_key(self, key):
         self.config["API_KEYS"]["BING"] = key
         self.save_config()
@@ -57,7 +76,11 @@ class Config:
     def set_bing_api_endpoint(self, endpoint):
         self.config["API_ENDPOINTS"]["BING"] = endpoint
         self.save_config()
-        
+
+    def set_ollama_api_endpoint(self, endpoint):
+        self.config["API_ENDPOINTS"]["OLLAMA"] = endpoint
+        self.save_config()
+
     def set_claude_api_key(self, key):
         self.config["API_KEYS"]["CLAUDE"] = key
         self.save_config()
@@ -69,11 +92,11 @@ class Config:
     def set_netlify_api_key(self, key):
         self.config["API_KEYS"]["NETLIFY"] = key
         self.save_config()
-        
+
     def set_sqlite_db(self, db):
         self.config["STORAGE"]["SQLITE_DB"] = db
         self.save_config()
-        
+
     def set_screenshots_dir(self, dir):
         self.config["STORAGE"]["SCREENSHOTS_DIR"] = dir
         self.save_config()
@@ -81,7 +104,7 @@ class Config:
     def set_pdfs_dir(self, dir):
         self.config["STORAGE"]["PDFS_DIR"] = dir
         self.save_config()
-        
+
     def set_projects_dir(self, dir):
         self.config["STORAGE"]["PROJECTS_DIR"] = dir
         self.save_config()
@@ -92,6 +115,14 @@ class Config:
 
     def set_repos_dir(self, dir):
         self.config["STORAGE"]["REPOS_DIR"] = dir
+        self.save_config()
+
+    def set_logging_rest_api(self, value):
+        self.config["LOGGING"]["LOG_REST_API"] = "true" if value else "false"
+        self.save_config()
+
+    def set_logging_prompts(self, value):
+        self.config["LOGGING"]["LOG_PROMPTS"] = "true" if value else "false"
         self.save_config()
 
     def save_config(self):

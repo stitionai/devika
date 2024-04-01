@@ -160,8 +160,9 @@ def calculate_tokens():
 @app.route("/api/token-usage", methods=["GET"])
 @route_logger(logger)
 def token_usage():
-    from src.llm import TOKEN_USAGE
-    return jsonify({"token_usage": TOKEN_USAGE})
+    project_name = request.args.get("project_name")
+    token_count = AgentState().get_latest_token_usage(project_name)
+    return jsonify({"token_usage": token_count})
 
 
 @app.route("/api/real-time-logs", methods=["GET"])
