@@ -1,4 +1,6 @@
 <script>
+  import { page } from '$app/stores';              
+
   let navItems = [
     { icon: "fa-home", tooltip: "Home", route: "/" },
     { icon: "fa-cog", tooltip: "Settings", route: "/settings"},
@@ -6,12 +8,12 @@
   ];
 </script>
 
-<div class="flex flex-col mx-2 my-4 gap-4 items-center bg-gray-200 rounded-lg py-4 px-2">
+<div class="flex flex-col ml-4 my-4 gap-4 items-center bg-secondary rounded-xl py-4 px-2">
   {#each navItems as item (item.tooltip)}
   <a href = {item.route}>
     <div class="p-4 rounded nav-button relative">
       <button
-        class="hover:text-gray-500 flex justify-center w-full hover:transition-colors"
+        class={`${$page.url.pathname==item.route?"text-primary-foreground":"text-secondary-foreground"} flex justify-center w-full hover:transition-colors`}
       >
         <i class={`fas ${item.icon} fa-lg`}></i>
       </button>

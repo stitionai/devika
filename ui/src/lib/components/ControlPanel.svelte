@@ -1,7 +1,21 @@
 <script>
   import { onMount } from "svelte";
-  import { projectList, modelList, internet, tokenUsage, agentState, messages, searchEngineList} from "$lib/store";
-  import { createProject, fetchMessages, fetchInitialData, deleteProject, fetchAgentState} from "$lib/api";
+  import {
+    projectList,
+    modelList,
+    internet,
+    tokenUsage,
+    agentState,
+    messages,
+    searchEngineList,
+  } from "$lib/store";
+  import {
+    createProject,
+    fetchMessages,
+    fetchInitialData,
+    deleteProject,
+    fetchAgentState,
+  } from "$lib/api";
   import { get } from "svelte/store";
 
   let selectedProject;
@@ -18,10 +32,21 @@
     }
   };
 
-  selectedProject = checkListAndSetItem( projectList, "selectedProject", "Select Project");
-  selectedModel = checkListAndSetItem( modelList, "selectedModel", "Select Model");
-  selectedSearchEngine = checkListAndSetItem( searchEngineList, "selectedSearchEngine", "Select Search Engine");
-
+  selectedProject = checkListAndSetItem(
+    projectList,
+    "selectedProject",
+    "Select Project",
+  );
+  selectedModel = checkListAndSetItem(
+    modelList,
+    "selectedModel",
+    "Select Model",
+  );
+  selectedSearchEngine = checkListAndSetItem(
+    searchEngineList,
+    "selectedSearchEngine",
+    "Select Search Engine",
+  );
 
   function selectProject(project) {
     selectedProject = project;
@@ -42,7 +67,7 @@
   }
 
   async function createNewProject() {
-    const projectName = prompt('Enter the project name:');
+    const projectName = prompt("Enter the project name:");
     if (projectName) {
       await createProject(projectName);
       selectProject(projectName);
@@ -92,14 +117,13 @@
       document.removeEventListener("click", closeDropdowns);
     };
   });
-  
 </script>
 
 <div class="control-panel">
   <div class="dropdown-menu relative inline-block">
     <button
       type="button"
-      class="inline-flex items-center justify-center w-full gap-2 rounded-md px-3 py-2 text-sm font-semibold border-2 border-gray-300"
+      class="inline-flex outline-none border-none items-center justify-between w-[280px] gap-2 rounded-xl px-3 py-3 text-sm font-semibold text-tertiary-foreground bg-secondary"
       id="project-button"
       aria-expanded="true"
       aria-haspopup="true"
@@ -109,7 +133,7 @@
     </button>
     <div
       id="project-dropdown"
-      class="absolute left-0 z-10 mt-2 w-40 origin-top-left rounded-md bg-gray-100 shadow-lg max-h-96 overflow-y-auto hidden"
+      class="absolute left-0 z-10 mt-2 w-[280px] origin-top-left rounded-xl text-secondary-foreground bg-secondary shadow-lg max-h-96 overflow-y-auto hidden"
       role="menu"
       aria-orientation="vertical"
       aria-labelledby="project-button"
@@ -117,7 +141,7 @@
     >
       <div role="none" class="flex flex-col divide-y-2 w-full">
         <button
-          class="flex gap-2 items-center text-sm px-4 py-3 w-full"
+          class="flex gap-2 items-center text-sm px-4 py-3 w-full text-secondary-foreground hover:text-primary-foreground"
           on:click|preventDefault={createNewProject}
         >
           <i class="fas fa-plus"></i>
@@ -126,7 +150,8 @@
         {#if $projectList !== null}
           {#each $projectList as project}
             <div
-              class="flex items-center px-4 hover:bg-gray-200 transition-colors">
+              class="flex items-center px-4 hover:bg-tertiary hover:text-tertiary-foreground transition-colors"
+            >
               <button
                 href="#"
                 class="flex gap-2 items-center text-sm py-3 w-full h-full overflow-x-visible"
@@ -150,20 +175,22 @@
     style="display: flex; align-items: center; gap: 20px"
   >
     <div class="flex items-center space-x-2">
-      <span>Internet:</span>
-      <div
-        id="internet-status"
-        class="internet-status"
-        class:online={$internet}
-        class:offline={!$internet}
-      ></div>
-      <span id="internet-status-text"></span>
+      <span class="text-secondary-foreground">Internet:</span>
+      <div class="flex">
+        {#if $internet}
+          <span class="text-primary-foreground">OK</span>
+        {:else}
+          <span class="fas fa-wifi text-red-500"></span>
+        {/if}
+      </div>
     </div>
     <div class="flex items-center space-x-2">
-      <span>Token Usage:</span>
+      <span class="text-secondary-foreground">Token usage:</span>
       <span id="token-count" class="token-count-animation">{$tokenUsage}</span>
+      <span class="text-secondary-foreground">/</span>
+      <span class="text-secondary-foreground">{20000}</span>
     </div>
-    <div class="relative inline-block text-left">
+    <!-- <div class="relative inline-block text-left">
       <div>
         <button
           type="button"
@@ -204,12 +231,12 @@
           {/if}
         </div>
       </div>
-    </div>
+    </div> -->
     <div class="relative inline-block text-left">
       <div>
         <button
           type="button"
-          class="inline-flex items-center justify-center w-fit gap-x-1.5 rounded-md px-3 py-2 text-sm font-semibold border-2 border-gray-300"
+          class="inline-flex outline-none border-none items-center justify-between w-[280px] gap-x-1.5 rounded-xl px-3 py-3 text-sm font-semibold border-2 text-tertiary-foreground bg-secondary"
           id="model-button"
           aria-expanded="true"
           aria-haspopup="true"
@@ -221,7 +248,7 @@
 
       <div
         id="model-dropdown"
-        class="absolute right-0 z-10 mt-2 w-64 origin-top-right rounded-md bg-gray-100 shadow-lg max-h-96 overflow-y-auto hidden"
+        class="absolute right-0 z-10 mt-2 w-[280px] origin-top-right rounded-xl text-tertiary-foreground bg-secondary shadow-lg max-h-96 overflow-y-auto hidden"
         role="menu"
         aria-orientation="vertical"
         aria-labelledby="model-button"
@@ -237,7 +264,7 @@
                 <div class="flex flex-col gap-[1px] px-6 w-full">
                   {#each modelItems as models}
                     <button
-                      class="relative nav-button flex text-start text-sm text-clip hover:bg-gray-300 px-2 py-1 rounded-md
+                      class="relative nav-button flex text-start text-sm text-clip hover:bg-tertiary hover:text-tertiary-foreground px-2 py-2 rounded-md
                       transition-colors {selectedModel ==
                         `${models[0]} (${models[1]})` ||
                       selectedModel == models[1]
@@ -280,19 +307,6 @@
     visibility: visible;
     opacity: 1;
   }
-  .internet-status {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-  }
-
-  .online {
-    background-color: #22c55e;
-  }
-
-  .offline {
-    background-color: #ef4444;
-  }
 
   @keyframes roll {
     0% {
@@ -312,6 +326,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.257);
   }
 
   .control-panel > *:not(:first-child) {

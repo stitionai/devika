@@ -3,7 +3,12 @@
   import "../app.pcss";
 </script>
 
-<main class="flex h-dvh w-full">
-	<Sidebar />
-	<slot />
+<main>
+  <div class="flex h-dvh w-full">
+    <Sidebar />
+    <slot />
+  </div>
+  <div>
+<!-- TODO bottom bar -->
+  </div>
 </main>

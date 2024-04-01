@@ -161,11 +161,3 @@ cython_debug/
 
 notes.md
 data/
-
-
-# Personally generated files
-projects/
-screenshots/
-pdfs/
-db/
-logs/

@@ -11,23 +11,23 @@
 
 </script>
 
-<div class="flex flex-col border-2 rounded-lg h-1/2 overflow-y-auto">
-  <div class="p-2 flex items-center border-b">
+<div class="flex flex-col rounded-3xl h-1/2 overflow-y-auto border-tertiary border-solid border-4">
+  <div class="p-2 flex items-center border-b bg-secondary">
     <div class="flex space-x-2 ml-2 mr-4">
-      <div class="w-3 h-3 bg-red-500 rounded-full"></div>
-      <div class="w-3 h-3 bg-yellow-400 rounded-full"></div>
-      <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+      <div class="w-3 h-3 bg-background rounded-full"></div>
+      <div class="w-3 h-3 bg-background rounded-full"></div>
+      <div class="w-3 h-3 bg-background rounded-full"></div>
     </div>
     <input
       type="text"
       id="browser-url"
-      class="flex-grow border-2 rounded-lg p-2 overflow-x-auto"
+      class="flex-grow bg-background rounded-lg p-1 px-2 me-2 overflow-x-auto"
       placeholder="chrome://newtab"
       value={$agentState?.browser_session.url || ""}
       
     />
   </div>
-  <div id="browser-content" class="flex-grow overflow-y-auto">
+  <div id="browser-content" class="flex-grow overflow-y-auto bg-primary">
     {#if $agentState?.browser_session.screenshot}
       <img
         class="browser-img"
