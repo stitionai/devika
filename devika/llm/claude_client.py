@@ -1,6 +1,6 @@
 """Claude API client."""
 
-from anthropic import Anthropic
+from anthropic import Anthropic, RateLimitError
 
 from devika.config import Config
 
@@ -35,20 +35,21 @@ class Claude(BaseLLMModel):
 
     def _inference(self, prompt: str) -> str:
         """Inference using Claude API."""
-        message = self.client.messages.create(
-            max_tokens=4096,
-            messages=[
-                {
-                    "role": "user",
-                    "content": prompt.strip(),
-                }
-            ],
-            model=self.model_id,
-            timeout=self._timeout,
-        )
 
-        if message.stop_reason == "max_tokens":
-            raise TokenUsageExceeded("Token usage exceeded for Claude.")
+        try:
+            message = self.client.messages.create(
+                max_tokens=4096,
+                messages=[
+                    {
+                        "role": "user",
+                        "content": prompt.strip(),
+                    }
+                ],
+                model=self.model_id,
+                timeout=self._timeout,
+            )
+        except RateLimitError as e:
+            raise TokenUsageExceeded("Token usage exceeded for Claude.") from e
 
         return message.content[0].text
 
