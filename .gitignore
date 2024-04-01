@@ -126,6 +126,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+config.toml
 
 # Spyder project settings
 .spyderproject
@@ -159,9 +160,4 @@ cython_debug/
 .idea/
 
 notes.md
-logs/
-db/
-screenshots/
-pdfs/
-projects/
-config.toml
+data/

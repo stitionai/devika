@@ -2,3 +2,58 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+
+}
+
+/* Styling for scrollbar */
+
+  /* WebKit (Chrome, Safari) */
+  *::-webkit-scrollbar {
+    width: 5px;
+  }
+  *::-webkit-scrollbar-thumb {
+    background: #999797;
+    border-radius: 0.5rem;
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    background: #6b7280;
+  } 
+
+  /* firefox  */
+  @-moz-document url-prefix() {
+  :global(*) {
+    scrollbar-width: thin;
+    scrollbar-color: #999797 #FFFFFF;
+  }
+
+  :global(*::-moz-scrollbar) {
+    width: 5px;
+  }
+
+  :global(*::-moz-scrollbar-thumb) {
+    background: #999797;
+    border-radius: 0.5rem;
+  }
+
+  :global(*::-moz-scrollbar-thumb:hover) {
+    background: #6b7280;
+  }
+}
+
+  /* Internet Explorer/Edge */
+  :global(*::-ms-scrollbar) {
+    width: 5px;
+  }
+  :global(*::-ms-scrollbar-thumb) {
+    background: #999797;
+    border-radius: 0.5rem;
+  }
+  :global(*::-ms-scrollbar-thumb:hover) {
+    background: #6b7280;
+  }

@@ -1,25 +1,25 @@
 [STORAGE]
-SQLITE_DB = "db/devika.db"
-SCREENSHOTS_DIR = "screenshots"
-PDFS_DIR = "pdfs"
-PROJECTS_DIR = "projects"
-LOGS_DIR = "logs"
-REPOS_DIR = "repos"
-WEB_SEARCH = "ddgs"
+SQLITE_DB = "data/db/devika.db"
+SCREENSHOTS_DIR = "data/screenshots"
+PDFS_DIR = "data/pdfs"
+PROJECTS_DIR = "data/projects"
+LOGS_DIR = "data/logs"
+REPOS_DIR = "data/repos"
 
 [API_KEYS]
 BING = "<YOUR_BING_API_KEY>"
 GOOGLE_SEARCH = "<YOUR_GOOGLE_SEARCH_API_KEY>"
 GOOGLE_SEARCH_ENGINE_ID = "<YOUR_GOOGLE_SEARCH_ENGINE_ID>"
 CLAUDE = "<YOUR_CLAUDE_API_KEY>"
-NETLIFY = "<YOUR_NETLIFY_API_KEY>"
 OPENAI = "<YOUR_OPENAI_API_KEY>"
-GROQ = "<YOUR_GROQ_API_KEY>"
 GEMINI = "<YOUR_GEMINI_API_KEY>"
+MISTRAL = "<YOUR_MISTRAL_API_KEY>"
+GROQ = "<YOUR_GROQ_API_KEY>"
+NETLIFY = "<YOUR_NETLIFY_API_KEY>"
 
 [API_ENDPOINTS]
 BING = "https://api.bing.microsoft.com/v7.0/search"
-GOOGLE_SEARCH = "https://www.googleapis.com/customsearch/v1"
+GOOGLE = "https://www.googleapis.com/customsearch/v1"
 OLLAMA = "http://127.0.0.1:11434"
 
 [LOGGING]
