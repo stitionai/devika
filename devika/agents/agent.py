@@ -3,17 +3,15 @@
 import json
 import platform
 import time
+from typing import Set
 
 import tiktoken
 
 from devika.bert.sentence import SentenceBert
-from devika.browser import Browser, start_interaction
-from devika.browser.search import BingSearch, DuckDuckGoSearch, GoogleSearch
-from devika.config import Config
+from devika.browser import Browser, SearchEngine, start_interaction
 from devika.documenter.pdf import PDFGenerator
 from devika.filesystem import CodeToMarkdownConvertor
 from devika.logger import Logger
-from devika.memory import KnowledgeBase
 from devika.project import ProjectManager
 from devika.services import Netlify
 from devika.state import AgentState
@@ -40,9 +38,10 @@ class Agent:
             raise ValueError("base_model is required")
 
         self.logger = Logger()
+        self.base_model = base_model
 
         # Accumulate contextual keywords from chained prompts of all preparation agents
-        self.collected_context_keywords = set()
+        self.collected_context_keywords: Set[str] = set()
 
         # Initialize all the agents
         self.planner = Planner(base_model=base_model)
@@ -58,57 +57,34 @@ class Agent:
         self.reporter = Reporter(base_model=base_model)
         self.decision = Decision(base_model=base_model)
 
+        # Bert extractor
+        self._bert_extractor = SentenceBert()
+
         self.tokenizer = tiktoken.get_encoding("cl100k_base")
 
-    def search_queries(
-        self, queries: list, project_name: str, requested_web_search: str
-    ) -> dict:
+    def search_queries(self, queries: list, project_name: str) -> dict:
         results = {}
+        # TODO: Add distilled data as knowledge base
 
-        knowledge_base = KnowledgeBase()
-
-        web_search = None
-        web_search_type = Config().get_web_search()
-        if requested_web_search:
-            web_search_type = requested_web_search
-
-        if web_search_type == "bing":
-            web_search = BingSearch()
-        elif web_search_type == "google":
-            web_search = GoogleSearch()
-        elif web_search_type == "ddgs":
-            web_search = DuckDuckGoSearch()
-        else:
-            web_search = DuckDuckGoSearch()
-
-        self.logger.info(web_search_type)
+        web_search = SearchEngine()
         browser = Browser()
 
         for query in queries:
+
+            # Strip query
             query = query.strip().lower()
 
-            # Check if the knowledge base already has the query learned
-
-            # knowledge = knowledge_base.get_knowledge(tag=query)
-            # if knowledge:
-            #     results[query] = knowledge
-            #     continue
-
-            # Search for the query and get the first link
+            # Search for query
             web_search.search(query)
-            link = web_search.get_first_link()
+            result_url = web_search.get_first_link()
 
-            # Browse to the link and take a screenshot, then extract the text
-            browser.go_to(link)
+            # Pass the link to browser
+            browser.go_to(result_url)
             browser.screenshot(project_name)
 
-            # Formatter Agent is invoked to format and learn from the contents
-            results[query] = self.formatter.execute(
-                browser.extract_text(), project_name
-            )
-
-            # Add the newly acquired data to the knowledge base
-            # knowledge_base.add_knowledge(tag=query, contents=results[query])
+            # Format the search results
+            result_content = browser.extract_text()
+            results[query] = self.formatter.execute(result_content, project_name)
 
         return results
 
@@ -116,14 +92,14 @@ class Agent:
         """
         Update the context keywords with the latest sentence/prompt
         """
-        keywords = SentenceBert(sentence).extract_keywords()
+        keywords = self._bert_extractor.extract_keywords(sentence)
 
         for keyword in keywords:
             self.collected_context_keywords.add(keyword[0])
 
         return self.collected_context_keywords
 
-    def make_decision(self, prompt: str, project_name: str) -> str:
+    def make_decision(self, prompt: str, project_name: str) -> str | None:
         """
         Decision making Agent
         """
@@ -136,20 +112,14 @@ class Agent:
 
             ProjectManager().add_message_from_devika(project_name, reply)
 
-            if function == "git_clone":
-                url = args["url"]
-                # Implement git clone functionality here
-
-            elif function == "generate_pdf_document":
+            if function == "generate_pdf_document":
                 user_prompt = args["user_prompt"]
                 # Call the reporter agent to generate the PDF document
                 markdown = self.reporter.execute([user_prompt], "", project_name)
                 _out_pdf_file = PDFGenerator().markdown_to_pdf(markdown, project_name)
 
                 project_name_space_url = project_name.replace(" ", "%20")
-                pdf_download_url = "http://127.0.0.1:1337/api/download-project-pdf?project_name={}".format(  # pylint: disable=line-too-long
-                    project_name_space_url
-                )
+                pdf_download_url = f"http://127.0.0.1:1337/api/download-project-pdf?project_name={project_name_space_url}"  # pylint: disable=line-too-long
                 response = f"I have generated the PDF document. You can download it from here: {pdf_download_url}"  # pylint: disable=line-too-long
 
                 Browser().go_to(pdf_download_url)
@@ -169,7 +139,7 @@ class Agent:
                 planner_response = self.planner.parse_response(plan)
 
                 research = self.researcher.execute(
-                    plan, self.collected_context_keywords, project_name
+                    plan, list(self.collected_context_keywords), project_name
                 )
                 search_results = self.search_queries(research["queries"], project_name)
 
@@ -181,7 +151,9 @@ class Agent:
                 )
                 self.coder.save_code_to_project(code, project_name)
 
-    def subsequent_execute(self, prompt: str, project_name: str) -> str:
+        return None
+
+    def subsequent_execute(self, prompt: str, project_name: str) -> str | None:
         """
         Subsequent flow of execution
         """
@@ -242,7 +214,7 @@ class Agent:
             code = self.patcher.execute(
                 conversation=conversation,
                 code_markdown=code_markdown,
-                commands=None,
+                commands=[],
                 error=prompt,
                 system_os=os_system,
                 project_name=project_name,
@@ -257,9 +229,7 @@ class Agent:
             _out_pdf_file = PDFGenerator().markdown_to_pdf(markdown, project_name)
 
             project_name_space_url = project_name.replace(" ", "%20")
-            pdf_download_url = "http://127.0.0.1:1337/api/download-project-pdf?project_name={}".format(  # pylint: disable=line-too-long
-                project_name_space_url
-            )
+            pdf_download_url = f"http://127.0.0.1:1337/api/download-project-pdf?project_name={project_name_space_url}"  # pylint: disable=line-too-long
             response = f"I have generated the PDF document. You can download it from here: {pdf_download_url}"  # pylint: disable=line-too-long
 
             Browser().go_to(pdf_download_url)
@@ -270,9 +240,9 @@ class Agent:
         AgentState().set_agent_active(project_name, False)
         AgentState().set_agent_completed(project_name, True)
 
-    def execute(
-        self, prompt: str, project_name_from_user: str = None, web_search: str = None
-    ) -> str:
+        return None
+
+    def execute(self, prompt: str, project_name_from_user: str = None) -> str | None:
         """
         Agentic flow of execution
         """
@@ -303,20 +273,9 @@ class Agent:
         ProjectManager().add_message_from_devika(
             project_name, json.dumps(plans, indent=4)
         )
-        # ProjectManager().add_message_from_devika(project_name, f"In summary: {summary}")
+        ProjectManager().add_message_from_devika(project_name, f"In summary: {summary}")
 
         self.update_contextual_keywords(focus)
-        print(self.collected_context_keywords)
-
-        internal_monologue = self.internal_monologue.execute(
-            current_prompt=plan, project_name=project_name
-        )
-        print(internal_monologue)
-        print("=====" * 10)
-
-        new_state = AgentState().new_state()
-        new_state["internal_monologue"] = internal_monologue
-        AgentState().add_to_current_state(project_name, new_state)
 
         research = self.researcher.execute(
             plan, self.collected_context_keywords, project_name
@@ -358,7 +317,7 @@ class Agent:
 
         AgentState().set_agent_active(project_name, True)
 
-        search_results = self.search_queries(queries, project_name, web_search)
+        search_results = self.search_queries(queries, project_name)
 
         print(json.dumps(search_results, indent=4))
         print("=====" * 10)
@@ -381,3 +340,5 @@ class Agent:
 
         AgentState().set_agent_active(project_name, False)
         AgentState().set_agent_completed(project_name, True)
+
+        return None

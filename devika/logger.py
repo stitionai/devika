@@ -11,7 +11,7 @@ class Logger:
         config = Config()
         logs_dir = config.get_logs_dir()
         self.logger = LogInit(
-            pathName=logs_dir + "/" + filename, console=True, colors=True
+            pathName=logs_dir + "/" + filename, console=True, colors=True, level=20
         )
 
     def read_log_file(self) -> str:
