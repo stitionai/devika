@@ -161,3 +161,5 @@ cython_debug/
 
 notes.md
 data/
+.vscode/
+local_installation.md

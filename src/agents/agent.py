@@ -19,6 +19,7 @@ from src.bert.sentence import SentenceBert
 from src.memory import KnowledgeBase
 from src.browser.search import BingSearch, GoogleSearch, DuckDuckGoSearch
 from src.browser import Browser
+from src.browser import Browser2
 from src.browser import start_interaction
 from src.filesystem import ReadCode
 from src.services import Netlify
@@ -28,6 +29,7 @@ import json
 import time
 import platform
 import tiktoken
+import asyncio
 
 
 class Agent:
@@ -63,7 +65,7 @@ class Agent:
         self.engine = search_engine
         self.tokenizer = tiktoken.get_encoding("cl100k_base")
 
-    def search_queries(self, queries: list, project_name: str, engine: str) -> dict:
+    async def search_queries(self, queries: list, project_name: str, engine: str) -> dict:
         results = {}
 
         knowledge_base = KnowledgeBase()
@@ -78,28 +80,41 @@ class Agent:
 
         self.logger.info(f"Search : {engine}")
 
-        for query in queries:
-            browser = Browser()
-            query = query.strip().lower()
+        browser = Browser2()
+        await browser.initialize()
+        try:
+            for query in queries:
+                query = query.strip().lower()
+                print("#### query:", query)
 
-            # knowledge = knowledge_base.get_knowledge(tag=query)
-            # if knowledge:
-            #     results[query] = knowledge
-            #     continue
+                # knowledge = knowledge_base.get_knowledge(tag=query)
+                # if knowledge:
+                #     results[query] = knowledge
+                #     continue
 
-            web_search.search(query)
+                web_search.search(query)
 
-            link = web_search.get_first_link()
-            print("\nLink :: ", link, '\n')
+                link = web_search.get_first_link()
+                print("\nLink :: ", link, '\n')
 
-            browser.go_to(link)
-            browser.screenshot(project_name)
+                # asyncio.run(browser.go_to(link))
+                # asyncio.run(browser.screenshot(project_name))
 
-            results[query] = self.formatter.execute(browser.extract_text(), project_name)
-            # browser.close()
-            self.logger.info(f"got the search results for : {query}")
+                await browser.go_to(link)
+                await browser.screenshot(project_name)
 
-            # knowledge_base.add_knowledge(tag=query, contents=results[query])
+                results[query] = self.formatter.execute(await browser.extract_text(), project_name)
+                # browser.close()
+                self.logger.info(f"got the search results for : {query}")
+                # await browser.close_crrent_page()
+
+                # knowledge_base.add_knowledge(tag=query, contents=results[query])
+        except Exception as e:
+            print(f"An exception occurred in search_query: {e}")
+
+        finally:
+            await browser.close()
+    
         return results
 
     def update_contextual_keywords(self, sentence: str):
@@ -332,11 +347,19 @@ class Agent:
 
         self.agent_state.set_agent_active(project_name, True)
 
+        print("###"*10)
+        print(queries)
+        print("###"*10)
+
         if queries and len(queries) > 0:
-            search_results = self.search_queries(queries, project_name, engine)
+            search_results = asyncio.run(self.search_queries(queries, project_name, engine))
 
         else:
             search_results = {}
+
+        print("###"*10)
+        print(search_results)
+        print("###"*10)
 
         code = self.coder.execute(
             step_by_step_plan=plan,
