@@ -1,9 +1,12 @@
+import asyncio
+import base64
 import os
 
+from playwright.sync_api import sync_playwright, TimeoutError, Page
 from playwright.async_api import async_playwright, TimeoutError
 from markdownify import markdownify as md
 from pdfminer.high_level import extract_text
-
+from src.socket_instance import emit_agent
 from src.config import Config
 from src.state import AgentState
 
@@ -13,6 +16,7 @@ class Browser:
         self.playwright = None
         self.browser = None
         self.page = None
+        self.agent = AgentState()
 
     async def start(self):
         self.playwright = await async_playwright().start()
@@ -20,8 +24,8 @@ class Browser:
         self.page = await self.browser.new_page()
         return self
 
-    def new_page(self):
-        return self.browser.new_page()
+    # def new_page(self):
+    #     return self.browser.new_page()
 
     async def go_to(self, url):
         try:
@@ -43,14 +47,15 @@ class Browser:
 
         await self.page.emulate_media(media="screen")
         await self.page.screenshot(path=path_to_save)
-
-        new_state = AgentState().new_state()
+        screenshot = await self.page.screenshot()
+        screenshot_bytes = base64.b64encode(screenshot).decode()
+        new_state = self.agent.new_state()
         new_state["internal_monologue"] = "Browsing the web right now..."
         new_state["browser_session"]["url"] = page_url
         new_state["browser_session"]["screenshot"] = path_to_save
-        AgentState().add_to_current_state(project_name, new_state)
-
-        return path_to_save
+        self.agent.add_to_current_state(project_name, new_state)
+        # self.close()
+        return path_to_save, screenshot_bytes
 
     def get_html(self):
         return self.page.content()
@@ -79,7 +84,6 @@ class Browser:
     def extract_text(self):
         return self.page.evaluate("() => document.body.innerText")
 
-    def close(self):
-        self.page.close()
-        self.browser.close()
-        self.playwright.stop()
+    async def close(self):
+        await self.page.close()
+        await self.browser.close()

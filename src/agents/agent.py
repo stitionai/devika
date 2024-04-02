@@ -30,9 +30,11 @@ import platform
 import tiktoken
 import asyncio
 
+from src.socket_instance import emit_agent
+
 
 class Agent:
-    def __init__(self, base_model: str, search_engine: str):
+    def __init__(self, base_model: str, search_engine: str, browser: Browser = None):
         if not base_model:
             raise ValueError("base_model is required")
 
@@ -64,26 +66,33 @@ class Agent:
         self.engine = search_engine
         self.tokenizer = tiktoken.get_encoding("cl100k_base")
 
-    def search_queries(self, queries: list, project_name: str, engine: str) -> dict:
+    async def open_page(self, project_name, pdf_download_url):
+        browser = await Browser().start()
+
+        await browser.go_to(pdf_download_url)
+        _, raw = await browser.screenshot(project_name)
+        data = await browser.extract_text()
+        await browser.close()
+
+        return browser, raw, data
+
+    def search_queries(self, queries: list, project_name: str) -> dict:
         results = {}
 
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
 
         knowledge_base = KnowledgeBase()
         web_search = None
 
-        if engine == "bing":
+        if self.engine == "bing":
             web_search = BingSearch()
-        elif engine == "google":
+        elif self.engine == "google":
             web_search = GoogleSearch()
         else:
             web_search = DuckDuckGoSearch()
 
-        self.logger.info(f"Search : {engine}")
+        self.logger.info(f"\nSearch Engine :: {self.engine}")
 
         for query in queries:
-            
             query = query.strip().lower()
 
             # knowledge = knowledge_base.get_knowledge(tag=query)
@@ -91,22 +100,20 @@ class Agent:
             #     results[query] = knowledge
             #     continue
 
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+
             web_search.search(query)
 
             link = web_search.get_first_link()
             print("\nLink :: ", link, '\n')
 
-            browser = loop.run_until_complete(self.open_page(project_name, link))
+            browser, raw, data = loop.run_until_complete(self.open_page(project_name, link))
+            emit_agent("screenshot", {"data": raw, "project_name": project_name}, False)
+            results[query] = self.formatter.execute(data, project_name)
 
-            results[query] = self.formatter.execute(
-                loop.run_until_complete(browser.extract_text()), 
-                project_name)
-            # browser.close()
             self.logger.info(f"got the search results for : {query}")
-
             # knowledge_base.add_knowledge(tag=query, contents=results[query])
-        
-        loop.close()
         return results
 
     def update_contextual_keywords(self, sentence: str):
@@ -169,14 +176,6 @@ class Agent:
                     project_name=project_name
                 )
                 self.coder.save_code_to_project(code, project_name)
-
-    async def open_page(self, project_name, pdf_download_url):
-        browser = await Browser().start()
-
-        await browser.go_to(pdf_download_url)
-        await browser.screenshot(project_name)
-
-        return browser
 
     def subsequent_execute(self, prompt: str, project_name: str):
         """
@@ -258,14 +257,15 @@ class Agent:
                 project_name_space_url)
             response = f"I have generated the PDF document. You can download it from here: {pdf_download_url}"
 
-            asyncio.run(self.open_page(project_name, pdf_download_url))
+            self.browser.go_to(pdf_download_url)
+            self.browser.screenshot(project_name)
 
             self.project_manager.add_message_from_devika(project_name, response)
 
         self.agent_state.set_agent_active(project_name, False)
         self.agent_state.set_agent_completed(project_name, True)
 
-    def execute(self, prompt: str, project_name_from_user: str = None, engine: str = None) -> str:
+    def execute(self, prompt: str, project_name_from_user: str = None) -> str:
         """
         Agentic flow of execution
         """
@@ -345,7 +345,8 @@ class Agent:
         self.agent_state.set_agent_active(project_name, True)
 
         if queries and len(queries) > 0:
-            search_results = self.search_queries(queries, project_name, engine)
+            search_results = self.search_queries(queries, project_name)
+
         else:
             search_results = {}
 
@@ -362,6 +363,6 @@ class Agent:
         self.agent_state.set_agent_active(project_name, False)
         self.agent_state.set_agent_completed(project_name, True)
         self.project_manager.add_message_from_devika(project_name,
-                                                     "I have completed the my task. 🚀 \n"
+                                                     "I have completed the my task. \n"
                                                      "if you would like me to do anything else, please let me know. \n"
                                                      )
