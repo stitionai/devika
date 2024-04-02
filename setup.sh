@@ -4,4 +4,4 @@ pip3 install -r requirements.txt
 playwright install
 python3 -m playwright install-deps
 cd ui/
-npm install
+bun install
