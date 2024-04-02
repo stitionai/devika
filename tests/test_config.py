@@ -31,7 +31,7 @@ class TestConfig:
         Patch load_config in class Config
         The return value from load_config is changed to `{}`
         """
-        return mocker.patch("src.config.Config.load_config", return_value={})
+        return mocker.patch("src.config.Config._load_config", return_value={})
 
     def test_creation(self, setup, patch_config):
         assert Config() is not None
