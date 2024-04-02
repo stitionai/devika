@@ -80,12 +80,11 @@ class Agent:
 
         self.logger.info(f"Search : {engine}")
 
-        browser = Browser2()
+        browser = Browser()
         await browser.initialize()
         try:
             for query in queries:
                 query = query.strip().lower()
-                print("#### query:", query)
 
                 # knowledge = knowledge_base.get_knowledge(tag=query)
                 # if knowledge:
@@ -97,20 +96,16 @@ class Agent:
                 link = web_search.get_first_link()
                 print("\nLink :: ", link, '\n')
 
-                # asyncio.run(browser.go_to(link))
-                # asyncio.run(browser.screenshot(project_name))
-
                 await browser.go_to(link)
                 await browser.screenshot(project_name)
 
                 results[query] = self.formatter.execute(await browser.extract_text(), project_name)
                 # browser.close()
                 self.logger.info(f"got the search results for : {query}")
-                # await browser.close_crrent_page()
 
                 # knowledge_base.add_knowledge(tag=query, contents=results[query])
         except Exception as e:
-            print(f"An exception occurred in search_query: {e}")
+            self.logger.error(f"An exception occurred in search_query: {e}")
 
         finally:
             await browser.close()
@@ -169,7 +164,7 @@ class Agent:
                 planner_response = self.planner.parse_response(plan)
 
                 research = self.researcher.execute(plan, self.collected_context_keywords, project_name)
-                search_results = self.search_queries(research["queries"], project_name)
+                search_results = asyncio.run(self.search_queries(research["queries"], project_name))
 
                 code = self.coder.execute(
                     step_by_step_plan=plan,
@@ -347,19 +342,11 @@ class Agent:
 
         self.agent_state.set_agent_active(project_name, True)
 
-        print("###"*10)
-        print(queries)
-        print("###"*10)
-
         if queries and len(queries) > 0:
             search_results = asyncio.run(self.search_queries(queries, project_name, engine))
 
         else:
             search_results = {}
-
-        print("###"*10)
-        print(search_results)
-        print("###"*10)
 
         code = self.coder.execute(
             step_by_step_plan=plan,

@@ -204,4 +204,4 @@ def get_settings():
 
 if __name__ == "__main__":
     logger.info("Devika is up and running!")
-    socketio.run(app, debug=False, port=1337, host="127.0.0.1")
+    socketio.run(app, debug=False, port=1337, host="0.0.0.0")
