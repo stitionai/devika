@@ -29,6 +29,7 @@ import time
 import platform
 import tiktoken
 import asyncio
+import sys, traceback
 
 
 class Agent:
@@ -104,7 +105,9 @@ class Agent:
 
                 # knowledge_base.add_knowledge(tag=query, contents=results[query])
         except Exception as e:
-            self.logger.error(f"An exception occurred in search_query: {e}")
+            exc_type, exc_value, exc_traceback = sys.exc_info()
+            frame_summary = "Traceback for Error occured @ " + str(repr(traceback.extract_tb(exc_traceback)))
+            self.logger.error(f"An exception occurred in search_query: {e} , Frame Summary: {frame_summary}")
 
         finally:
             await browser.close()
