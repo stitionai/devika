@@ -117,6 +117,10 @@ To install Devika, follow these steps:
    ```bash
    uv venv
    uv pip install -r requirements.txt
+
+   In CMD(windows):
+   python -m venv uv
+   uv\Scripts\activate
    ```
 4. Install the required dependencies:
    ```bash
@@ -133,6 +137,12 @@ To install Devika, follow these steps:
    cd ui/
    bun install
    bun run dev
+   
+In CMD(windows) :
+
+   gem install bundlerI to install gem https://rubyinstaller.org/downloads/)
+   npm install
+   npm run dev
    ```
 8. Access the Devika web interface by opening a browser and navigating to `http://127.0.0.1:3000`.
 
