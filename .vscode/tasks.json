@@ -1,0 +1,31 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Run Devika",
+			"type": "shell",
+			"command": "python",
+			"args": [
+				"devika.py"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}",
+				"justMyCode": false
+			}
+		},
+		{
+			"label": "Run UI",
+			"type": "shell",
+			"command": "bun.exe",
+			"args": [
+				"run",
+				"dev"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}\\ui",
+				"justMyCode": false
+			}
+		}
+		
+	]
+}
