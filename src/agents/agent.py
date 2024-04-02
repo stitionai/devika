@@ -18,7 +18,7 @@ from src.logger import Logger
 from src.bert.sentence import SentenceBert
 from src.memory import KnowledgeBase
 from src.browser.search import BingSearch, GoogleSearch, DuckDuckGoSearch
-from src.browser import Browser
+from src.browser import Browser, BrowserV2
 from src.browser import start_interaction
 from src.filesystem import ReadCode
 from src.services import Netlify
@@ -80,7 +80,7 @@ class Agent:
 
         self.logger.info(f"Search : {engine}")
 
-        browser = Browser()
+        browser = BrowserV2()
         await browser.initialize()
         try:
             for query in queries:
