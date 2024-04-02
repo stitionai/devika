@@ -5,6 +5,7 @@ import os
 class Config:
     _instance = None
     _CONFIG_FILE = "config.toml"
+    _SAMPLE_CONFIG_FILE = "sample.config.toml"
 
     def __new__(cls):
         if cls._instance is None:
@@ -15,7 +16,7 @@ class Config:
     def _load_config(self):
         # If the config file doesn't exist, copy from the sample
         if not os.path.exists(self._CONFIG_FILE):
-            with open("sample.config.toml", "r") as f_in, open(self._CONFIG_FILE, "w") as f_out:
+            with open(self._SAMPLE_CONFIG_FILE, "r") as f_in, open(self._CONFIG_FILE, "w") as f_out:
                 f_out.write(f_in.read())
 
         self.config = toml.load(self._CONFIG_FILE)
