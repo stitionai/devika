@@ -2,8 +2,6 @@
     DO NOT REARRANGE THE ORDER OF THE FUNCTION CALLS AND VARIABLE DECLARATIONS
     AS IT MAY CAUSE IMPORT ERRORS AND OTHER ISSUES
 """
-# import eventlet
-# eventlet.monkey_patch()
 from gevent import monkey
 monkey.patch_socket()
 monkey.patch_ssl()
