@@ -10,5 +10,16 @@ class Gemini:
 
     def inference(self, model_id: str, prompt: str) -> str:
         model = genai.GenerativeModel(model_id)
-        response = model.generate_content(prompt)
-        return response.text
+        
+        max_retries = 3
+        retry_count = 0
+        
+        while retry_count < max_retries:
+            try:
+                response = model.generate_content(prompt)
+                return response.text
+            except Exception as e:
+                retry_count += 1
+                print(f"Error occurred. Attempt {retry_count}: {str(e)}")
+        
+        raise RuntimeError("Failed after 4 attempts due to errors.")
