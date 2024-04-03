@@ -94,15 +94,15 @@ class Config:
 
     def set_google_search_api_key(self, key):
         self.config["API_KEYS"]["GOOGLE_SEARCH"] = key
-        self.save_config()
+        self.dump_config()
 
     def set_google_search_engine_id(self, key):
         self.config["API_KEYS"]["GOOGLE_SEARCH_ENGINE_ID"] = key
-        self.save_config()
+        self.dump_config()
 
     def set_google_search_api_endpoint(self, endpoint):
         self.config["API_ENDPOINTS"]["GOOGLE_SEARCH"] = endpoint
-        self.save_config()
+        self.dump_config()
 
     def set_ollama_api_endpoint(self, endpoint):
         self.config["API_ENDPOINTS"]["OLLAMA"] = endpoint
@@ -118,15 +118,15 @@ class Config:
 
     def set_gemini_api_key(self, key):
         self.config["API_KEYS"]["GEMINI"] = key
-        self.save_config()
+        self.dump_config()
 
     def set_mistral_api_key(self, key):
         self.config["API_KEYS"]["MISTRAL"] = key
-        self.save_config()
+        self.dump_config()
 
     def set_groq_api_key(self, key):
         self.config["API_KEYS"]["GROQ"] = key
-        self.save_config()
+        self.dump_config()
 
     def set_netlify_api_key(self, key):
         self.config["API_KEYS"]["NETLIFY"] = key
