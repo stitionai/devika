@@ -14,8 +14,11 @@ class AzureOpenAI:
             azure_endpoint=azure_endpoint
         )
  
-    def inference(self, prompt: str) -> str:
+    def inference(self, model_id: str, prompt: str) -> str:
         api_deployment = Config().get_azure_openai_deployment_name()
+        if not api_deployment:
+            api_deployment = model_id
+
         chat_completion = self.client.chat.completions.create(
             messages=[
                 {
