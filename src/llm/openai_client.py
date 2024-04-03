@@ -6,7 +6,7 @@ class OpenAI:
     def __init__(self):
         config = Config()
         api_key = config.get_openai_api_key()
-        api_base = config.get_llm_endpoint_openai()
+        api_base = config.get_openai_api_endpoint()
         self.client = OAI(
             api_key=api_key,
             base_url = api_base

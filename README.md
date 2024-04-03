@@ -150,11 +150,17 @@ Devika requires certain configuration settings and API keys to function properly
 - `PDFS_DIR`: The directory where PDF files processed by Devika will be stored.
 - `PROJECTS_DIR`: The directory where Devika's projects will be stored.
 - `LOGS_DIR`: The directory where Devika's logs will be stored.
+#### API keys
 - `REPOS_DIR`: The directory where Git repositories cloned by Devika will be stored.
 - `BING`: Your Bing Search API key for web searching capabilities.
 - `CLAUDE`: Your Anthropic API key for accessing Claude models.
 - `NETLIFY`: Your Netlify API key for deploying and managing web projects.
 - `OPENAI`: Your OpenAI API key for accessing GPT models.
+
+#### API endpoints
+- `BING`: URL for bing serarch API.
+- `OLLAMA`: The URL for your ollama server. Default is "http://127.0.0.1:11434" when running ollama on the same server. 
+- `OPENAI`: Set the OpenAI base URL - use that to route requests to *any* LLM service that supprots OpenAI's API (LM Studio, ollama, etc.) 
 
 Make sure to keep your API keys secure and do not share them publicly.
 
