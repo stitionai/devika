@@ -4,25 +4,25 @@
 		{
 			"label": "Run Devika",
 			"type": "shell",
-			"command": "python",
+			"command": "${workspaceFolder}/.venv/scripts/python",
 			"args": [
-				"devika.py"
+			"devika.py"
 			],
 			"options": {
-				"cwd": "${workspaceFolder}",
-				"justMyCode": false
+			"cwd": "${workspaceFolder}",
+			"justMyCode": false
 			}
 		},
 		{
 			"label": "Run UI",
 			"type": "shell",
-			"command": "bun.exe",
+			"command": "cmd.exe",
 			"args": [
-				"run",
-				"dev"
+				"/c",
+				"bun install &&  bun run dev "
 			],
 			"options": {
-				"cwd": "${workspaceFolder}\\ui",
+				"cwd": "${workspaceFolder}/ui",
 				"justMyCode": false
 			}
 		}
