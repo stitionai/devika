@@ -31,5 +31,6 @@ USER nonroot
 WORKDIR /home/nonroot/devika
 ENV PATH="/home/nonroot/devika/.venv/bin:$HOME/.cargo/bin:$PATH"
 RUN mkdir /home/nonroot/devika/db
+RUN playwright install
 
 ENTRYPOINT [ "python3", "-m", "devika" ]
