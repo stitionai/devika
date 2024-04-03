@@ -78,6 +78,7 @@ class LLM:
         self.update_global_token_usage(prompt, project_name)
 
         model_enum = self.model_id_to_enum_mapping().get(self.model_id)
+        print(f"Model: {self.model_id}, Enum: {model_enum}")
         if model_enum is None:
             raise ValueError(f"Model {self.model_id} not supported")
 
