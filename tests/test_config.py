@@ -43,7 +43,7 @@ class TestConfig:
         Config(), Config(), Config(), Config(), Config()
         patch_load_config.assert_called_once()
 
-    def test_save_config_correctly_saves_config(self, setup, patch_config):
+    def test_dump_config_correctly_saves_config(self, setup, patch_config):
         # Read config from file and modify values
         Config().set_bing_api_key("10random_bing_key01")
         Config().set_logs_dir("10random_logs_dir01")
