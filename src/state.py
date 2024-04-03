@@ -63,6 +63,7 @@ class AgentState:
                 agent_state = AgentStateModel(project=project, state_stack_json=json.dumps(state_stack))
                 session.add(agent_state)
                 session.commit()
+            emit_agent("agent-state", state_stack)
 
     def get_current_state(self, project: str):
         with Session(self.engine) as session:
@@ -84,6 +85,7 @@ class AgentState:
                 agent_state = AgentStateModel(project=project, state_stack_json=json.dumps(state_stack))
                 session.add(agent_state)
                 session.commit()
+            emit_agent("agent-state", state_stack)
 
     def get_latest_state(self, project: str):
         with Session(self.engine) as session:
