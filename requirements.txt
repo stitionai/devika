@@ -28,3 +28,4 @@ eventlet
 groq
 duckduckgo-search
 orjson
+gevent
