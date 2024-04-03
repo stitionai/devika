@@ -2,8 +2,10 @@
     DO NOT REARRANGE THE ORDER OF THE FUNCTION CALLS AND VARIABLE DECLARATIONS
     AS IT MAY CAUSE IMPORT ERRORS AND OTHER ISSUES
 """
-import eventlet
-eventlet.monkey_patch()
+# import eventlet
+# eventlet.monkey_patch()
+from gevent import monkey
+monkey.patch_all()
 from src.init import init_devika
 init_devika()
 
@@ -91,7 +93,7 @@ def handle_message(data):
             thread.start()
 
     if action == 'execute_agent':
-        thread = Thread(target=lambda: agent.execute(message, project_name, search_engine))
+        thread = Thread(target=lambda: agent.execute(message, project_name))
         thread.start()
 
 
