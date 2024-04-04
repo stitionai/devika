@@ -50,7 +50,7 @@
               {#if JSON.parse(message.message)}
                 {#each Object.entries(JSON.parse(message.message)) as [step, description]}
                   <div class="flex gap-2 items-center">
-                    <input type="checkbox" id="step-{step}" disabled />
+                    <input type="checkbox" id="step-{step}" class="flex-shrink-0" disabled />
                     <label for="step-{step}"><strong>Step {step}</strong>: {description}</label>
                   </div>
                 {/each}
