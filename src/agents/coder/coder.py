@@ -7,6 +7,7 @@ from typing import List, Dict, Union
 from src.config import Config
 from src.llm import LLM
 from src.state import AgentState
+from src.logger import Logger
 
 PROMPT = open("src/agents/coder/prompt.jinja2", "r").read().strip()
 
@@ -14,7 +15,7 @@ class Coder:
     def __init__(self, base_model: str):
         config = Config()
         self.project_dir = config.get_projects_dir()
-        
+        self.logger = Logger()
         self.llm = LLM(model_id=base_model)
 
     def render(
@@ -30,6 +31,11 @@ class Coder:
 
     def validate_response(self, response: str) -> Union[List[Dict[str, str]], bool]:
         response = response.strip()
+
+        self.logger.debug(f"Response from the model: {response}")
+
+        if "~~~" not in response:
+            return False
 
         response = response.split("~~~", 1)[1]
         response = response[:response.rfind("~~~")]

@@ -5,6 +5,7 @@ from flask import request
 
 from src.config import Config
 
+
 class Logger:
     def __init__(self, filename="devika_agent.log"):
         config = Config()
@@ -57,14 +58,16 @@ def route_logger(logger: Logger):
             # Call the actual route function
             response = func(*args, **kwargs)
 
+            from werkzeug.wrappers import Response
+
             # Log exit point, including response summary if possible
             try:
                 if log_enabled:
-                    if hasattr(response, 'get_data'):  # Check if response object has 'get_data' method
+                    if isinstance(response, Response) and response.direct_passthrough:
+                        logger.debug(f"{request.path} {request.method} - Response: File response")
+                    else:
                         response_summary = response.get_data(as_text=True)
                         logger.debug(f"{request.path} {request.method} - Response: {response_summary}")
-                    else:
-                        logger.debug(f"{request.path} {request.method} - No response data available")
             except Exception as e:
                 logger.exception(f"{request.path} {request.method} - {e}")
 
