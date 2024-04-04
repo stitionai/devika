@@ -4,7 +4,7 @@ from typing import List, Tuple
 from src.socket_instance import emit_agent
 from .ollama_client import Ollama
 from .claude_client import Claude
-from .openai_client import OpenAi
+from .openai_client import OpenAI
 from .gemini_client import Gemini
 from .mistral_client import MistralAi
 from .groq_client import Groq
@@ -85,7 +85,7 @@ class LLM:
         model_mapping = {
             "OLLAMA": ollama,
             "CLAUDE": Claude(),
-            "OPENAI": OpenAi(),
+            "OPENAI": OpenAI(),
             "GOOGLE": Gemini(),
             "MISTRAL": MistralAi(),
             "GROQ": Groq()
