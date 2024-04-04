@@ -2,8 +2,10 @@
     DO NOT REARRANGE THE ORDER OF THE FUNCTION CALLS AND VARIABLE DECLARATIONS
     AS IT MAY CAUSE IMPORT ERRORS AND OTHER ISSUES
 """
-import eventlet
-eventlet.monkey_patch()
+# import eventlet
+# eventlet.monkey_patch()
+from gevent import monkey
+monkey.patch_all()
 from src.init import init_devika
 init_devika()
 
@@ -84,14 +86,14 @@ def handle_message(data):
         new_message = manager.new_message()
         new_message['message'] = message
         new_message['from_devika'] = False
-        manager.add_message_to_project(project_name, new_message)
+        manager.add_message_from_user(project_name, new_message['message'])
 
         if AgentState.is_agent_completed(project_name):
             thread = Thread(target=lambda: agent.subsequent_execute(message, project_name))
             thread.start()
 
     if action == 'execute_agent':
-        thread = Thread(target=lambda: agent.execute(message, project_name, search_engine))
+        thread = Thread(target=lambda: agent.execute(message, project_name))
         thread.start()
 
 
@@ -167,7 +169,7 @@ def calculate_tokens():
 @route_logger(logger)
 def token_usage():
     project_name = request.args.get("project_name")
-    token_count = AgentState().get_latest_token_usage(project_name)
+    token_count = AgentState.get_latest_token_usage(project_name)
     return jsonify({"token_usage": token_count})
 
 

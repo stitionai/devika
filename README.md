@@ -74,7 +74,7 @@ The easiest way to run the project locally:
 
 1. Install `uv` - Python Package manager (https://github.com/astral-sh/uv)
 2. Install `bun` - JavaScript runtime (https://bun.sh/docs/installation)
-3. Install and setup `Ollama` (https://ollama.com/) (if you want don't want to use the local models then you can skip this step)
+3. Install and setup `Ollama` (https://ollama.com/) (if you don't want to use the local models then you can skip this step)
 
 For ollama you need to install the [models](https://ollama.com/models)<br>
 For API models, configure the API keys via setting page in UI. <br><br>
