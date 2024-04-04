@@ -42,7 +42,7 @@ class Researcher:
                 "ask_user": response["ask_user"]
             }
 
-    def execute(self, step_by_step_plan: str, contextual_keywords: List[str], project_name: str) -> dict | bool:
+    def execute(self, step_by_step_plan: str, contextual_keywords: List[str], project_name: str) -> Union[dict , bool]:
         contextual_keywords_str = ", ".join(map(lambda k: k.capitalize(), contextual_keywords))
         prompt = self.render(step_by_step_plan, contextual_keywords_str)
         
