@@ -3,7 +3,6 @@
   import { API_BASE_URL, socket } from "$lib/api";
   
   socket.on('screenshot', function(msg) {
-    console.log("screenshot: ", msg);
     const data = msg['data'];
     const img = document.querySelector('.browser-img');
     img.src = `data:image/png;base64,${data}`;
@@ -32,6 +31,7 @@
       <img
         class="browser-img"
         alt="Browser snapshot"
+        src={API_BASE_URL + "/api/get-browser-snapshot?snapshot_path=" + $agentState?.browser_session.screenshot}
       />
     {:else}
       <div class="text-gray-400 text-center mt-5"><strong>💡 TIP:</strong> You can include a Git URL in your prompt to clone a repo!</div>

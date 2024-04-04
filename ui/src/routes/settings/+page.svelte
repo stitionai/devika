@@ -60,7 +60,6 @@
                   name={key}
                   class="p-2 border-2 w-1/2 rounded-lg {editMode ? '' : 'bg-gray-100 text-gray-500'}"
                   readonly={!editMode}
-                  on:change={settings["API_KEYS"][key] = $event.target.value}
                 />
               </div>
             {/each}
@@ -81,7 +80,6 @@
                     name={key}
                     class="p-2 w-1/2 border-2 rounded-lg {editMode ? '' : 'bg-gray-100 text-gray-500'}"
                     readonly={!editMode}
-                    on:change={settings["API_ENDPOINTS"][key] = $event.target.value}
                   />
                 </div>
               {/each}
@@ -101,7 +99,6 @@
                     class="p-2 border-2 rounded-lg {editMode ? '' : 'bg-gray-100 text-gray-500'}"
                     readonly={!editMode}
                     placeholder="true/false"
-                    on:change={settings["LOGGING"][key] = $event.target.value}
                   />
                 </div>
               {/each}
