@@ -68,36 +68,6 @@ Devika's system architecture consists of the following key components:
 
 Read [**ARCHITECTURE.md**](https://github.com/stitionai/devika/blob/main/ARCHITECTURE.md) for the detailed documentation.
 
-## Quick Start
-
-The easiest way to run the project locally:
-
-1. Install `uv` - Python Package manager (https://github.com/astral-sh/uv)
-2. Install `bun` - JavaScript runtime (https://bun.sh/docs/installation)
-3. Install and setup `Ollama` (https://ollama.com/) (if you don't want to use the local models then you can skip this step)
-
-For ollama you need to install the [models](https://ollama.com/models)<br>
-For API models, configure the API keys via setting page in UI. <br><br>
-
-Then execute the following set of command:
-
-```
-ollama serve
-git clone https://github.com/stitionai/devika.git
-cd devika/
-uv venv
-source .venv/bin/activate
-uv pip install -r requirements.txt
-playwright install --with-deps
-cd ui/
-bun install
-bun run dev
-cd ..
-python3 devika.py
-```
-
-Docker images will be released soon. :raised_hands:
-
 ## Installation
 Devika requires the following things as dependencies:
 - Ollama (follow the instructions here to install it: [https://ollama.com/](https://ollama.com/))
@@ -136,18 +106,7 @@ To install Devika, follow these steps:
    ```
 8. Access the Devika web interface by opening a browser and navigating to `http://127.0.0.1:3000`.
 
-## Getting Started
-
-To start using Devika, follow these steps:
-
-1. Open the Devika web interface in your browser.
-2. Create a new project by clicking on the "New Project" button and providing a name for your project.
-3. Select the desired programming language and model configuration for your project.
-4. In the chat interface, provide a high-level objective or task description for Devika to work on.
-5. Devika will process your request, break it down into steps, and start working on the task.
-6. Monitor Devika's progress, view generated code, and provide additional guidance or feedback as needed.
-7. Once Devika completes the task, review the generated code and project files.
-8. Iterate and refine the project as desired by providing further instructions or modifications.
+Docker images will be released soon. :raised_hands:
 
 ## Configuration
 
@@ -180,6 +139,19 @@ Make sure to keep your API keys secure and do not share them publicly.
 ### Configuring web search method
 
 Devika currently supports Bing, Google, and DuckDuckGo for web searches. You can configure the web search method via UI.
+
+## Getting Started
+
+To start using Devika, follow these steps:
+
+1. Open the Devika web interface in your browser.
+2. Create a new project by clicking on the "New Project" button and providing a name for your project.
+3. Select the desired programming language and model configuration for your project.
+4. In the chat interface, provide a high-level objective or task description for Devika to work on.
+5. Devika will process your request, break it down into steps, and start working on the task.
+6. Monitor Devika's progress, view generated code, and provide additional guidance or feedback as needed.
+7. Once Devika completes the task, review the generated code and project files.
+8. Iterate and refine the project as desired by providing further instructions or modifications.
 
 ## Under The Hood
 
