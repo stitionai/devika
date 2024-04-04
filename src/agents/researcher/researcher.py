@@ -1,6 +1,6 @@
 import json
 from typing import List
-
+from typing import Union
 from jinja2 import Environment, BaseLoader
 
 from src.llm import LLM
@@ -22,7 +22,7 @@ class Researcher:
             contextual_keywords=contextual_keywords
         )
 
-    def validate_response(self, response: str) -> dict | bool:
+    def validate_response(self, response: str) -> Union[dict , bool]:
         response = response.strip().replace("```json", "```")
 
         if response.startswith("```") and response.endswith("```"):
