@@ -174,8 +174,13 @@ when you first time run Devika, it will create a `config.toml` file for you in t
    - `MISTRAL`: Your Mistral API key for accessing Mistral models.
    - `GROQ`: Your Groq API key for accessing Groq models.
    - `NETLIFY`: Your Netlify API key for deploying and managing web projects.
-   
+
 Make sure to keep your API keys secure and do not share them publicly.
+   
+- API_ENDPOINTS
+   - `BING`: URL for bing serarch API.
+   - `OLLAMA`: The URL for your ollama server. Default is "http://127.0.0.1:11434" when running ollama on the same server. 
+   - `OPENAI`: Set the OpenAI base URL - use that to route requests to *any* LLM service that supprots OpenAI's API (LM Studio, ollama, etc.) 
 
 ### Configuring web search method
 
