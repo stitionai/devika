@@ -39,6 +39,7 @@ class Agent:
             raise ValueError("base_model is required")
 
         self.logger = Logger()
+        self.browser = browser 
 
         """
         Accumulate contextual keywords from chained prompts of all preparation agents
