@@ -1,8 +1,7 @@
 import json
 from typing import List
-
 from jinja2 import Environment, BaseLoader
-
+from typing import Union
 from src.llm import LLM
 from src.browser.search import BingSearch
 
@@ -22,7 +21,7 @@ class Researcher:
             contextual_keywords=contextual_keywords
         )
 
-    def validate_response(self, response: str) -> dict | bool:
+    def validate_response(self, response: str) -> Union[dict , bool]:
         response = response.strip().replace("```json", "```")
 
         if response.startswith("```") and response.endswith("```"):
@@ -42,7 +41,7 @@ class Researcher:
                 "ask_user": response["ask_user"]
             }
 
-    def execute(self, step_by_step_plan: str, contextual_keywords: List[str], project_name: str) -> dict | bool:
+    def execute(self, step_by_step_plan: str, contextual_keywords: List[str], project_name: str) -> Union[dict , bool]:
         contextual_keywords_str = ", ".join(map(lambda k: k.capitalize(), contextual_keywords))
         prompt = self.render(step_by_step_plan, contextual_keywords_str)
         
