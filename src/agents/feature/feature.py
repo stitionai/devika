@@ -10,6 +10,7 @@ from src.state import AgentState
 
 PROMPT = open("src/agents/feature/prompt.jinja2", "r").read().strip()
 
+
 class Feature:
     def __init__(self, base_model: str):
         config = Config()
@@ -84,22 +85,22 @@ class Feature:
 
     def emulate_code_writing(self, code_set: list, project_name: str):
         for file in code_set:
-            file = file["file"]
+            filename = file["file"]
             code = file["code"]
 
             new_state = AgentState().new_state()
             new_state["internal_monologue"] = "Writing code..."
-            new_state["terminal_session"]["title"] = f"Editing {file}"
-            new_state["terminal_session"]["command"] = f"vim {file}"
+            new_state["terminal_session"]["title"] = f"Editing {filename}"
+            new_state["terminal_session"]["command"] = f"vim {filename}"
             new_state["terminal_session"]["output"] = code
             AgentState().add_to_current_state(project_name, new_state)
             time.sleep(1)
 
     def execute(
         self,
-        conversation: str,
+        conversation: list,
         code_markdown: str,
-        system_os: dict,
+        system_os: str,
         project_name: str
     ) -> str:
         prompt = self.render(conversation, code_markdown, system_os)
