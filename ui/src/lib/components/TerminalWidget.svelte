@@ -20,10 +20,10 @@
       convertEol: true,
       rows: 1,
       theme: {
-        background: "#000000",
-        foreground: "#ffffff",
-        innerText: "#ffffff",
-        cursor: "#ffffff55",
+        background: "#111315",
+        foreground: "#9CA3AB",
+        innerText: "#000000",
+        cursor: "#000000",
       },
     });
     fitAddon = new xtermAddonFit.FitAddon();
@@ -69,18 +69,18 @@
   }
 </script>
 
-<div class="flex flex-col rounded-3xl h-1/2 overflow-y-auto border-tertiary border-solid border-4">
-  <div class="p-2 py-3 flex items-center border-b bg-primary">
-    <div class="flex space-x-2 ml-2 mr-4">
-      <div class="w-3 h-3 bg-secondary rounded-full"></div>
-      <div class="w-3 h-3 bg-secondary rounded-full"></div>
-      <div class="w-3 h-3 bg-secondary rounded-full"></div>
+<div class="flex flex-col border-[4px] overflow-hidden rounded-3xl h-1/2 border-window-outline bg-terminal-background">
+  <div class="flex items-center p-2 py-3 border-b">
+    <div class="flex ml-2 mr-4 space-x-2">
+      <div class="w-3 h-3 rounded-full bg-secondary"></div>
+      <div class="w-3 h-3 rounded-full bg-secondary"></div>
+      <div class="w-3 h-3 rounded-full bg-secondary"></div>
     </div>
     <span id="terminal-title" class="text-primary-foreground">Terminal</span>
   </div>
   <div
     id="terminal-content"
-    class="h-full w-full rounded-bl-lg bg-primary"
+    class="w-full h-full rounded-bl-lg bg-primary"
     bind:this={terminalElement}
   ></div>
 </div>

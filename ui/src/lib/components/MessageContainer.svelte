@@ -16,26 +16,26 @@
 
 <div
   id="message-container"
-  class="flex flex-col flex-1 gap-2 overflow-y-auto border-2 rounded-lg px-2 py-4"
+  class="flex flex-col flex-1 gap-2 pt-2 pb-4 overflow-y-auto rounded-lg"
   bind:this={messageContainer}
 >
   {#if $messages !== null}
-  <div class="flex flex-col px-2 divide-y-2">
+  <div class="flex flex-col divide-y-2">
     {#each $messages as message}
-      <div class="flex items-start px-2 py-4 gap-2">
+      <div class="flex items-start gap-2 px-2 py-4">
         {#if message.from_devika}
           <img
-            src="/assets/devika-avatar.png"
+            src="/assets/devika-avatar.svg"
             alt="Devika's Avatar"
-            class="avatar rounded-full flex-shrink-0"
-            style="width: 40px; height: 40px;"
+            class="flex-shrink-0 rounded-full avatar"
+            style="width: 28px; height: 28px;"
           />
         {:else}
           <img
-            src="/assets/user-avatar.png"
+            src="/assets/user-avatar.svg"
             alt="User's Avatar"
-            class="avatar rounded-full flex-shrink-0"
-            style="width: 40px; height: 40px;"
+            class="flex-shrink-0 rounded-full avatar"
+            style="width: 28px; height: 28px;"
           />
         {/if}
         <div class="flex flex-col w-full">
@@ -44,12 +44,12 @@
             <span class="timestamp">{new Date(message.timestamp).toLocaleTimeString()}</span>
           </p>
           {#if message.from_devika && message.message.startsWith("{")}
-            <div class="flex flex-col gap-5 w-full" contenteditable="false">
+            <div class="flex flex-col w-full gap-5" contenteditable="false">
               {@html `<strong>Here's my step-by-step plan:</strong>`}
               <div class="flex flex-col gap-3">
               {#if JSON.parse(message.message)}
                 {#each Object.entries(JSON.parse(message.message)) as [step, description]}
-                  <div class="flex gap-2 items-center">
+                  <div class="flex items-center gap-2">
                     <input type="checkbox" id="step-{step}" disabled />
                     <label for="step-{step}"><strong>Step {step}</strong>: {description}</label>
                   </div>

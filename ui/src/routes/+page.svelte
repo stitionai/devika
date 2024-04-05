@@ -52,7 +52,7 @@
   <div class="flex space-x-4 h-full overflow-y-auto">
     <div class="flex flex-col gap-2 w-1/2">
       <MessageContainer />
-      <InternalMonologue />
+      <!-- <InternalMonologue /> -->
       <MessageInput />
     </div>
 
