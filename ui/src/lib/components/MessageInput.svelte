@@ -6,7 +6,6 @@
 
   if ($agentState !== null) {
     isAgentActive = $agentState.agent_is_active;
-    console.log("Agent is active", isAgentActive);
   }
 
   let messageInput = "";
@@ -26,7 +25,6 @@
 
     if (messageInput.trim() !== "" && !isAgentActive) {
       if ($messages.length === 0) {
-        console.log("Executing agent ... ", messageInput);
         socket.emit("user-message", { 
           action: "execute_agent",
           message: messageInput,
@@ -35,8 +33,6 @@
           search_engine: serachEngine
         });
       } else {
-        console.log("Sending message", messageInput);
-
         socket.emit("user-message", { 
           action: "continue",
           message: messageInput,

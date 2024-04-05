@@ -86,7 +86,7 @@ def handle_message(data):
         new_message = manager.new_message()
         new_message['message'] = message
         new_message['from_devika'] = False
-        manager.add_message_to_project(project_name, new_message)
+        manager.add_message_from_user(project_name, new_message['message'])
 
         if AgentState.is_agent_completed(project_name):
             thread = Thread(target=lambda: agent.subsequent_execute(message, project_name))
