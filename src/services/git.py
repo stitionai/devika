@@ -27,9 +27,9 @@ class Git:
 
     def validate_response(self, response: str):
         response = response.strip().replace("```json", "```")
-        response = response.split("```")[1].split("```")[0]
- 
+        
         try:
+            response = response.split("```")[1].split("```")[0]
             response = json.loads(response)
         except Exception as _:
             return False
