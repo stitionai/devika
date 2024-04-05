@@ -31,18 +31,15 @@
     socket.on('server-message', function(data) {
       console.log("server-message: ", data);
       messages.update((msgs) => [...msgs, data['messages']]);
-      console.log("$message-store: ",$messages);
     });
 
     socket.on('agent-state', function(state) {
       const lastState = state[state.length - 1];
       agentState.set(lastState);
       console.log("server-state: ", lastState);
-      console.log("$agent-state: ", $agentState);
       });
     
     socket.on('tokens', function(tokens) {
-      console.log("tokens: ", tokens);
       tokenUsage.set(tokens["token_usage"]);
     });
 

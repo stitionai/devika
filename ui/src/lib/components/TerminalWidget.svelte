@@ -35,8 +35,6 @@
 
     agentState.subscribe((state) => {
       if (state && state.terminal_session) {
-        console.log("Terminal state: ", state.terminal_session);
-
         let command = state.terminal_session.command || 'echo "Waiting..."';
         let output = state.terminal_session.output || "Waiting...";
         let title = state.terminal_session.title || "Terminal";
@@ -47,7 +45,6 @@
           output !== previousState.output ||
           title !== previousState.title
         ) {
-          console.log("Command: ", command);
           addCommandAndOutput(command, output, title);
 
           // Update the previous state

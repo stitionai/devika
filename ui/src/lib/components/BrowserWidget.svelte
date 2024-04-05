@@ -1,6 +1,13 @@
 <script>
   import { agentState } from "$lib/store";
-  import { API_BASE_URL } from "$lib/api";
+  import { API_BASE_URL, socket } from "$lib/api";
+  
+  socket.on('screenshot', function(msg) {
+    const data = msg['data'];
+    const img = document.querySelector('.browser-img');
+    img.src = `data:image/png;base64,${data}`;
+  });
+
 </script>
 
 <div class="flex flex-col border-2 rounded-lg h-1/2 overflow-y-auto">
@@ -23,8 +30,8 @@
     {#if $agentState?.browser_session.screenshot}
       <img
         class="browser-img"
-        src={API_BASE_URL + "/api/get-browser-snapshot?snapshot_path=" + $agentState?.browser_session.screenshot}
         alt="Browser snapshot"
+        src={API_BASE_URL + "/api/get-browser-snapshot?snapshot_path=" + $agentState?.browser_session.screenshot}
       />
     {:else}
       <div class="text-gray-400 text-center mt-5"><strong>💡 TIP:</strong> You can include a Git URL in your prompt to clone a repo!</div>
