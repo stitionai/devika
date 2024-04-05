@@ -1,5 +1,6 @@
 <script>
-	import Seperator from './ui/Seperator.svelte';
+	import { agentState } from "$lib/store";
+	import Seperator from "./ui/Seperator.svelte";
 </script>
 
 <div class="px-2">
@@ -7,19 +8,35 @@
 		class="border-t flex items-center justify-between p-1.5 text-[13px] border-border"
 	>
 		<!-- right -->
-		<div>
+		<div class="flex">
 			<div class="relative group px-1.5 py-0.5 hover:bg-secondary rounded-md">
 				<p>
-					Status:
-					<span class="text-white"> setting up API server </span>
+					Monologue:
+					<span class="text-white">Hover me</span>
 				</p>
 
-                <div class="absolute hidden group-hover:block -left-1 text-[13px] w-[400px] bg-monologue-background bottom-8 duration-300 p-3 rounded-2xl space-y-2 outline outline-monologue-outline z-20">
-                    <p>Monologue:</p>
-                    <p class="text-white">Okay, let me break down this step-by-step plan into simple, easy-to-follow instructions for printing numbers in Python. I'll make sure to explain each step clearly and concisely.</p>
-                </div>
+				<div class="absolute hidden group-hover:block -left-1 text-[13px] w-[400px] bg-monologue-background bottom-8 duration-300 p-3 rounded-2xl space-y-2 outline outline-monologue-outline z-20">
+					<p>Monologue:</p>
+					<p class="text-white">
+						{$agentState?.internal_monologue || "😴"}
+					</p>
+				</div>
 			</div>
-
+			<Seperator height={24} />
+			<div class="relative px-1.5 py-0.5 rounded-md">
+				<p>
+					Agent status:
+					{#if $agentState !== null}
+						{#if $agentState.agent_is_active}
+							<span class="text-green-500">Active</span>
+						{:else}
+							<span class="text-orange-600">Inactive</span>
+						{/if}
+					{:else}
+						Deactive
+					{/if}
+				</p>
+			</div>
 		</div>
 
 		<!-- left -->
