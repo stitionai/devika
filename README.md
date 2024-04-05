@@ -174,6 +174,7 @@ when you first time run Devika, it will create a `config.toml` file for you in t
    - `MISTRAL`: Your Mistral API key for accessing Mistral models.
    - `GROQ`: Your Groq API key for accessing Groq models.
    - `NETLIFY`: Your Netlify API key for deploying and managing web projects.
+   - `OLLAMA` : Install on your local using ollama.com and run any codellama models
    
 Make sure to keep your API keys secure and do not share them publicly.
 
