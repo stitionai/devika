@@ -7,61 +7,58 @@
   import BrowserWidget from "$lib/components/BrowserWidget.svelte";
   import TerminalWidget from "$lib/components/TerminalWidget.svelte";
   import {
-    fetchProjectList,
-    fetchModelList,
+    fetchInitialData,
     fetchAgentState,
-    fetchMessages,
     checkInternetStatus,
+    socket
   } from "$lib/api";
+  import { messages,tokenUsage, agentState } from "$lib/store";
 
   onMount(() => {
-    localStorage.clear();
+    // localStorage.clear();
+    const load = async () => {
+      await fetchInitialData();
 
-    const intervalId = setInterval(async () => {
-      await fetchProjectList();
-      await fetchModelList();
       await fetchAgentState();
-      await fetchMessages();
+      // await fetchMessages();
       await checkInternetStatus();
-    }, 1000);
+    };
+    load();
 
-    return () => clearInterval(intervalId);
-  });
+    socket.emit('socket_connect', {data: 'frontend connected!'});
+    socket.on('socket_response', function(msg) {console.log(msg)});
+
+    socket.on('server-message', function(data) {
+      console.log("server-message: ", data);
+      messages.update((msgs) => [...msgs, data['messages']]);
+    });
+
+    socket.on('agent-state', function(state) {
+      const lastState = state[state.length - 1];
+      agentState.set(lastState);
+      console.log("server-state: ", lastState);
+      });
+    
+    socket.on('tokens', function(tokens) {
+      tokenUsage.set(tokens["token_usage"]);
+    });
+
+});
 </script>
 
-<div class="flex flex-col p-4 h-full">
+<div class="flex h-full flex-col flex-1 gap-4 p-4">
   <ControlPanel />
 
-  <div class="flex h-full space-x-4">
-    <div class="flex flex-col w-1/2">
+  <div class="flex space-x-4 h-full overflow-y-auto">
+    <div class="flex flex-col gap-2 w-1/2">
       <MessageContainer />
       <InternalMonologue />
       <MessageInput />
     </div>
 
-    <div class="flex flex-col w-1/2 space-y-4">
+    <div class="flex flex-col gap-4 w-1/2">
       <BrowserWidget />
       <TerminalWidget />
     </div>
   </div>
 </div>
-
-<style>
-  :global(::-webkit-scrollbar) {
-    width: 10px;
-  }
-
-  :global(::-webkit-scrollbar-track) {
-    background: #2d3748;
-    border-radius: 10px;
-  }
-
-  :global(::-webkit-scrollbar-thumb) {
-    background: #4a5568;
-    border-radius: 10px;
-  }
-
-  :global(::-webkit-scrollbar-thumb:hover) {
-    background: #6b7280;
-  }
-</style>

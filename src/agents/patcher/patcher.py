@@ -87,9 +87,9 @@ class Patcher:
         return f"~~~\n{response}\n~~~"
 
     def emulate_code_writing(self, code_set: list, project_name: str):
-        for file in code_set:
-            file = file["file"]
-            code = file["code"]
+        for current_file in code_set:
+            file = current_file["file"]
+            code = current_file["code"]
 
             new_state = AgentState().new_state()
             new_state["internal_monologue"] = "Writing code..."
