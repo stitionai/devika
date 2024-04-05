@@ -6,7 +6,7 @@
 
 <main>
   <div class="h-dvh w-full flex flex-col">
-    <div class="flex w-full h-full">
+    <div class="flex w-full" style="height: calc(100vh - 37px)">
       <Sidebar />
       <slot />
     </div>

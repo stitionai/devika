@@ -2,12 +2,15 @@
 	export let iconSVG = '';
 	export let href = '';
 	export let tooltip = '';
+	export let isSelected = false;
 </script>
 
 <a {href}>
 	<div class="nav-button relative">
 		<button
-			class="hover:text-gray-500 text-tertiary flex justify-center w-full hover:transition-colors"
+			class={`text-tertiary flex justify-center w-full hover:transition-colors ${
+				isSelected ? 'text-white' : 'text-tertiary'
+			}`}
 		>
 			{@html iconSVG}
 		</button>

@@ -44,7 +44,9 @@
 
 <Sheet.Root>
     <Sheet.Trigger asChild let:builder>
-        <Button builders={[builder]} variant="outline">Open</Button>
+        <Button builders={[builder]} variant="outline">
+            <svg width=20 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="rgba(173,184,194,1)"><path d="M3 4H21V6H3V4ZM3 11H21V13H3V11ZM3 18H21V20H3V18Z"></path></svg>
+        </Button>
     </Sheet.Trigger>
     <Sheet.Content side="right" class="p-5">
         <Sheet.Header class="p-2">
@@ -54,7 +56,7 @@
                 <Separator />
             </Sheet.Description>
         </Sheet.Header>
-        <Select.Root>
+        <!-- <Select.Root>
             <Select.Trigger class="w-[180px]">
               <Select.Value placeholder="Select an engine" />
             </Select.Trigger>
@@ -69,7 +71,7 @@
               </Select.Group>
             </Select.Content>
             <Select.Input name="selected engine" />
-          </Select.Root>
+          </Select.Root> -->
         <div class="grid gap-4 py-4 px-2">
             <div class="flex flex-col gap-4 mb-2">
                 <div class="flex justify-between items-center mb-3">
