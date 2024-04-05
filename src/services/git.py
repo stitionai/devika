@@ -27,9 +27,7 @@ class Git:
 
     def validate_response(self, response: str):
         response = response.strip().replace("```json", "```")
-        
-        if response.startswith("```") and response.endswith("```"):
-            response = response[3:-3].strip()
+        response = response.split("```")[1].split("```")[0]
  
         try:
             response = json.loads(response)
@@ -57,6 +55,7 @@ class Git:
 
         prompt = self.render(conversation, code_markdown, code_diff)
         response = self.llm.inference(prompt, project_name)
+        print(response)
 
         valid_response = self.validate_response(response)
 
