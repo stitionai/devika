@@ -4,6 +4,7 @@
   import { createProject, fetchMessages, fetchInitialData, deleteProject, fetchAgentState} from "$lib/api";
   import { get } from "svelte/store";
   import Seperator from "./ui/Seperator.svelte";
+    import DrawerWidget from "./DrawerWidget.svelte";
 
   let selectedProject;
   let selectedModel;
@@ -262,6 +263,9 @@
           </div>
         {/if}
       </div>
+    </div>
+    <div class="relative inline-block">
+      <DrawerWidget />
     </div>
   </div>
 </div>
