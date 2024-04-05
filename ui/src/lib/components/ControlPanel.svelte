@@ -5,6 +5,7 @@
   import { get } from "svelte/store";
   import Seperator from "./ui/Seperator.svelte";
     import DrawerWidget from "./DrawerWidget.svelte";
+    import { Separator } from "$lib/components/ui/separator";
 
   let selectedProject;
   let selectedModel;
@@ -264,6 +265,7 @@
         {/if}
       </div>
     </div>
+    <Separator class='h-8' orientation="vertical"  />
     <div class="relative inline-block">
       <DrawerWidget />
     </div>

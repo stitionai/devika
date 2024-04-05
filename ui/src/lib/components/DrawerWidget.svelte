@@ -60,11 +60,10 @@
             <Select.Trigger class="w-[180px]">
               <Select.Value placeholder="Select an engine" />
             </Select.Trigger>
-            <Select.Content>
+            <Select.Content class="p-0">
               <Select.Group>
-                <Select.Label>Search Engine</Select.Label>
                 {#each engines as engine}
-                  <Select.Item value={engine.value} label={engine.label} on:click={() => selectSearchEngine(engine.value)}
+                  <Select.Item class="outline-none border-none w-[280px] px-3 py-3 text-sm font-semibold border-2 text-tertiary-foreground bg-secondary" value={engine.value} label={engine.label} on:click={() => selectSearchEngine(engine.value)}
                     >{engine.label}</Select.Item
                   >
                 {/each}
