@@ -65,7 +65,14 @@ class Git:
             return self.generate_commit_message(project_name, conversation, code_markdown)
 
         return valid_response
-        
+
+    def reset_to_previous_commit(self):
+        try:
+            self.repo.git.reset("--hard", "HEAD^")
+            return True
+        except GitPython.exc.GitCommandError as e:
+            print(f"Error resetting to previous commit: {e}")
+            return False
 
     def clone(self, url, path):
         return GitPython.Repo.clone_from(url, path)

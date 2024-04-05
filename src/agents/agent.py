@@ -273,9 +273,16 @@ class Agent:
             project_path = self.project_manager.get_project_path(project_name)
             if self.git == None:
                 self.git = Git(project_path, self.base_model)
-                
+
             commit_message = self.git.generate_commit_message(project_name, conversation,code_markdown)
             self.git.commit(commit_message)
+
+        elif action == "reset_code":
+            project_path = self.project_manager.get_project_path(project_name)
+            if self.git == None:
+                self.git = Git(project_path, self.base_model)
+                
+            self.git.reset_to_previous_commit()
 
         self.agent_state.set_agent_active(project_name, False)
         self.agent_state.set_agent_completed(project_name, True)
