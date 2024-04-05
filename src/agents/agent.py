@@ -21,7 +21,7 @@ from src.browser.search import BingSearch, GoogleSearch, DuckDuckGoSearch
 from src.browser import Browser
 from src.browser import start_interaction
 from src.filesystem import ReadCode
-from src.services import Netlify
+from src.services import Netlify, Git
 from src.documenter.pdf import PDF
 
 import json
@@ -261,6 +261,15 @@ class Agent:
             self.browser.screenshot(project_name)
 
             self.project_manager.add_message_from_devika(project_name, response)
+
+        elif action == "repo_init":
+            project_path = self.project_manager.get_project_path(project_name)
+            git = Git(project_path)
+
+        elif action == "repo_commit":
+            project_path = self.project_manager.get_project_path(project_name)
+            git = Git(project_path)
+            git.commit(conversation)
 
         self.agent_state.set_agent_active(project_name, False)
         self.agent_state.set_agent_completed(project_name, True)
