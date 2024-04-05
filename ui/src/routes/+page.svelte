@@ -2,7 +2,6 @@
   import { onMount } from "svelte";
   import ControlPanel from "$lib/components/ControlPanel.svelte";
   import MessageContainer from "$lib/components/MessageContainer.svelte";
-  import InternalMonologue from "$lib/components/InternalMonologue.svelte";
   import MessageInput from "$lib/components/MessageInput.svelte";
   import BrowserWidget from "$lib/components/BrowserWidget.svelte";
   import TerminalWidget from "$lib/components/TerminalWidget.svelte";
@@ -52,7 +51,6 @@
   <div class="flex space-x-4 h-full overflow-y-auto">
     <div class="flex flex-col gap-2 w-1/2">
       <MessageContainer />
-      <!-- <InternalMonologue /> -->
       <MessageInput />
     </div>
 

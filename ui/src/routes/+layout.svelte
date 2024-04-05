@@ -10,8 +10,6 @@
       <Sidebar />
       <slot />
     </div>
-  
     <FooterToolbar />
   </div>
-  
 </main>

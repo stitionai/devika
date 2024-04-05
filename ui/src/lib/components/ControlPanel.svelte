@@ -25,7 +25,6 @@
   selectedModel = checkListAndSetItem( modelList, "selectedModel", "Select Model");
   selectedSearchEngine = checkListAndSetItem( searchEngineList, "selectedSearchEngine", "Select Search Engine");
 
-
   function selectProject(project) {
     selectedProject = project;
     localStorage.setItem("selectedProject", project);

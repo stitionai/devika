@@ -4,39 +4,6 @@
     import { Slider } from "$lib/components/ui/slider";
     import { Label } from "$lib/components/ui/label";
     import { Separator } from "$lib/components/ui/separator";
-    import * as Select from "$lib/components/ui/select/index.js";
-
-    import { searchEngineList } from "$lib/store";
-    import { get } from "svelte/store";
-
-    const engines = [
-        { value: "google", label: "Google" },
-        { value: "bing", label: "Bing" },
-        { value: "duckduckgo", label: "DuckDuckGo" },
-    ];
-
-    let selectedSearchEngine;
-
-    const checkListAndSetItem = (list, itemKey, defaultItem) => {
-        if (get(list) && get(list).length > 0) {
-            const item = localStorage.getItem(itemKey);
-            return item ? item : defaultItem;
-        } else {
-            localStorage.setItem(itemKey, "");
-            return defaultItem;
-        }
-    };
-
-    selectedSearchEngine = checkListAndSetItem(
-        searchEngineList,
-        "selectedSearchEngine",
-        "Select Search Engine",
-    );
-
-    function selectSearchEngine(searchEngine) {
-        selectedSearchEngine = searchEngine;
-        localStorage.setItem("selectedSearchEngine", searchEngine);
-    }
 </script>
 
 <Sheet.Root>
@@ -60,21 +27,6 @@
                 <Separator />
             </Sheet.Description>
         </Sheet.Header>
-        <!-- <Select.Root>
-            <Select.Trigger class="w-[180px]">
-              <Select.Value placeholder="Select an engine" />
-            </Select.Trigger>
-            <Select.Content class="p-0">
-              <Select.Group>
-                {#each engines as engine}
-                  <Select.Item class="outline-none border-none w-[280px] px-3 py-3 text-sm font-semibold border-2 text-tertiary-foreground bg-secondary" value={engine.value} label={engine.label} on:click={() => selectSearchEngine(engine.value)}
-                    >{engine.label}</Select.Item
-                  >
-                {/each}
-              </Select.Group>
-            </Select.Content>
-            <Select.Input name="selected engine" />
-          </Select.Root> -->
         <div class="grid gap-4 py-4 px-2">
             <div class="flex flex-col gap-4 mb-2">
                 <div class="flex justify-between items-center mb-3">
