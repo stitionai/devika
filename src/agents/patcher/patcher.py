@@ -73,7 +73,7 @@ class Patcher:
             file_path_dir = os.path.dirname(file_path)
             os.makedirs(file_path_dir, exist_ok=True)
     
-            with open(file_path, "w") as f:
+            with open(file_path, "w", encoding="utf-8") as f:
                 f.write(file["code"])
     
         return file_path_dir
