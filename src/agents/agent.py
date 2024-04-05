@@ -48,6 +48,7 @@ class Agent:
         """
         Agents
         """
+        self.base_model = base_model
         self.planner = Planner(base_model=base_model)
         self.researcher = Researcher(base_model=base_model)
         self.formatter = Formatter(base_model=base_model)
@@ -60,6 +61,7 @@ class Agent:
         self.patcher = Patcher(base_model=base_model)
         self.reporter = Reporter(base_model=base_model)
         self.decision = Decision(base_model=base_model)
+        self.git = None
 
         self.project_manager = ProjectManager()
         self.agent_state = AgentState()
@@ -264,12 +266,16 @@ class Agent:
 
         elif action == "repo_init":
             project_path = self.project_manager.get_project_path(project_name)
-            git = Git(project_path)
+            if self.git == None:
+                self.git = Git(project_path, self.base_model)
 
         elif action == "repo_commit":
             project_path = self.project_manager.get_project_path(project_name)
-            git = Git(project_path)
-            git.commit(conversation)
+            if self.git == None:
+                self.git = Git(project_path, self.base_model)
+                
+            commit_message = self.git.generate_commit_message(project_name, conversation,code_markdown)
+            self.git.commit(commit_message)
 
         self.agent_state.set_agent_active(project_name, False)
         self.agent_state.set_agent_completed(project_name, True)
