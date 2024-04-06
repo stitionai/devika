@@ -1,8 +1,8 @@
 <script>
-	export let iconSVG = '';
 	export let href = '';
 	export let tooltip = '';
 	export let isSelected = false;
+	export let icon; 
 </script>
 
 <a {href}>
@@ -12,7 +12,7 @@
 				isSelected ? 'text-white' : 'text-tertiary'
 			}`}
 		>
-			{@html iconSVG}
+			<svelte:component this={icon} />
 		</button>
 		<span class="tooltip">{tooltip}</span>
 	</div>

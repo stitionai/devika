@@ -1,6 +1,7 @@
 <script>
   import { API_BASE_URL,  socket } from "$lib/api";
   import { agentState, messages } from "$lib/store";
+    import { CornerDownLeft } from "lucide-svelte";
 
   let isAgentActive = false;
 
@@ -87,9 +88,7 @@
     disabled={isAgentActive}
     class="absolute text-secondary bg-primary p-2 right-4 top-4 rounded-full"
   >
-    <svg width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M3.18746 9.24724L6.68485 12.7446M3.18746 9.24724L6.68485 5.74985M3.18746 9.24724L10.1822 9.24724C11.3483 9.24724 13.6796 8.54776 13.6796 5.74985" stroke="currentColor" stroke-width="1.86528" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>      
+  <CornerDownLeft />    
   </button>
 
 </div>
