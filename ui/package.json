@@ -16,12 +16,14 @@
     "postcss-load-config": "^5.0.2",
     "svelte": "^4.2.7",
     "tailwindcss": "^3.3.6",
-    "vite": "^5.0.3"
+    "vite": "^5.0.3",
+    "vite-plugin-wasm": "^3.3.0"
   },
   "type": "module",
   "dependencies": {
-    "socket.io-client": "^4.7.5",
     "clsx": "^2.1.0",
+    "socket.io-client": "^4.7.5",
+    "tiktoken": "^1.0.13",
     "xterm": "^5.3.0",
     "xterm-addon-fit": "^0.8.0"
   }
