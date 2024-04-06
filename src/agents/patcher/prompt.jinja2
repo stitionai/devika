@@ -30,6 +30,12 @@ $ {{ commands[-1] }}
 
 System Operating System: {{ system_os }}
 
+Some context about the error:
+
+```
+{{ error_context }}
+```
+
 Read the encountered bug carefully and reason with the code to identify the problem. Think step-by-step.
 
 Rules:
@@ -70,3 +76,5 @@ This is an example.
 Any response other than this format will be rejected. You should not refuse to complete the task, you should try your absolute best and if there's any implementation detail that's impossible to complete, you should write a comment in the code explaining why it's impossible to complete. The refusal is only a last resort, it should never happen.
 
 Your response should start with "~~~" and end with "~~~" just like the example format provided. Never provide any explanation or context inside the response, only the filenames and the code in the format provided. Do not leave any "Note".
+
+Whenever providing the file paths, always make it relative to the base project folder. If the file is in the base project folder, just provide the filename. If the file is in a subfolder, provide the path to the file from the base project folder, i.e relative to the base project folder.

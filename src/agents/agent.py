@@ -55,7 +55,7 @@ class Agent:
         self.action = Action(base_model=base_model)
         self.internal_monologue = InternalMonologue(base_model=base_model)
         self.answer = Answer(base_model=base_model)
-        self.runner = Runner(base_model=base_model)
+        self.runner = Runner(base_model=base_model, search_engine=search_engine)
         self.feature = Feature(base_model=base_model)
         self.patcher = Patcher(base_model=base_model)
         self.reporter = Reporter(base_model=base_model)
@@ -151,7 +151,7 @@ class Agent:
                     project_name_space_url)
                 response = f"I have generated the PDF document. You can download it from here: {pdf_download_url}"
 
-                #asyncio.run(self.open_page(project_name, pdf_download_url))
+                asyncio.run(self.open_page(project_name, pdf_download_url))
 
                 self.project_manager.add_message_from_devika(project_name, response)
 
@@ -257,7 +257,8 @@ class Agent:
                 project_name_space_url)
             response = f"I have generated the PDF document. You can download it from here: {pdf_download_url}"
 
-            #asyncio.run(self.open_page(project_name, pdf_download_url))
+            self.browser.go_to(pdf_download_url)
+            self.browser.screenshot(project_name)
 
             self.project_manager.add_message_from_devika(project_name, response)
 

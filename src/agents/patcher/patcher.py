@@ -23,6 +23,7 @@ class Patcher:
         code_markdown: str,
         commands: list,
         error :str,
+        error_context: str,
         system_os: str
     ) -> str:
         env = Environment(loader=BaseLoader())
@@ -32,6 +33,7 @@ class Patcher:
             code_markdown=code_markdown,
             commands=commands,
             error=error,
+            error_context=error_context,
             system_os=system_os
         )
 
@@ -105,6 +107,7 @@ class Patcher:
         code_markdown: str,
         commands: list,
         error: str,
+        error_context: str,
         system_os: dict,
         project_name: str
     ) -> str:
@@ -113,6 +116,7 @@ class Patcher:
             code_markdown,
             commands,
             error,
+            error_context,
             system_os
         )
         response = self.llm.inference(prompt, project_name)
