@@ -1,6 +1,25 @@
 <script>
 	import { agentState } from "$lib/store";
+    import { onMount } from "svelte";
 	import Seperator from "./ui/Seperator.svelte";
+	import { toast } from "svelte-sonner";
+
+	let prevMonologue = null;
+
+	function handleMonologueChange(newValue) {
+		if (newValue) {
+			toast.success(newValue);
+		}
+	}
+
+	onMount(() => {
+		prevMonologue = $agentState?.internal_monologue;
+	});
+
+	$: if ($agentState?.internal_monologue !== prevMonologue) {
+		handleMonologueChange($agentState?.internal_monologue);
+		prevMonologue = $agentState?.internal_monologue;
+	}
 </script>
 
 <div class="px-2">
