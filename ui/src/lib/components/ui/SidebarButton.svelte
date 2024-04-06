@@ -9,7 +9,7 @@
 	<div class="nav-button relative">
 		<button
 			class={`text-tertiary flex justify-center w-full hover:transition-colors ${
-				isSelected ? 'text-white' : 'text-tertiary'
+				isSelected ? 'text-foreground' : 'text-tertiary'
 			}`}
 		>
 			<svelte:component this={icon} />

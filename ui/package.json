@@ -20,7 +20,7 @@
   },
   "type": "module",
   "dependencies": {
-    "bits-ui": "^0.21.1",
+    "bits-ui": "^0.21.2",
     "clsx": "^2.1.0",
     "lucide-svelte": "^0.364.0",
     "mode-watcher": "^0.3.0",

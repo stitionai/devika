@@ -101,7 +101,7 @@
   <div class="dropdown-menu relative inline-block">
     <button
       type="button"
-      class="inline-flex items-center justify-between w-full text-white h-10 gap-2 px-3 py-2 text-sm min-w-[200px] bg-secondary rounded-xl"
+      class="inline-flex items-center justify-between w-full text-foreground h-10 gap-2 px-3 py-2 text-sm min-w-[200px] bg-secondary rounded-xl"
       id="project-button"
       aria-expanded="true"
       aria-haspopup="true"
@@ -153,7 +153,7 @@
   >
     <div class="flex items-center space-x-2">
       <span>Internet:</span>
-      <p class="text-white">
+      <p class="text-foreground">
         {#if internet}        
         OK
         {:else}
@@ -167,13 +167,13 @@
 
     <div class="flex items-center space-x-2">
       <span>Token Usage:</span>
-      <span id="token-count" class="token-count-animation text-white">{$tokenUsage}</span>
+      <span id="token-count" class="token-count-animation text-foreground">{$tokenUsage}</span>
     </div>
     <div class="relative inline-block text-left">
       <div>
         <button
           type="button"
-          class="inline-flex items-center justify-between min-w-[200px] text-white w-fit gap-2 px-3 py-2 text-sm h-10 bg-secondary rounded-xl"
+          class="inline-flex items-center justify-between min-w-[200px] text-foreground w-fit gap-2 px-3 py-2 text-sm h-10 bg-secondary rounded-xl"
           id="search-engine-button"
           aria-expanded="true"
           aria-haspopup="true"
@@ -215,7 +215,7 @@
       <div>
         <button
           type="button"
-          class="inline-flex items-center text-white justify-between w-fit gap-x-1.5 min-w-[150px] px-3 py-2 text-sm h-10 bg-secondary rounded-xl"
+          class="inline-flex items-center text-foreground justify-between w-fit gap-x-1.5 min-w-[150px] px-3 py-2 text-sm h-10 bg-secondary rounded-xl"
           id="model-button"
           aria-expanded="true"
           aria-haspopup="true"

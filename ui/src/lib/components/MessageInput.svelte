@@ -71,7 +71,7 @@
 <div class="expandable-input relative">
   <textarea
     id="message-input"
-    class="w-full p-4 font-medium focus:text-white rounded-2xl outline-none h-28 pr-20 bg-secondary"
+    class="w-full p-4 font-medium focus:text-foreground rounded-2xl outline-none h-28 pr-20 bg-secondary"
     placeholder="Type your message..."
     bind:value={messageInput}
     on:input={calculateTokens}

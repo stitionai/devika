@@ -29,11 +29,11 @@
 			<div class="relative group px-1.5 py-0.5 hover:bg-secondary rounded-md">
 				<p>
 					Monologue:
-					<span class="text-white">Hover me</span>
+					<span class="text-foreground">Hover me</span>
 				</p>
 				<div class="absolute hidden group-hover:block -left-1 text-[13px] w-[400px] bg-monologue-background bottom-8 duration-300 p-3 rounded-2xl space-y-2 outline outline-monologue-outline z-20">
 					<p>Monologue:</p>
-					<p class="text-white">
+					<p class="text-foreground">
 						{$agentState?.internal_monologue || "😴"}
 					</p>
 				</div>
@@ -59,17 +59,17 @@
 		<div class="flex gap-5 items-center">
 			<p>
 				Temperature:
-				<span class="text-white"> 0.6 </span>
+				<span class="text-foreground"> 0.6 </span>
 			</p>
 			<Seperator height={14} />
 			<p>
 				Max Tokens:
-				<span class="text-white"> 2200 </span>
+				<span class="text-foreground"> 2200 </span>
 			</p>
 			<Seperator height={14} />
 			<p>
 				Top P:
-				<span class="text-white"> 0.4 </span>
+				<span class="text-foreground"> 0.4 </span>
 			</p>
 		</div>
 	</div>
