@@ -32,7 +32,7 @@ class Config:
         try:
             return self.config["API_ENDPOINTS"]["OLLAMA"]
         except: return None
-        
+
     def get_openai_api_endpoint(self):
         try:
             return self.config["API_ENDPOINTS"]["OPENAI"]

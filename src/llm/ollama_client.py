@@ -11,15 +11,13 @@ class Ollama:
     @staticmethod
     def list_models():
         try:
-            return client.list()["models"]
-        except httpx.ConnectError:
-            Logger().warning(
-                "Ollama server not running, please start the server to use models from Ollama."
-            )
-        except Exception as e:
-            Logger().error(f"Failed to list Ollama models: {e}")
-
-        return []
+            self.client = ollama.Client(Config().get_ollama_api_endpoint())
+            self.models = self.client.list()["models"]
+            log.info("Ollama available")
+        except:
+            self.client = None
+            log.warning("Ollama not available")
+            log.warning("run ollama server to use ollama models otherwise use other models")
 
     def inference(self, model_id: str, prompt: str) -> str:
         response = client.generate(model=model_id, prompt=prompt.strip())
