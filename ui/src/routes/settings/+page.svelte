@@ -2,13 +2,44 @@
   import { updateSettings, fetchSettings } from "$lib/api";
   import { onMount } from "svelte";
   import * as Tabs from "$lib/components/ui/tabs";
-    import Separator from "$lib/components/ui/separator/separator.svelte";
-    import Button from "$lib/components/ui/button/button.svelte";
-    import { toggleMode } from "mode-watcher";
+  import Separator from "$lib/components/ui/separator/separator.svelte";
+  import { setMode } from "mode-watcher";
+  import * as Select from "$lib/components/ui/select/index.js";
 
   let settings = {};
   let editMode = false;
   let original = {};
+
+  function getSelectedTheme() {
+    let theme = localStorage.getItem('mode-watcher-mode');
+    if (theme === "light") {
+      return { value: "light", label: "Light" };
+    } else if (theme === "dark") {
+      return { value: "dark", label: "Dark" };
+    } else if (theme === "system") {
+      return { value: "system", label: "System" };
+    } else {
+      return { value: "system", label: "System" };
+    }
+  }
+
+  function getSelectedResize() {
+    let resize = localStorage.getItem('resize');
+    if (resize === "enable") {
+      return { value: "enable", label: "Enable" };
+    } else {
+      return { value: "disable", label: "Disable" };
+    }
+  }
+
+  let selectedTheme = getSelectedTheme();
+  let selectedResize = getSelectedResize();
+
+  console.log(selectedResize);
+
+  function setResize(value) {
+    localStorage.setItem('resize', value);
+  }
 
   onMount(async () => {
     settings = await fetchSettings();
@@ -26,7 +57,6 @@
     };
     // make a copy of the original settings
     original = JSON.parse(JSON.stringify(settings));
-
   });
 
   const save = async () => {
@@ -49,19 +79,21 @@
 <div class="p-4 h-full w-full gap-8 flex flex-col overflow-y-auto">
   <h1 class="text-3xl">Settings</h1>
   <div class="flex flex-col w-full">
-    <Tabs.Root value="apikeys" class="w-[400px] flex flex-col justify-start ms-2">
+    <Tabs.Root
+      value="apikeys"
+      class="w-[400px] flex flex-col justify-start ms-2"
+    >
       <Tabs.List class="ps-0">
         <Tabs.Trigger value="apikeys">API Keys</Tabs.Trigger>
         <Tabs.Trigger value="endpoints">API Endpoints</Tabs.Trigger>
         <Tabs.Trigger value="logging">Logging</Tabs.Trigger>
-        <Tabs.Trigger value="theme">Theme</Tabs.Trigger>
+        <Tabs.Trigger value="appearance">Appearance</Tabs.Trigger>
       </Tabs.List>
       <Separator />
       <Tabs.Content value="apikeys">
         {#if settings["API_KEYS"]}
           <div class="flex gap-4 w-full">
             <div class="flex flex-col gap-4 w-full">
-              <!-- <h2 class="text-xl">API Keys</h2> -->
               <div class="flex flex-col gap-4">
                 {#each Object.entries(settings["API_KEYS"]) as [key, value]}
                   <div class="flex gap-1 items-center">
@@ -107,7 +139,6 @@
         {#if settings["API_KEYS"]}
           <div class="flex gap-4 w-full">
             <div class="flex flex-col gap-2">
-              <!-- <h2 class="text-xl">API Endpoints</h2> -->
               <div class="flex flex-col gap-4">
                 {#each Object.entries(settings["API_ENDPOINTS"]) as [key, value]}
                   <div class="flex gap-3 items-center">
@@ -152,7 +183,6 @@
       <Tabs.Content value="logging">
         {#if settings["API_KEYS"]}
           <div class="flex flex-col gap-2">
-            <!-- <h2 class="text-xl">Logging</h2> -->
             <div class="flex flex-col gap-4">
               {#each Object.entries(settings["LOGGING"]) as [key, value]}
                 <div class="flex gap-3 items-center">
@@ -194,10 +224,48 @@
           {/if}
         </div>
       </Tabs.Content>
-      <Tabs.Content value="theme">
-        <Button on:click={toggleMode} variant="outline">
-          toggle theme
-        </Button>
+      <Tabs.Content value="appearance">
+        <div class="flex w-full justify-between items-center my-2">
+          <div>
+            Select a theme
+          </div>
+          <div>
+            <Select.Root onSelectedChange={(v)=>{setMode(v.value)}}>
+              <Select.Trigger class="w-[180px]">
+                <Select.Value  placeholder={selectedTheme.label} />
+              </Select.Trigger>
+              <Select.Content>
+                <Select.Group>
+                  <Select.Label>Themes</Select.Label>
+                  <Select.Item value={"light"} label={"Light"}>Light</Select.Item>
+                  <Select.Item value={"dark"} label={"Dark"}>Dark</Select.Item>
+                  <Select.Item value={"system"} label={"System"}>System</Select.Item>
+                </Select.Group>
+              </Select.Content>
+              <Select.Input name="favoriteFruit" />
+            </Select.Root>
+          </div>
+        </div>
+        <div class="flex w-full justify-between items-center  my-2">
+          <div>
+            Enable tab resize
+          </div>
+          <div>
+            <Select.Root onSelectedChange={(v)=>{setResize(v.value)}}>
+              <Select.Trigger class="w-[180px]">
+                <Select.Value placeholder={selectedResize.label}/>
+              </Select.Trigger>
+              <Select.Content>
+                <Select.Group>
+                  <Select.Label>Resize</Select.Label>
+                  <Select.Item value={"enable"} label={"Enable"}>Enable</Select.Item>
+                  <Select.Item value={"disable"} label={"Disable"}>Disable</Select.Item>
+                </Select.Group>
+              </Select.Content>
+              <Select.Input name="favoriteFruit" />
+            </Select.Root>
+          </div>
+        </div>
       </Tabs.Content>
     </Tabs.Root>
   </div>

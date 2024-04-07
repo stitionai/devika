@@ -24,6 +24,7 @@ const config = {
                 'foreground-light': 'var(--foreground-light)',
                 'foreground-secondary': 'var(--foreground-secondary)',
                 'border': 'var(--border)',
+                'btn-active': 'var(--btn-active)',
                 'seperator': 'var(--seperator)',
                 'window-outline': 'var(--window-outline)',
                 'browser-window-dots': 'var(--browser-window-dots)',

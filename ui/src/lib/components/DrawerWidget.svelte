@@ -15,18 +15,15 @@
     </Sheet.Trigger>
     <Sheet.Content side="right" class="p-5">
         <Sheet.Header class="p-2">
-            <Sheet.Title>Modify Settings</Sheet.Title>
+            <Sheet.Title>Modify Settings (coming soon)</Sheet.Title>
             <Sheet.Description>
-                <!-- Make changes to your profile here. Click save when you're done. -->
                 <Separator />
             </Sheet.Description>
         </Sheet.Header>
         <div class="grid gap-4 py-4 px-2">
             <div class="flex flex-col gap-4 mb-2">
                 <div class="flex justify-between items-center mb-3">
-                    <Label for="temperature" class="font-bold"
-                        >Temperature</Label
-                    >
+                    <Label for="temperature" class="font-bold">Temperature</Label>
                     <p>0.6</p>
                 </div>
                 <Slider

@@ -5,6 +5,8 @@
   import MessageInput from "$lib/components/MessageInput.svelte";
   import BrowserWidget from "$lib/components/BrowserWidget.svelte";
   import TerminalWidget from "$lib/components/TerminalWidget.svelte";
+  import * as Resizable from "$lib/components/ui/resizable/index.js";
+
   import {
     fetchInitialData,
     fetchAgentState,
@@ -12,6 +14,8 @@
     socket
   } from "$lib/api";
   import { messages,tokenUsage, agentState } from "$lib/store";
+
+  let resizeEnabled = localStorage.getItem('resize') && localStorage.getItem('resize') === 'enable';
 
   onMount(() => {
     // localStorage.clear();
@@ -48,15 +52,32 @@
 <div class="flex h-full flex-col flex-1 gap-4 p-4">
   <ControlPanel />
 
-  <div class="flex space-x-4 h-full overflow-y-auto">
-    <div class="flex flex-col gap-2 w-1/2">
-      <MessageContainer />
-      <MessageInput />
-    </div>
-
-    <div class="flex flex-col gap-4 w-1/2">
-      <BrowserWidget />
-      <TerminalWidget />
-    </div>
-  </div>
+  <Resizable.PaneGroup direction="horizontal" class="max-w-full rounded-lg">
+    <Resizable.Pane defaultSize={50}>
+      <div class="flex flex-col gap-2 w-full h-full pr-2">
+        <MessageContainer />
+        <MessageInput />
+      </div>
+    </Resizable.Pane>
+    {#if resizeEnabled}
+      <Resizable.Handle />
+    {/if}
+    <Resizable.Pane defaultSize={50}>
+      <Resizable.PaneGroup direction="vertical">
+        <Resizable.Pane defaultSize={50}>
+          <div class="flex h-full items-center justify-center p-2">
+                <BrowserWidget />
+          </div>
+        </Resizable.Pane>
+        {#if resizeEnabled}
+          <Resizable.Handle />
+        {/if}
+        <Resizable.Pane defaultSize={50}>
+          <div class="flex h-full items-center justify-center p-2">
+            <TerminalWidget />
+          </div>
+        </Resizable.Pane>
+      </Resizable.PaneGroup>
+    </Resizable.Pane>
+  </Resizable.PaneGroup>
 </div>

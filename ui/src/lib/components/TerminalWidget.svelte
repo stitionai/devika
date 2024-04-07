@@ -14,7 +14,9 @@
     let xterm = await import('xterm');
     let xtermAddonFit = await import('xterm-addon-fit')
 
-    const terminalBg = css('--terminal-window-background');
+    const terminalBg = getComputedStyle(document.body).getPropertyValue('--terminal-window-background');
+    const terminalFg = getComputedStyle(document.body).getPropertyValue('--terminal-window-foreground');
+    console.log(terminalBg, terminalFg);
 
     terminal = new xterm.Terminal({
       disableStdin: true,
@@ -23,9 +25,9 @@
       rows: 1,
       theme: {
         background: terminalBg,
-        foreground: "#9CA3AB",
-        innerText: "#000000",
-        cursor: "#000000",
+        foreground: terminalFg,
+        innerText: terminalFg,
+        cursor: terminalFg,
       },
     });
     fitAddon = new xtermAddonFit.FitAddon();
@@ -37,6 +39,7 @@
 
     agentState.subscribe((state) => {
       if (state && state.terminal_session) {
+        console.log(state.terminal_session.command);
         let command = state.terminal_session.command || 'echo "Waiting..."';
         let output = state.terminal_session.output || "Waiting...";
         let title = state.terminal_session.title || "Terminal";
@@ -71,14 +74,14 @@
   }
 </script>
 
-<div class="flex flex-col border-[4px] overflow-hidden rounded-3xl h-1/2 border-window-outline text-terminal-window-foreground bg-terminal-window-background">
+<div class="w-full h-full flex flex-col border-[4px] overflow-hidden rounded-3xl border-window-outline">
   <div class="flex items-center p-2 py-3 border-b bg-terminal-window-ribbon">
     <div class="flex ml-2 mr-4 space-x-2">
       <div class="w-3 h-3 rounded-full bg-terminal-window-dots"></div>
       <div class="w-3 h-3 rounded-full bg-terminal-window-dots"></div>
       <div class="w-3 h-3 rounded-full bg-terminal-window-dots"></div>
     </div>
-    <span id="terminal-title">Terminal</span>
+    <span id="terminal-title" class="text-tertiary">Terminal</span>
   </div>
   <div
     id="terminal-content"

@@ -4,8 +4,8 @@
   import { createProject, fetchMessages, fetchInitialData, deleteProject, fetchAgentState} from "$lib/api";
   import { get } from "svelte/store";
   import Seperator from "./ui/Seperator.svelte";
-    import DrawerWidget from "./DrawerWidget.svelte";
-    import { Separator } from "$lib/components/ui/separator";
+  import DrawerWidget from "./DrawerWidget.svelte";
+  import { Separator } from "$lib/components/ui/separator";
 
   let selectedProject;
   let selectedModel;
@@ -252,9 +252,9 @@
                       on:click|preventDefault={() => selectModel(models)}
                     >
                       {models[0]}
-                      <!-- <span class="tooltip text-[10px] px-2 text-gray-500"
+                      <span class="tooltip text-[10px] px-2 text-gray-500"
                         >{models[1]}</span
-                      > -->
+                      >
                     </button>
                   {/each}
                 </div>

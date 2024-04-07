@@ -22,8 +22,9 @@
   "dependencies": {
     "bits-ui": "^0.21.2",
     "clsx": "^2.1.0",
-    "lucide-svelte": "^0.364.0",
+    "lucide-svelte": "^0.365.0",
     "mode-watcher": "^0.3.0",
+    "paneforge": "^0.0.3",
     "socket.io-client": "^4.7.5",
     "svelte-sonner": "^0.3.21",
     "tailwind-merge": "^2.2.2",
