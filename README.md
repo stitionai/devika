@@ -71,10 +71,10 @@ Read [**ARCHITECTURE.md**](https://github.com/stitionai/devika/blob/main/ARCHITE
 ## Quick Start
 
 The easiest way to run the project locally:
-
-1. Install `uv` - Python Package manager (https://github.com/astral-sh/uv)
-2. Install `bun` - JavaScript runtime (https://bun.sh/docs/installation)
-3. Install and setup `Ollama` (https://ollama.com/) (if you don't want to use the local models then you can skip this step)
+1. Ensure your installed Python version is >=3.10 (you can check this with Python --version)
+2. Install `uv` - Python Package manager (https://github.com/astral-sh/uv)
+3. Install `bun` - JavaScript runtime (https://bun.sh/docs/installation)
+4. Install and setup `Ollama` (https://ollama.com/) (if you don't want to use the local models then you can skip this step)
 
 For ollama you need to install the [models](https://ollama.com/models)<br>
 For API models, configure the API keys via setting page in UI. <br><br>
@@ -86,14 +86,14 @@ ollama serve
 git clone https://github.com/stitionai/devika.git
 cd devika/
 uv venv
-source .venv/bin/activate
+source .venv/bin/activate (or .venv\Scripts\activate on windows)
 uv pip install -r requirements.txt
 playwright install --with-deps
 cd ui/
 bun install
 bun run dev
 cd ..
-python3 devika.py
+python devika.py
 ```
 
 Docker images will be released soon. :raised_hands:
@@ -102,6 +102,7 @@ Docker images will be released soon. :raised_hands:
 Devika requires the following things as dependencies:
 - Ollama (follow the instructions here to install it: [https://ollama.com/](https://ollama.com/))
 - Bun (follow the instructions here to install it: [https://bun.sh/](https://bun.sh/))
+- npm (follow the instructions here to install it: [https://nodejs.org/en/download](https://nodejs.org/en/download))
 
 To install Devika, follow these steps:
 
@@ -113,9 +114,10 @@ To install Devika, follow these steps:
    ```bash
    cd devika
    ```
-3. Create a virtual environment and install the required dependencies:
+3. Create a virtual environment, activate it, and install the required dependencies:
    ```bash
    uv venv
+   .venv\Scripts\activate
    uv pip install -r requirements.txt
    ```
 4. Install the required dependencies:
