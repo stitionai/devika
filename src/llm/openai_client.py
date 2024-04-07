@@ -2,7 +2,7 @@ from openai import OpenAI as OAI
 
 from src.config import Config
 
-class OpenAI:
+class OpenAi:
     def __init__(self):
         config = Config()
         api_key = config.get_openai_api_key()
