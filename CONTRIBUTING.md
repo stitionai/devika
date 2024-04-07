@@ -15,16 +15,16 @@ To contribute, please follow these steps:
 When submitting a pull request, please follow these guidelines:
 
 1. **Title**: please include following prefixes: 
-   - `feature:` for new features
-   - `fix:` for bug fixes
-   - `docs:` for documentation changes
-   - `refactor:` for code refactoring
-   - `improve:` for performance improvements
-   - `other:` for other changes
+   - `Feature:` for new features
+   - `Fix:` for bug fixes
+   - `Docs:` for documentation changes
+   - `Refactor:` for code refactoring
+   - `Improve:` for performance improvements
+   - `Other:` for other changes
 
    for example: 
-      - `feature: added new feature to the code`
-      - `fix: fixed the bug in the code`
+      - `Feature: added new feature to the code`
+      - `Fix: fixed the bug in the code`
 
 2. **Description**: Provide a clear and detailed description of your changes in the pull request. Explain the problem you are solving, the approach you took, and any potential side effects or limitations of your changes.
 3. **Documentation**: Update the relevant documentation to reflect your changes. This includes the README file, code comments, and any other relevant documentation.
