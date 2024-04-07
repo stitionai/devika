@@ -30,7 +30,6 @@
                     <p>0.6</p>
                 </div>
                 <Slider
-                    class="dark"
                     id="temperature"
                     value={[4]}
                     max={10}
@@ -43,7 +42,6 @@
                     <p>100000</p>
                 </div>
                 <Slider
-                    class="dark"
                     id="token"
                     value={[33]}
                     max={100}
@@ -55,14 +53,14 @@
                     <Label for="topp" class="font-bold">Top P</Label>
                     <p>0.6</p>
                 </div>
-                <Slider class="dark" id="topp" value={[6]} max={10} step={1} />
+                <Slider id="topp" value={[6]} max={10} step={1} />
             </div>
         </div>
         <div class="relative w-full h-2/3">
             <Sheet.Footer class="block bottom-16  w-full absolute">
                 <div class="flex flex-col gap-4 mb-2">
                     <Sheet.Close asChild let:builder>
-                        <Button class="rounded-lg gap-2 text-black" builders={[builder]} type="submit">
+                        <Button class="rounded-lg gap-2 text-foreground-invert" builders={[builder]} type="submit">
                             <Check width={20}/>
                             Save changes
                         </Button>

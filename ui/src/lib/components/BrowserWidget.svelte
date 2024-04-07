@@ -3,12 +3,12 @@
   import { API_BASE_URL } from "$lib/api";
 </script>
 
-<div class="flex flex-col border-[4px] rounded-3xl h-1/2 overflow-y-auto bg-black/40 border-window-outline">
-  <div class="p-2 flex items-center border-b border-border bg-browser-window-background h-12">
-    <div class="flex space-x-2 ml-2 mr-4 text-browser-window-dots">
-      <div class="w-3 h-3 bg-current rounded-full"></div>
-      <div class="w-3 h-3 bg-current rounded-full"></div>
-      <div class="w-3 h-3 bg-current rounded-full"></div>
+<div class="flex flex-col border-[4px] rounded-3xl h-1/2 overflow-y-auto bg-browser-window-background border-window-outline">
+  <div class="p-2 flex items-center border-b border-border bg-browser-window-ribbon h-12">
+    <div class="flex space-x-2 ml-2 mr-4">
+      <div class="w-3 h-3 bg-browser-window-dots rounded-full"></div>
+      <div class="w-3 h-3 bg-browser-window-dots rounded-full"></div>
+      <div class="w-3 h-3 bg-browser-window-dots rounded-full"></div>
     </div>
     <input
       type="text"
@@ -16,7 +16,6 @@
       class="flex-grow h-7 rounded-lg p-2 overflow-x-auto bg-browser-window-search text-browser-window-foreground"
       placeholder="chrome://newtab"
       value={$agentState?.browser_session.url || ""}
-      
     />
   </div>
   <div id="browser-content" class="flex-grow overflow-y-auto">

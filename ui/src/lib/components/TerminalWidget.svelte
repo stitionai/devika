@@ -14,13 +14,15 @@
     let xterm = await import('xterm');
     let xtermAddonFit = await import('xterm-addon-fit')
 
+    const terminalBg = css('--terminal-window-background');
+
     terminal = new xterm.Terminal({
       disableStdin: true,
       cursorBlink: true,
       convertEol: true,
       rows: 1,
       theme: {
-        background: "#111315",
+        background: terminalBg,
         foreground: "#9CA3AB",
         innerText: "#000000",
         cursor: "#000000",
@@ -69,18 +71,18 @@
   }
 </script>
 
-<div class="flex flex-col border-[4px] overflow-hidden rounded-3xl h-1/2 border-window-outline bg-terminal-background">
-  <div class="flex items-center p-2 py-3 border-b">
+<div class="flex flex-col border-[4px] overflow-hidden rounded-3xl h-1/2 border-window-outline text-terminal-window-foreground bg-terminal-window-background">
+  <div class="flex items-center p-2 py-3 border-b bg-terminal-window-ribbon">
     <div class="flex ml-2 mr-4 space-x-2">
-      <div class="w-3 h-3 rounded-full bg-secondary"></div>
-      <div class="w-3 h-3 rounded-full bg-secondary"></div>
-      <div class="w-3 h-3 rounded-full bg-secondary"></div>
+      <div class="w-3 h-3 rounded-full bg-terminal-window-dots"></div>
+      <div class="w-3 h-3 rounded-full bg-terminal-window-dots"></div>
+      <div class="w-3 h-3 rounded-full bg-terminal-window-dots"></div>
     </div>
-    <span id="terminal-title" class="text-primary-foreground">Terminal</span>
+    <span id="terminal-title">Terminal</span>
   </div>
   <div
     id="terminal-content"
-    class="w-full h-full rounded-bl-lg bg-primary"
+    class="w-full h-full rounded-bl-lg bg-terminal-window-background"
     bind:this={terminalElement}
   ></div>
 </div>
