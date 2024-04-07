@@ -27,10 +27,8 @@ class Answer:
     def validate_response(self, response: str):
         response = response.strip().replace("```json", "```")
         
-        if response.startswith("```") and response.endswith("```"):
-            response = response[3:-3].strip()
- 
         try:
+            response = response.split("```")[1].split("```")[0]
             response = json.loads(response)
         except Exception as _:
             return False
