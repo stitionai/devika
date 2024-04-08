@@ -232,6 +232,10 @@ Devika's code writing module generates code based on the plan, research findings
 
 Devika's code writing capabilities enable it to generate functional and efficient code in various programming languages, taking into account the specific requirements and context of each project.
 
+### One-Cilck Deployment
+
+[![Deploy on RepoCloud](https://d16t0pc4846x52.cloudfront.net/deploy.png)](https://repocloud.io/details/?app_id=261)
+
 # Community Discord Server
 
 We have a Discord server for the Devika community, where you can connect with other users, share your experiences, ask questions, and collaborate on the project. To join the server, please follow these guidelines:
