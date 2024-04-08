@@ -1,5 +1,4 @@
 import os
-from os import environ
 
 import toml
 from fastlogging import LogInit
@@ -29,9 +28,6 @@ class Config:
 
         cls._logger.info("Checkout 'config.example.toml' and https://toml.io/en/ for more information on TOML.")
         exit(1)
-
-    def get_config(self):
-        return self.config
 
     def try_get(self, *keys):
         try:
@@ -64,50 +60,68 @@ class Config:
             exit(1)
         return value
 
-    def get_bing_api_key(self):
-        return environ.get("BING_API_KEY", self.try_get_with_warning("API_KEYS", "BING"))
+    def get_config(self):
+        return self.config
 
     def get_bing_api_endpoint(self):
-        return environ.get("BING_API_ENDPOINT", self.try_get_with_warning("API_ENDPOINTS", "BING"))
+        return self.try_get_with_error("API_ENDPOINTS", "BING")
+
+    def get_bing_api_key(self):
+        return self.try_get_with_error("API_KEYS", "BING")
+
+    def get_google_search_api_key(self):
+        return self.try_get_with_error("API_KEYS", "GOOGLE_SEARCH")
+
+    def get_google_search_engine_id(self):
+        return self.try_get_with_error("API_KEYS", "GOOGLE_SEARCH_ENGINE_ID")
+
+    def get_google_search_api_endpoint(self):
+        return self.try_get_with_error("API_ENDPOINTS", "GOOGLE")
 
     def get_ollama_api_endpoint(self):
-        return environ.get("OLLAMA_API_ENDPOINT", self.try_get_with_warning("API_ENDPOINTS", "OLLAMA"))
+        return self.try_get_with_error("API_ENDPOINTS", "OLLAMA")
 
     def get_claude_api_key(self):
-        return environ.get("CLAUDE_API_KEY", self.try_get_with_warning("API_KEYS", "CLAUDE"))
+        return self.try_get_with_error("API_KEYS", "CLAUDE")
 
     def get_openai_api_key(self):
-        return environ.get("OPENAI_API_KEY", self.try_get_with_warning("API_KEYS", "OPENAI"))
+        return self.try_get_with_error("API_KEYS", "OPENAI")
 
-    def get_netlify_api_key(self):
-        return environ.get("NETLIFY_API_KEY", self.try_get_with_warning("API_KEYS", "NETLIFY"))
+    def get_gemini_api_key(self):
+        return self.try_get_with_error("API_KEYS", "GEMINI")
+
+    def get_mistral_api_key(self):
+        return self.try_get_with_error("API_KEYS", "MISTRAL")
 
     def get_groq_api_key(self):
-        return environ.get("GROQ_API_KEY", self.try_get_with_warning("API_KEYS", "GROQ"))
+        return self.try_get_with_error("API_KEYS", "GROQ")
+
+    def get_netlify_api_key(self):
+        return self.try_get_with_error("API_KEYS", "NETLIFY")
 
     def get_sqlite_db(self):
-        return environ.get("SQLITE_DB_PATH", self.try_get_with_error("STORAGE", "SQLITE_DB"))
+        return self.try_get_with_error("STORAGE", "SQLITE_DB")
 
     def get_screenshots_dir(self):
-        return environ.get("SCREENSHOTS_DIR", self.try_get_with_error("STORAGE", "SCREENSHOTS_DIR"))
+        return self.try_get_with_error("STORAGE", "SCREENSHOTS_DIR")
 
     def get_pdfs_dir(self):
-        return environ.get("PDFS_DIR", self.try_get_with_error("STORAGE", "PDFS_DIR"))
+        return self.try_get_with_error("STORAGE", "PDFS_DIR")
 
     def get_projects_dir(self):
-        return environ.get("PROJECTS_DIR", self.try_get_with_error("STORAGE", "PROJECTS_DIR"))
+        return self.try_get_with_error("STORAGE", "PROJECTS_DIR")
 
     def get_logs_dir(self):
-        return environ.get("LOGS_DIR", self.try_get_with_error("STORAGE", "LOGS_DIR"))
+        return self.try_get_with_error("STORAGE", "LOGS_DIR")
 
     def get_repos_dir(self):
-        return environ.get("REPOS_DIR", self.try_get_with_error("STORAGE", "REPOS_DIR"))
+        return self.try_get_with_error("STORAGE", "REPOS_DIR")
 
     def get_logging_rest_api(self):
-        return self.config["LOGGING"]["LOG_REST_API"] == "true"
+        return self.try_get_with_warning("LOGGING", "LOG_REST_API") == "true"
 
     def get_logging_prompts(self):
-        return self.config["LOGGING"]["LOG_PROMPTS"] == "true"
+        return self.try_get_with_warning("LOGGING", "LOG_PROMPTS") == "true"
 
     def set_bing_api_key(self, key):
         self.config["API_KEYS"]["BING"] = key
@@ -115,6 +129,18 @@ class Config:
 
     def set_bing_api_endpoint(self, endpoint):
         self.config["API_ENDPOINTS"]["BING"] = endpoint
+        self.save_config()
+
+    def set_google_search_api_key(self, key):
+        self.config["API_KEYS"]["GOOGLE_SEARCH"] = key
+        self.save_config()
+
+    def set_google_search_engine_id(self, key):
+        self.config["API_KEYS"]["GOOGLE_SEARCH_ENGINE_ID"] = key
+        self.save_config()
+
+    def set_google_search_api_endpoint(self, endpoint):
+        self.config["API_ENDPOINTS"]["GOOGLE_SEARCH"] = endpoint
         self.save_config()
 
     def set_ollama_api_endpoint(self, endpoint):
@@ -129,6 +155,18 @@ class Config:
         self.config["API_KEYS"]["OPENAI"] = key
         self.save_config()
 
+    def set_gemini_api_key(self, key):
+        self.config["API_KEYS"]["GEMINI"] = key
+        self.save_config()
+
+    def set_mistral_api_key(self, key):
+        self.config["API_KEYS"]["MISTRAL"] = key
+        self.save_config()
+
+    def set_groq_api_key(self, key):
+        self.config["API_KEYS"]["GROQ"] = key
+        self.save_config()
+
     def set_netlify_api_key(self, key):
         self.config["API_KEYS"]["NETLIFY"] = key
         self.save_config()
@@ -137,24 +175,24 @@ class Config:
         self.config["STORAGE"]["SQLITE_DB"] = db
         self.save_config()
 
-    def set_screenshots_dir(self, dir):
-        self.config["STORAGE"]["SCREENSHOTS_DIR"] = dir
+    def set_screenshots_dir(self, directory):
+        self.config["STORAGE"]["SCREENSHOTS_DIR"] = directory
         self.save_config()
 
-    def set_pdfs_dir(self, dir):
-        self.config["STORAGE"]["PDFS_DIR"] = dir
+    def set_pdfs_dir(self, directory):
+        self.config["STORAGE"]["PDFS_DIR"] = directory
         self.save_config()
 
-    def set_projects_dir(self, dir):
-        self.config["STORAGE"]["PROJECTS_DIR"] = dir
+    def set_projects_dir(self, directory):
+        self.config["STORAGE"]["PROJECTS_DIR"] = directory
         self.save_config()
 
-    def set_logs_dir(self, dir):
-        self.config["STORAGE"]["LOGS_DIR"] = dir
+    def set_logs_dir(self, directory):
+        self.config["STORAGE"]["LOGS_DIR"] = directory
         self.save_config()
 
-    def set_repos_dir(self, dir):
-        self.config["STORAGE"]["REPOS_DIR"] = dir
+    def set_repos_dir(self, directory):
+        self.config["STORAGE"]["REPOS_DIR"] = directory
         self.save_config()
 
     def set_logging_rest_api(self, value):

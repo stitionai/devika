@@ -13,9 +13,8 @@ class Logger:
     def __new__(cls, filename="devika_agent.log"):
         if filename not in cls._loggers:
             cls._loggers[filename] = super(Logger, cls).__new__(cls)
-            cls._loggers[filename].logger = LogInit(
-                pathName=Config().get_logs_dir() + "/" + filename, console=True, colors=True
-            )
+            cls._loggers[filename].logger = LogInit(pathName=Config().get_logs_dir() + "/" + filename, console=True, colors=True, encoding="utf-8")
+            
         return cls._loggers[filename]
 
     def read_log_file(self) -> str:
@@ -66,3 +65,4 @@ def route_logger(func):
 
         return response
     return wrapper
+       

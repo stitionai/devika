@@ -3,7 +3,7 @@
   import "../app.pcss";
 </script>
 
-<main class="h-dvh ml-20">
-  <Sidebar />
-  <slot />
+<main class="flex h-dvh w-full">
+	<Sidebar />
+	<slot />
 </main>
