@@ -7,15 +7,16 @@ from typing import List, Dict, Union
 from src.config import Config
 from src.llm import LLM
 from src.state import AgentState
+from src.agents.error_analyzer import ErrorAnalyzer
 
 PROMPT = open("src/agents/patcher/prompt.jinja2", "r").read().strip()
 
 class Patcher:
-    def __init__(self, base_model: str):
+    def __init__(self, base_model: str, search_engine: str):
         config = Config()
         self.project_dir = config.get_projects_dir()
-        
         self.llm = LLM(model_id=base_model)
+        self.error_analyzer = ErrorAnalyzer(base_model, search_engine)
 
     def render(
         self,
@@ -111,6 +112,11 @@ class Patcher:
         system_os: dict,
         project_name: str
     ) -> str:
+
+        if error_context is None:
+            error_context = self.error_analyzer.execute(conversation, code_markdown, commands, error, 
+                                                                   system_os, project_name)
+
         prompt = self.render(
             conversation,
             code_markdown,
@@ -130,6 +136,7 @@ class Patcher:
                 code_markdown,
                 commands,
                 error,
+                error_context,
                 system_os,
                 project_name
             )

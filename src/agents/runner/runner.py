@@ -12,18 +12,18 @@ from src.project import ProjectManager
 from src.browser import Browser
 import asyncio
 from src.socket_instance import emit_agent
+from src.agents.error_analyzer import ErrorAnalyzer
 
 
 PROMPT = open("src/agents/runner/prompt.jinja2", "r").read().strip()
 RERUNNER_PROMPT = open("src/agents/runner/rerunner.jinja2", "r").read().strip()
-ERROR_ANALYZER_PROMPT = open("src/agents/runner/error_analyzer.jinja2", "r").read().strip()
-
 class Runner:
     def __init__(self, base_model: str, search_engine: str):
         self.base_model = base_model
         self.llm = LLM(model_id=base_model)
         self.formatter = Formatter(base_model=base_model)
-        self.search_engine = search_engine
+        self.engine = search_engine
+        self.error_analyzer = ErrorAnalyzer(base_model=base_model, search_engine=search_engine)
 
     def render(
         self,
@@ -58,42 +58,6 @@ class Runner:
             error=error,
             error_context = error_context
         )
-    
-    def render_error_analyzer(
-        self,
-        conversation: str,
-        code_markdown: str,
-        commands: list,
-        system_os: str,
-        error: str
-    ):
-        env = Environment(loader=BaseLoader())
-        template = env.from_string(ERROR_ANALYZER_PROMPT)
-        return template.render(
-            conversation=conversation,
-            code_markdown=code_markdown,
-            commands=commands,
-            system_os=system_os,
-            error=error
-        )
-    
-    def validate_error_analyzer_response(self, response: str):
-        response = response.strip().replace("```json", "```")
-        
-        if response.startswith("```") and response.endswith("```"):
-            response = response[3:-3].strip()
- 
-        try:
-            response = json.loads(response)
-        except Exception as _:
-            return False
-
-        if "error" not in response or "need_web" not in response:
-            return False
-        elif response["need_web"]!="True" and response["need_web"]!="False":
-            return False
-        else: 
-            return response
     
     async def open_page(self, project_name, pdf_download_url):
         browser = await Browser().start()
@@ -176,83 +140,15 @@ class Runner:
             
             #Re-runner starts here if there is some error
             while command_failed and retries < 2:
-                new_state = AgentState().new_state()
-                new_state["internal_monologue"] = "Oh seems like there is some error... :(. Trying to fix it"
-                new_state["terminal_session"]["title"] = "Terminal"
-                new_state["terminal_session"]["command"] = command
-                new_state["terminal_session"]["output"] = command_error
-                
-                #Error analyzer prompt
-                prompt = self.render_error_analyzer(
+                #Error analyzer
+                results = self.error_analyzer.execute(
                     conversation=conversation,
                     code_markdown=code_markdown,
-                    system_os=system_os,
                     commands=commands,
-                    error=command_error
+                    error=command_error,
+                    system_os=system_os,
+                    project_name=project_name,
                 )
-                response = self.llm.inference(prompt, project_name)
-                
-                valid_response = self.validate_error_analyzer_response(response)
-                while not valid_response:
-                    print("Invalid response from the model, trying again...")
-                    return self.run_code(
-                        commands,
-                        project_path,
-                        project_name,
-                        conversation,
-                        code_markdown,
-                        system_os
-                    )
-                    
-                response = json.loads(response)
-                error = response["error"]
-                need_web = response["need_web"]
-                main_cause = None
-                
-                if "main_cause" in response:
-                    main_cause = response["main_cause"]
-                
-                total_error = error
-                if main_cause is not None:
-                    total_error = error + " " + main_cause
-                
-                results = {total_error: "Web searching wasn't required for this error."}
-
-                if need_web=="True":
-                    ProjectManager().add_message_from_devika(project_name, "I need to search the web to fix the error...")
-                    new_state = AgentState().new_state()
-                    new_state["internal_monologue"] = "Uh oh, an unseen error. Let's do web search to get it fixed."
-                    new_state["terminal_session"]["title"] = "Terminal"
-                    new_state["terminal_session"]["command"] = command
-                    new_state["terminal_session"]["output"] = command_error
-                    AgentState().add_to_current_state(project_name, new_state)
-                    time.sleep(1)
-
-                    if main_cause is not None:
-                        error = error + " " + main_cause
-                    
-                    loop = asyncio.new_event_loop()
-                    asyncio.set_event_loop(loop)
-                    
-                    web_search = None
-
-                    if self.search_engine == "duckduckgo":
-                        web_search = DuckDuckGoSearch()
-                    elif self.search_engine == "bing":
-                        web_search = BingSearch()
-                    elif self.search_engine == "google":
-                        web_search = GoogleSearch()
-
-                    web_search.search(error)
-                    link = web_search.get_first_link()
-                    browser, raw, error_context = loop.run_until_complete(self.open_page(project_name, link))
-                    emit_agent("screenshot", {"data": raw, "project_name": project_name}, False)
-                    results[error] = self.formatter.execute(error_context, project_name)
-                else:
-                    ProjectManager().add_message_from_devika(project_name, "I can resolve this error myself. Let me try...")
-                    error = total_error
-                    AgentState().add_to_current_state(project_name, new_state)
-                    time.sleep(1)
                 
                 prompt = self.render_rerunner(
                     conversation=conversation,
@@ -260,7 +156,7 @@ class Runner:
                     system_os=system_os,
                     commands=commands,
                     error=command_error,
-                    error_context = results[error]
+                    error_context = results
                 )
                 
                 response = self.llm.inference(prompt, project_name)
@@ -315,17 +211,17 @@ class Runner:
                     
                     ProjectManager().add_message_from_devika(project_name, response)
                     
-                    code = Patcher(base_model=self.base_model).execute(
+                    code = Patcher(base_model=self.base_model, search_engine=self.engine).execute(
                         conversation=conversation,
                         code_markdown=code_markdown,
                         commands=commands,
                         error=command_error,
-                        error_context = results[error],
+                        error_context = results,
                         system_os=system_os,
                         project_name=project_name
                     )
 
-                    Patcher(base_model=self.base_model).save_code_to_project(code, project_name)
+                    Patcher(base_model=self.base_model, search_engine=self.engine).save_code_to_project(code, project_name)
                     
                     command_set = command.split(" ")
                     command_failed = False

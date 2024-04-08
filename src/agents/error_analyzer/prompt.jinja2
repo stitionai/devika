@@ -16,15 +16,20 @@ User's last message: {{ conversation[-1] }}
 System Operating System: {{ system_os }}
 
 You tried to execute the following commands to run this project:
+
+{% if not commands %}
+No commands were executed.
+{% else %}
 ```
 {% for command in commands %}
 $ {{ command }}
 {% endfor %}
 ```
+{% endif %}
+
 
 But it resulted in the following error:
 ```
-$ {{ commands[-1] }}
 {{ error }}
 ```
 
