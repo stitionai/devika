@@ -86,7 +86,7 @@ class ErrorAnalyzer:
         valid_response = self.validate(response)
         while not valid_response:
             print("Invalid response from the model, trying again...")
-            return self.get_error_context_from_web(
+            return self.execute(
                 conversation,
                 code_markdown,
                 commands,
@@ -96,6 +96,7 @@ class ErrorAnalyzer:
             )
         
         response = valid_response
+        command_error = error
         error = response["error"]
         need_web = response["need_web"]
         main_cause = None
@@ -116,7 +117,7 @@ class ErrorAnalyzer:
                 new_state["internal_monologue"] = "Uh oh, an unseen error. Let's do web search to get it fixed."
                 new_state["terminal_session"]["title"] = "Terminal"
                 new_state["terminal_session"]["command"] = commands[-1]
-                new_state["terminal_session"]["output"] = error
+                new_state["terminal_session"]["output"] = command_error
                 AgentState().add_to_current_state(project_name, new_state)
                 time.sleep(1)
 

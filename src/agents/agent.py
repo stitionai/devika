@@ -56,7 +56,7 @@ class Agent:
         self.internal_monologue = InternalMonologue(base_model=base_model)
         self.answer = Answer(base_model=base_model)
         self.runner = Runner(base_model=base_model, search_engine=search_engine)
-        self.feature = Feature(base_model=base_model)
+        self.feature = Feature(base_model=base_model,search_engine=search_engine)
         self.patcher = Patcher(base_model=base_model, search_engine=search_engine)
         self.reporter = Reporter(base_model=base_model)
         self.decision = Decision(base_model=base_model)
