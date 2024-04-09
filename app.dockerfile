@@ -25,5 +25,5 @@ RUN chown -R nonroot:nonroot /home/nonroot/client
 
 USER nonroot
 WORKDIR /home/nonroot/client/ui
-
+RUN npx bun install
 ENTRYPOINT [ "npx", "bun", "run", "dev", "--", "--host" ]
