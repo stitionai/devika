@@ -93,7 +93,7 @@ cd ui/
 bun install
 bun run dev
 cd ..
-python3 devika.py
+python devika.py
 ```
 
 Docker images will be released soon. :raised_hands:
@@ -116,12 +116,12 @@ To install Devika, follow these steps:
 3. Create a virtual environment and install the required dependencies:
    ```bash
    uv venv
+   source .venv/bin/activate
    uv pip install -r requirements.txt
    ```
 4. Install the required dependencies:
    ```bash
-   pip install -r requirements.txt
-   playwright install --with-deps # installs browsers in playwright (and their deps) if required
+   playwright install --with-deps #installs browsers in playwright (and their deps) if required
    ```
 5. Set up the necessary API keys and  [Configuration](#configuration) 
 6. Start the Devika server:
