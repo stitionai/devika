@@ -16,19 +16,21 @@
     "postcss-load-config": "^5.0.2",
     "svelte": "^4.2.7",
     "tailwindcss": "^3.3.6",
-    "vite": "^5.0.3"
+    "vite": "^5.0.3",
+    "vite-plugin-wasm": "^3.3.0"
   },
   "type": "module",
   "dependencies": {
     "bits-ui": "^0.21.2",
-    "clsx": "^2.1.0",
     "lucide-svelte": "^0.365.0",
     "mode-watcher": "^0.3.0",
     "paneforge": "^0.0.3",
-    "socket.io-client": "^4.7.5",
     "svelte-sonner": "^0.3.21",
     "tailwind-merge": "^2.2.2",
     "tailwind-variants": "^0.2.1",
+    "clsx": "^2.1.0",
+    "socket.io-client": "^4.7.5",
+    "tiktoken": "^1.0.13",
     "xterm": "^5.3.0",
     "xterm-addon-fit": "^0.8.0"
   }

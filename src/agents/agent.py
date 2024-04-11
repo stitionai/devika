@@ -151,7 +151,7 @@ class Agent:
                     project_name_space_url)
                 response = f"I have generated the PDF document. You can download it from here: {pdf_download_url}"
 
-                asyncio.run(self.open_page(project_name, pdf_download_url))
+                #asyncio.run(self.open_page(project_name, pdf_download_url))
 
                 self.project_manager.add_message_from_devika(project_name, response)
 
@@ -257,8 +257,7 @@ class Agent:
                 project_name_space_url)
             response = f"I have generated the PDF document. You can download it from here: {pdf_download_url}"
 
-            self.browser.go_to(pdf_download_url)
-            self.browser.screenshot(project_name)
+            #asyncio.run(self.open_page(project_name, pdf_download_url))
 
             self.project_manager.add_message_from_devika(project_name, response)
 
