@@ -290,19 +290,6 @@
     visibility: visible;
     opacity: 1;
   }
-  .internet-status {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-  }
-
-  .online {
-    background-color: #22c55e;
-  }
-
-  .offline {
-    background-color: #ef4444;
-  }
 
   @keyframes roll {
     0% {
@@ -326,10 +313,5 @@
 
   .control-panel > *:not(:first-child) {
     margin-left: 20px;
-  }
-
-  .right-controls > *:not(:last-child) {
-    border-right: 1px solid #495058;
-    padding-right: 20px;
   }
 </style>

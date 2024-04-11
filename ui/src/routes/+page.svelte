@@ -1,5 +1,5 @@
 <script>
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import ControlPanel from "$lib/components/ControlPanel.svelte";
   import MessageContainer from "$lib/components/MessageContainer.svelte";
   import MessageInput from "$lib/components/MessageInput.svelte";
@@ -46,7 +46,16 @@
       tokenUsage.set(tokens["token_usage"]);
     });
 
-});
+  });
+
+  onDestroy(() => {
+      if(socket.connected) {
+        socket.off('socket_response');
+        socket.off('server-message');
+        socket.off('agent-state');
+        socket.off('tokens');
+      }
+  });
 </script>
 
 <div class="flex h-full flex-col flex-1 gap-4 p-4">

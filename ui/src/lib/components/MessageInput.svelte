@@ -50,7 +50,7 @@
   function setTokenSize(event) {
     const prompt = event.target.value;
     let tokens = calculateTokens(prompt);
-    document.querySelector(".token-count").textContent = `${tokens} tokens`;
+    document.querySelector(".token-count").textContent = `${tokens}`;
   }
 </script>
 
@@ -72,11 +72,13 @@
   <button 
     on:click={handleSendMessage}
     disabled={isAgentActive}
-    class="absolute text-secondary bg-primary p-2 right-4 top-4 rounded-full"
+    class="absolute text-secondary bg-primary p-2 right-4 bottom-6 rounded-full"
   >
   <CornerDownLeft />    
   </button>
-
+  <p class="absolute text-tertiary p-2 right-4 top-2">
+    <span class="token-count">0</span>
+  </p>
 </div>
 
 <style>

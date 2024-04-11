@@ -16,7 +16,6 @@
 
     const terminalBg = getComputedStyle(document.body).getPropertyValue('--terminal-window-background');
     const terminalFg = getComputedStyle(document.body).getPropertyValue('--terminal-window-foreground');
-    console.log(terminalBg, terminalFg);
 
     terminal = new xterm.Terminal({
       disableStdin: true,
@@ -28,6 +27,8 @@
         foreground: terminalFg,
         innerText: terminalFg,
         cursor: terminalFg,
+        selectionForeground: terminalBg,
+        selectionBackground: terminalFg
       },
     });
     fitAddon = new xtermAddonFit.FitAddon();
@@ -39,7 +40,6 @@
 
     agentState.subscribe((state) => {
       if (state && state.terminal_session) {
-        console.log(state.terminal_session.command);
         let command = state.terminal_session.command || 'echo "Waiting..."';
         let output = state.terminal_session.output || "Waiting...";
         let title = state.terminal_session.title || "Terminal";

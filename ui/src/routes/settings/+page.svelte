@@ -35,8 +35,6 @@
   let selectedTheme = getSelectedTheme();
   let selectedResize = getSelectedResize();
 
-  console.log(selectedResize);
-
   function setResize(value) {
     localStorage.setItem('resize', value);
   }
