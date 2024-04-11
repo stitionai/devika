@@ -35,6 +35,8 @@ from src.socket_instance import emit_agent
 
 class Agent:
     def __init__(self, base_model: str, search_engine: str, browser: Browser = None):
+        print("New Agent Created\n")
+
         if not base_model:
             raise ValueError("base_model is required")
 
@@ -284,7 +286,19 @@ class Agent:
                 
             self.git.reset_to_previous_commit()
 
+        elif action == "auto_commit":
+            self.project_manager.start_auto_commit(project_name)
+
         self.agent_state.set_agent_active(project_name, False)
+        print("Auto Commit :: ", self.project_manager.get_auto_commit(project_name))
+        if self.project_manager.get_auto_commit(project_name):
+            print("\n Committing the code\n")
+            project_path = self.project_manager.get_project_path(project_name)
+            if self.git == None:
+                self.git = Git(project_path, self.base_model)
+
+            commit_message = self.git.generate_commit_message(project_name, conversation,code_markdown)
+            self.git.commit(commit_message)
         self.agent_state.set_agent_completed(project_name, True)
 
     def execute(self, prompt: str, project_name_from_user: str = None) -> str:
@@ -383,6 +397,14 @@ class Agent:
         self.coder.save_code_to_project(code, project_name)
 
         self.agent_state.set_agent_active(project_name, False)
+        if self.project_manager.get_auto_commit(project_name):
+            project_path = self.project_manager.get_project_path(project_name)
+            if self.git == None:
+                self.git = Git(project_path, self.base_model)
+
+            commit_message = self.git.generate_commit_message(project_name, conversation,code_markdown)
+            self.git.commit(commit_message)
+
         self.agent_state.set_agent_completed(project_name, True)
         self.project_manager.add_message_from_devika(project_name,
                                                      "I have completed the my task. \n"

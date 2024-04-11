@@ -11,6 +11,7 @@ from src.config import Config
 class Projects(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     project: str
+    auto_commit: bool = False
     message_stack_json: str
 
 
@@ -144,3 +145,24 @@ class ProjectManager:
 
     def get_zip_path(self, project: str):
         return f"{self.get_project_path(project)}.zip"
+
+    def start_auto_commit(self, project: str):
+        with Session(self.engine) as session:
+            project_state = session.query(Projects).filter(Projects.project == project).first()
+            if project_state:
+                project_state.auto_commit = True
+                session.commit()
+
+    def stop_auto_commit(self, project: str):
+        with Session(self.engine) as session:
+            project_state = session.query(Projects).filter(Projects.project == project).first()
+            if project_state:
+                project_state.auto_commit = False
+                session.commit()
+
+    def get_auto_commit(self, project: str):
+        with Session(self.engine) as session:
+            project_state = session.query(Projects).filter(Projects.project == project).first()
+            if project_state:
+                return project_state.auto_commit
+            return False
