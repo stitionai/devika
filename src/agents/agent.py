@@ -286,11 +286,14 @@ class Agent:
                 
             self.git.reset_to_previous_commit()
 
-        elif action == "auto_commit":
+        elif action == "start_auto_commit":
             self.project_manager.start_auto_commit(project_name)
 
+        elif action == "stop_auto_commit":
+            self.project_manager.stop_auto_commit(project_name)
+
         self.agent_state.set_agent_active(project_name, False)
-        print("Auto Commit :: ", self.project_manager.get_auto_commit(project_name))
+        # print("Auto Commit :: ", self.project_manager.get_auto_commit(project_name))
         if self.project_manager.get_auto_commit(project_name):
             print("\n Committing the code\n")
             project_path = self.project_manager.get_project_path(project_name)
