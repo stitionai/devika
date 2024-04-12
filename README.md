@@ -86,7 +86,8 @@ ollama serve
 git clone https://github.com/stitionai/devika.git
 cd devika/
 uv venv
-source .venv/bin/activate
+source .venv/bin/activate # For macOS, Linux, and similar systems
+.venv\Scripts\activate    # For Windows
 uv pip install -r requirements.txt
 playwright install --with-deps
 cd ui/
@@ -117,9 +118,7 @@ To install Devika, follow these steps:
    ```bash
    uv venv
    source .venv/bin/activate # For macOS, Linux, and similar systems
-   .venv\Scripts\activate     # For Windows
-
- 
+   .venv\Scripts\activate    # For Windows
    uv pip install -r requirements.txt
    ```
 4. Install the required dependencies:
