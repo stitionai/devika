@@ -116,12 +116,15 @@ To install Devika, follow these steps:
 3. Create a virtual environment and install the required dependencies:
    ```bash
    uv venv
-   source .venv/bin/activate
+   source .venv/bin/activate # For macOS, Linux, and similar systems
+   .venv\Scripts\activate     # For Windows
+
+ 
    uv pip install -r requirements.txt
    ```
 4. Install the required dependencies:
    ```bash
-   playwright install --with-deps #installs browsers in playwright (and their deps) if required
+   playwright install --with-deps # installs browsers in playwright (and their deps) if required
    ```
 5. Set up the necessary API keys and  [Configuration](#configuration) 
 6. Start the Devika server:
