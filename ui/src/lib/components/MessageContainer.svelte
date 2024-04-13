@@ -16,7 +16,7 @@
 
 <div
   id="message-container"
-  class="flex flex-col flex-1 gap-2 pt-2 pb-4 overflow-y-auto rounded-lg"
+  class="flex flex-col flex-1 gap-2 overflow-y-auto rounded-lg"
   bind:this={messageContainer}
 >
   {#if $messages !== null}
@@ -25,7 +25,7 @@
       <div class="flex items-start gap-2 px-2 py-4">
         {#if message.from_devika}
           <img
-            src="/assets/devika-avatar.svg"
+            src="/assets/devika-avatar.png"
             alt="Devika's Avatar"
             class="flex-shrink-0 rounded-full avatar"
             style="width: 28px; height: 28px;"
@@ -38,7 +38,7 @@
             style="width: 28px; height: 28px;"
           />
         {/if}
-        <div class="flex flex-col w-full">
+        <div class="flex flex-col w-full text-sm">
           <p class="text-xs text-gray-400">
             {message.from_devika ? "Devika" : "You"}
             <span class="timestamp">{new Date(message.timestamp).toLocaleTimeString()}</span>
@@ -51,14 +51,14 @@
                 {#each Object.entries(JSON.parse(message.message)) as [step, description]}
                   <div class="flex items-center gap-2">
                     <input type="checkbox" id="step-{step}" disabled />
-                    <label for="step-{step}"><strong>Step {step}</strong>: {description}</label>
+                    <label for="step-{step}" class="cursor-auto"><strong>Step {step}</strong>: {description}</label>
                   </div>
                 {/each}
               {/if}
               </div>
             </div>
           {:else if /https?:\/\/[^\s]+/.test(message.message)}
-            <div class="w-full" contenteditable="false">
+            <div class="w-full cursor-auto" contenteditable="false">
               {@html message.message.replace(
                 /(https?:\/\/[^\s]+)/g,
                 '<u><a href="$1" target="_blank" style="font-weight: bold;">$1</a></u>'
@@ -83,6 +83,9 @@
     margin-left: 8px;
     font-size: smaller;
     color: #aaa;
+  }
+  #message-container {
+    scrollbar-width: none;
   }
 
   input[type="checkbox"] {

@@ -1,5 +1,3 @@
-import { fontFamily } from "tailwindcss/defaultTheme";
-
 /** @type {import('tailwindcss').Config} */
 const config = {
     darkMode: ["class"],
@@ -43,7 +41,7 @@ const config = {
                 'monologue-outline': 'var(--monologue-outline)',
             },
             fontFamily: {
-                sans: [...fontFamily.sans]
+                sans: ["Helvetica"]
             }
         }
     },

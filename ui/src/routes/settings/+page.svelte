@@ -76,33 +76,32 @@
 
 <div class="p-4 h-full w-full gap-8 flex flex-col overflow-y-auto">
   <h1 class="text-3xl">Settings</h1>
-  <div class="flex flex-col w-full">
+  <div class="flex flex-col w-full text-sm">
     <Tabs.Root
       value="apikeys"
-      class="w-[400px] flex flex-col justify-start ms-2"
+      class="w-full flex flex-col justify-start ms-2"
     >
       <Tabs.List class="ps-0">
         <Tabs.Trigger value="apikeys">API Keys</Tabs.Trigger>
         <Tabs.Trigger value="endpoints">API Endpoints</Tabs.Trigger>
-        <Tabs.Trigger value="logging">Logging</Tabs.Trigger>
         <Tabs.Trigger value="appearance">Appearance</Tabs.Trigger>
       </Tabs.List>
       <Separator />
-      <Tabs.Content value="apikeys">
+      <Tabs.Content value="apikeys" class="mt-4">
         {#if settings["API_KEYS"]}
           <div class="flex gap-4 w-full">
             <div class="flex flex-col gap-4 w-full">
               <div class="flex flex-col gap-4">
                 {#each Object.entries(settings["API_KEYS"]) as [key, value]}
                   <div class="flex gap-1 items-center">
-                    <p class="w-48 text-sm">{key.toLowerCase()}</p>
+                    <p class="w-48">{key.toLowerCase()}</p>
                     <input
                       type="text"
                       bind:value={settings["API_KEYS"][key]}
                       name={key}
                       class="p-2 border-2 w-1/2 rounded-lg {editMode
                         ? ''
-                        : 'bg-gray-100 text-gray-500'}"
+                        : ' text-gray-500'}"
                       readonly={!editMode}
                     />
                   </div>
@@ -133,11 +132,10 @@
           {/if}
         </div>
       </Tabs.Content>
-      <Tabs.Content value="endpoints">
+      <Tabs.Content value="endpoints" class="mt-4">
         {#if settings["API_KEYS"]}
           <div class="flex gap-4 w-full">
-            <div class="flex flex-col gap-2">
-              <div class="flex flex-col gap-4">
+              <div class="flex flex-col w-full gap-4">
                 {#each Object.entries(settings["API_ENDPOINTS"]) as [key, value]}
                   <div class="flex gap-3 items-center">
                     <p class="w-28">{key.toLowerCase()}</p>
@@ -145,14 +143,13 @@
                       type="text"
                       bind:value={settings["API_ENDPOINTS"][key]}
                       name={key}
-                      class="p-2 w-1/2 border-2 rounded-lg {editMode
+                      class="p-2 border-2 w-1/2 rounded-lg {editMode
                         ? ''
-                        : 'bg-gray-100 text-gray-500'}"
+                        : 'text-gray-500'}"
                       readonly={!editMode}
                     />
                   </div>
                 {/each}
-              </div>
             </div>
           </div>
         {/if}
@@ -178,52 +175,8 @@
           {/if}
         </div>
       </Tabs.Content>
-      <Tabs.Content value="logging">
-        {#if settings["API_KEYS"]}
-          <div class="flex flex-col gap-2">
-            <div class="flex flex-col gap-4">
-              {#each Object.entries(settings["LOGGING"]) as [key, value]}
-                <div class="flex gap-3 items-center">
-                  <p class="w-28">{key.toLowerCase()}</p>
-                  <input
-                    type="text"
-                    bind:value={settings["LOGGING"][key]}
-                    name={key}
-                    class="p-2 border-2 rounded-lg {editMode
-                      ? ''
-                      : 'bg-gray-100 text-gray-500'}"
-                    readonly={!editMode}
-                    placeholder="true/false"
-                  />
-                </div>
-              {/each}
-            </div>
-          </div>
-        {/if}
-        <div class="flex gap-4 mt-5">
-          {#if !editMode}
-            <button
-              id="btn-edit"
-              class="p-2 border-2 rounded-lg flex gap-3 items-center hover:bg-gray-200"
-              on:click={edit}
-            >
-              <i class="fas fa-edit"></i>
-              Edit
-            </button>
-          {:else}
-            <button
-              id="btn-save"
-              class="p-2 border-2 rounded-lg flex gap-3 items-center hover:bg-gray-200"
-              on:click={save}
-            >
-              <i class="fas fa-save"></i>
-              Save
-            </button>
-          {/if}
-        </div>
-      </Tabs.Content>
-      <Tabs.Content value="appearance">
-        <div class="flex w-full justify-between items-center my-2">
+      <Tabs.Content value="appearance" class="w-fit">
+        <div class="flex w-full justify-between items-center my-2 gap-8">
           <div>
             Select a theme
           </div>
@@ -234,7 +187,7 @@
               </Select.Trigger>
               <Select.Content>
                 <Select.Group>
-                  <Select.Label>Themes</Select.Label>
+                  <!-- <Select.Label>Themes</Select.Label> -->
                   <Select.Item value={"light"} label={"Light"}>Light</Select.Item>
                   <Select.Item value={"dark"} label={"Dark"}>Dark</Select.Item>
                   <Select.Item value={"system"} label={"System"}>System</Select.Item>
@@ -244,7 +197,7 @@
             </Select.Root>
           </div>
         </div>
-        <div class="flex w-full justify-between items-center  my-2">
+        <div class="flex w-full justify-between items-center  my-2 gap-8">
           <div>
             Enable tab resize
           </div>
@@ -255,7 +208,7 @@
               </Select.Trigger>
               <Select.Content>
                 <Select.Group>
-                  <Select.Label>Resize</Select.Label>
+                  <!-- <Select.Label>Resize</Select.Label> -->
                   <Select.Item value={"enable"} label={"Enable"}>Enable</Select.Item>
                   <Select.Item value={"disable"} label={"Disable"}>Disable</Select.Item>
                 </Select.Group>

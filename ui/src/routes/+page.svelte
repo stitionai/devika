@@ -6,6 +6,7 @@
   import BrowserWidget from "$lib/components/BrowserWidget.svelte";
   import TerminalWidget from "$lib/components/TerminalWidget.svelte";
   import * as Resizable from "$lib/components/ui/resizable/index.js";
+  import FooterToolbar from "$lib/components/FooterToolbar.svelte";
 
   import {
     fetchInitialData,
@@ -61,9 +62,9 @@
 <div class="flex h-full flex-col flex-1 gap-4 p-4">
   <ControlPanel />
 
-  <Resizable.PaneGroup direction="horizontal" class="max-w-full rounded-lg">
+  <Resizable.PaneGroup direction="horizontal" class="max-w-full">
     <Resizable.Pane defaultSize={50}>
-      <div class="flex flex-col gap-2 w-full h-full pr-2">
+      <div class="flex flex-col gap-2 w-full h-full pr-4">
         <MessageContainer />
         <MessageInput />
       </div>
@@ -78,9 +79,9 @@
                 <BrowserWidget />
           </div>
         </Resizable.Pane>
-        {#if resizeEnabled}
+        <!-- {#if resizeEnabled}
           <Resizable.Handle />
-        {/if}
+        {/if} -->
         <Resizable.Pane defaultSize={50}>
           <div class="flex h-full items-center justify-center p-2">
             <TerminalWidget />
@@ -89,4 +90,7 @@
       </Resizable.PaneGroup>
     </Resizable.Pane>
   </Resizable.PaneGroup>
+
+  <!-- <FooterToolbar /> -->
+
 </div>

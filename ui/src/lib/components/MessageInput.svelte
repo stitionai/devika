@@ -55,9 +55,22 @@
 </script>
 
 <div class="expandable-input relative">
+  <div class="py-3 px-1 rounded-md text-xs">
+    Agent status:
+    {#if $agentState !== null}
+      {#if $agentState.agent_is_active}
+        <span class="text-green-500">Active</span>
+      {:else}
+        <span class="text-orange-600">Inactive</span>
+      {/if}
+    {:else}
+      Deactive
+    {/if}
+  </div>
+
   <textarea
     id="message-input"
-    class="w-full p-4 font-medium focus:text-foreground rounded-2xl outline-none h-28 pr-20 bg-secondary"
+    class="w-full p-4 font-medium focus:text-foreground rounded-xl outline-none h-28 pr-20 bg-secondary"
     placeholder="Type your message..."
     bind:value={messageInput}
     on:input={setTokenSize}
@@ -74,9 +87,9 @@
     disabled={isAgentActive}
     class="absolute text-secondary bg-primary p-2 right-4 bottom-6 rounded-full"
   >
-  <CornerDownLeft />    
+  <CornerDownLeft size={16}/>    
   </button>
-  <p class="absolute text-tertiary p-2 right-4 top-2">
+  <p class="absolute text-tertiary p-2 right-4 top-12">
     <span class="token-count">0</span>
   </p>
 </div>

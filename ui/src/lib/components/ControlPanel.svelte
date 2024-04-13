@@ -101,7 +101,7 @@
   <div class="dropdown-menu relative inline-block">
     <button
       type="button"
-      class="inline-flex items-center justify-between w-full text-foreground h-10 gap-2 px-3 py-2 text-sm min-w-[200px] bg-secondary rounded-xl"
+      class="inline-flex items-center justify-between w-full text-foreground h-10 gap-2 px-3 py-2 text-sm min-w-[200px] bg-secondary rounded-md"
       id="project-button"
       aria-expanded="true"
       aria-haspopup="true"
@@ -151,29 +151,23 @@
     class=""
     style="display: flex; align-items: center; gap: 20px"
   >
-    <div class="flex items-center space-x-2">
+    <div class="flex items-center gap-2 text-sm">
       <span>Internet:</span>
-      <p class="text-foreground">
-        {#if internet}        
-        OK
-        {:else}
-        NO
-        {/if}
-      </p>
-      <span id="internet-status-text"></span>
+      <span class=" size-3 rounded-full" class:online={$internet} class:offline={!$internet}></span>
     </div>
 
     <Seperator />
 
-    <div class="flex items-center space-x-2">
+    <div class="flex items-center gap-2 text-sm">
       <span>Token Usage:</span>
       <span id="token-count" class="token-count-animation text-foreground">{$tokenUsage}</span>
     </div>
+    
     <div class="relative inline-block text-left">
       <div>
         <button
           type="button"
-          class="inline-flex items-center justify-between min-w-[200px] text-foreground w-fit gap-2 px-3 py-2 text-sm h-10 bg-secondary rounded-xl"
+          class="inline-flex items-center justify-between min-w-[200px] text-foreground w-fit gap-2 px-3 py-2 text-sm h-10 bg-secondary rounded-md"
           id="search-engine-button"
           aria-expanded="true"
           aria-haspopup="true"
@@ -199,7 +193,6 @@
             {selectSearchEngine === engine ? 'bg-gray-300' : ''}"
               >
                 <button
-                  href="#"
                   class="flex gap-2 items-center text-sm py-3 w-full text-clip"
                   on:click|preventDefault={() => selectSearchEngine(engine)}
                 >
@@ -215,7 +208,7 @@
       <div>
         <button
           type="button"
-          class="inline-flex items-center text-foreground justify-between w-fit gap-x-1.5 min-w-[150px] px-3 py-2 text-sm h-10 bg-secondary rounded-xl"
+          class="inline-flex items-center text-foreground justify-between w-fit gap-x-1.5 min-w-[150px] px-3 py-2 text-sm h-10 bg-secondary rounded-md"
           id="model-button"
           aria-expanded="true"
           aria-haspopup="true"
@@ -264,10 +257,10 @@
         {/if}
       </div>
     </div>
-    <Separator class='h-8' orientation="vertical"  />
+    <!-- <Separator class='h-8' orientation="vertical"  />
     <div class="relative inline-block">
       <DrawerWidget />
-    </div>
+    </div> -->
   </div>
 </div>
 
@@ -298,6 +291,14 @@
     100% {
       transform: translateY(0);
     }
+  }
+
+  .online {
+    background-color: #22c55e;
+  }
+
+  .offline {
+    background-color: #ef4444;
   }
 
   .token-count-animation {
