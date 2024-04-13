@@ -1,7 +1,7 @@
 <script>
   import { socket } from "$lib/api";
   import { agentState, messages } from "$lib/store";
-  import { CornerDownLeft } from "lucide-svelte";
+  import CornerDownLeft from "lucide-svelte/icons/corner-down-left";
   import { calculateTokens } from "$lib/token";
 
   let isAgentActive = false;

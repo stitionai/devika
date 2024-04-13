@@ -4,9 +4,9 @@
   import { Slider } from "$lib/components/ui/slider";
   import { Label } from "$lib/components/ui/label";
   import { Separator } from "$lib/components/ui/separator";
-  import { Check } from "lucide-svelte";
-  import { Undo2 } from "lucide-svelte";
-  import { Menu } from "lucide-svelte";
+  import Check from "lucide-svelte/icons/check";
+  import Undo2 from "lucide-svelte/icons/undo-2";
+  import Menu from "lucide-svelte/icons/menu";
 </script>
 
 <Sheet.Root>

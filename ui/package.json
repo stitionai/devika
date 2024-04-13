@@ -16,7 +16,7 @@
     "postcss-load-config": "^5.0.2",
     "svelte": "^4.2.7",
     "tailwindcss": "^3.4.3",
-    "vite": "^5.0.3",
+    "vite": "^5.2.8",
     "vite-plugin-wasm": "^3.3.0"
   },
   "type": "module",
