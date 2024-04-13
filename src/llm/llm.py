@@ -8,6 +8,7 @@ from .openai_client import OpenAi
 from .gemini_client import Gemini
 from .mistral_client import MistralAi
 from .groq_client import Groq
+from .azure_openai_client import AzureOpenAI
 
 from src.state import AgentState
 
@@ -19,7 +20,6 @@ TIKTOKEN_ENC = tiktoken.get_encoding("cl100k_base")
 ollama = Ollama()
 logger = Logger()
 agentState = AgentState()
-
 
 class LLM:
     def __init__(self, model_id: str = None):
@@ -49,6 +49,9 @@ class LLM:
                 ("GROQ Mixtral", "mixtral-8x7b-32768"),
                 ("GROQ LLAMA2 70B", "llama2-70b-4096"),
                 ("GROQ GEMMA 7B IT", "gemma-7b-it"),
+            ],
+            "AZURE":[
+                ("AZURE GPT", "gpt-3.5-turbo-0125"),
             ],
             "OLLAMA": []
         }
@@ -88,7 +91,8 @@ class LLM:
             "OPENAI": OpenAi(),
             "GOOGLE": Gemini(),
             "MISTRAL": MistralAi(),
-            "GROQ": Groq()
+            "GROQ": Groq(),
+            "AZURE": AzureOpenAI(),
         }
 
         try:
