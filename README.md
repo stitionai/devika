@@ -19,8 +19,8 @@
   - [Installation](#installation)
   - [How to use](#how-to-use)
 - [Configuration](#configuration)
-- [Community Discord Server](#community-discord-server)
 - [Contributing](#contributing)
+- [Help and Support](#help-and-support)
 - [License](#license)
 
 ## About
@@ -84,22 +84,22 @@ To install Devika, follow these steps:
    ```bash
    playwright install --with-deps # installs browsers in playwright (and their deps) if required
    ```
-5. (optional step) for setting up the ollama, you can follow the [ollama setup guide](docs/Installation/ollama.md)
-5. Start the Devika server:
+5. (optional step) for setting up the ollama(local llms), you can follow the [ollama setup guide](docs/Installation/ollama.md)
+6. Start the Devika server:
    ```bash
    python devika.py
    ```
-6. if everything is working fine, you see the following output:
+7. if everything is working fine, you see the following output:
    ```bash
    root: INFO   : Devika is up and running!
    ```
-6. Now, for frontend, open a new terminal and navigate to the `ui` directory:
+8. Now, for frontend, open a new terminal and navigate to the `ui` directory:
    ```bash
    cd ui/
    bun install
-   bun run dev
+   bun run start
    ```
-8. Access the Devika web interface by opening a browser and navigating to `http://127.0.0.1:3000`
+9. Access the Devika web interface by opening a browser and navigating to `http://127.0.0.1:3001`
 
 ### how to use
 
