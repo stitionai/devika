@@ -12,7 +12,7 @@
 				isSelected ? 'text-btn-active' : 'text-tertiary'
 			}`}
 		>
-			<svelte:component this={icon} />
+		{@html icon}
 		</button>
 		<span class="tooltip">{tooltip}</span>
 	</div>

@@ -1,7 +1,7 @@
 <script>
 	import { Select as SelectPrimitive } from "bits-ui";
-	import ChevronDown from "lucide-svelte/icons/chevron-down";
 	import { cn } from "$lib/utils.js";
+    import { Icons } from "../../../icons";
 	let className = undefined;
 	export { className as class };
 </script>
@@ -17,7 +17,7 @@
 	on:keydown
 >
 	<slot {builder} />
-	<div>
-		<ChevronDown class="h-4 w-4 opacity-50" />
+	<div class="h-4 w-4 opacity-50">
+		{@html Icons.ChevronDown}
 	</div>
 </SelectPrimitive.Trigger>

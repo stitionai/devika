@@ -187,7 +187,6 @@
               </Select.Trigger>
               <Select.Content>
                 <Select.Group>
-                  <!-- <Select.Label>Themes</Select.Label> -->
                   <Select.Item value={"light"} label={"Light"}>Light</Select.Item>
                   <Select.Item value={"dark"} label={"Dark"}>Dark</Select.Item>
                   <Select.Item value={"system"} label={"System"}>System</Select.Item>
@@ -208,7 +207,6 @@
               </Select.Trigger>
               <Select.Content>
                 <Select.Group>
-                  <!-- <Select.Label>Resize</Select.Label> -->
                   <Select.Item value={"enable"} label={"Enable"}>Enable</Select.Item>
                   <Select.Item value={"disable"} label={"Disable"}>Disable</Select.Item>
                 </Select.Group>

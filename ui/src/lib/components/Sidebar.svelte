@@ -1,23 +1,21 @@
 <script>
   import SidebarButton from "./ui/SidebarButton.svelte";
   import { page } from "$app/stores";
-  import Clock from "lucide-svelte/icons/clock";
-  import Home from "lucide-svelte/icons/home";
-  import Settings from "lucide-svelte/icons/settings";
+  import {Icons} from "./../icons"
 
   let navItems = [
     {
-      icon: Home,
+      icon: Icons.HOME,
       tooltip: "Home",
       route: "/",
     },
     {
-      icon: Settings,
+      icon: Icons.SETTINGS,
       tooltip: "Settings",
       route: "/settings",
     },
     {
-      icon: Clock,
+      icon: Icons.LOGS,
       tooltip: "Logs",
       route: "/logs",
     },

@@ -6,7 +6,6 @@
   import BrowserWidget from "$lib/components/BrowserWidget.svelte";
   import TerminalWidget from "$lib/components/TerminalWidget.svelte";
   import * as Resizable from "$lib/components/ui/resizable/index.js";
-  import FooterToolbar from "$lib/components/FooterToolbar.svelte";
   import { toast } from "svelte-sonner";
 
   import {
@@ -21,6 +20,7 @@
     localStorage.getItem("resize") &&
     localStorage.getItem("resize") === "enable";
   let prevMonologue = null;
+  
   onMount(() => {
     // localStorage.clear();
     const load = async () => {
@@ -60,9 +60,9 @@
           toast.success(newValue);
         }
       }
-      if (state && state.internal_monologue) {
+      if (state && state.internal_monologue && state.internal_monologue !== prevMonologue) {
         handleMonologueChange(state.internal_monologue);
-        // prevMonologue = state.internal_monologue;
+        prevMonologue = state.internal_monologue;
       }
     });
   });
@@ -108,6 +108,4 @@
       </Resizable.PaneGroup>
     </Resizable.Pane>
   </Resizable.PaneGroup>
-
-  <FooterToolbar />
 </div>

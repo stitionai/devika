@@ -1,6 +1,6 @@
 <script>
   import { messages } from "$lib/store";
-  import { onMount, afterUpdate } from "svelte";
+  import { afterUpdate } from "svelte";
 
   let messageContainer;
   let previousMessageCount = 0;

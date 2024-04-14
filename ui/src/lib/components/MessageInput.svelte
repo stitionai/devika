@@ -1,8 +1,8 @@
 <script>
   import { socket } from "$lib/api";
   import { agentState, messages } from "$lib/store";
-  import CornerDownLeft from "lucide-svelte/icons/corner-down-left";
   import { calculateTokens } from "$lib/token";
+  import { Icons } from "../icons";
 
   let isAgentActive = false;
 
@@ -87,7 +87,7 @@
     disabled={isAgentActive}
     class="absolute text-secondary bg-primary p-2 right-4 bottom-6 rounded-full"
   >
-  <CornerDownLeft size={16}/>    
+  {@html Icons.CornerDownLeft} 
   </button>
   <p class="absolute text-tertiary p-2 right-4 top-12">
     <span class="token-count">0</span>

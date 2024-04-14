@@ -1,5 +1,4 @@
 <script>
-	import GripVertical from "lucide-svelte/icons/grip-vertical";
 	import * as ResizablePrimitive from "paneforge";
 	import { cn } from "$lib/utils.js";
 	export let withHandle = false;
@@ -17,7 +16,7 @@
 >
 	{#if withHandle}
 		<div class="z-10 flex h-4 w-3 items-center justify-center rounded-sm border bg-border">
-			<GripVertical class="h-2.5 w-2.5" />
+			<!-- <GripVertical class="h-2.5 w-2.5" /> -->
 		</div>
 	{/if}
 </ResizablePrimitive.PaneResizer>
