@@ -6,6 +6,7 @@ from .ollama_client import Ollama
 from .claude_client import Claude
 from .openai_client import OpenAi
 from .gemini_client import Gemini
+from .openrouter_client import OpenRouter
 from .mistral_client import MistralAi
 from .groq_client import Groq
 
@@ -50,7 +51,8 @@ class LLM:
                 ("GROQ LLAMA2 70B", "llama2-70b-4096"),
                 ("GROQ GEMMA 7B IT", "gemma-7b-it"),
             ],
-            "OLLAMA": []
+            "OLLAMA": [],
+            "OPENROUTER":[("OpenRouter Default","Default")]
         }
         if ollama.client:
             self.models["OLLAMA"] = [(model["name"].split(":")[0], model["name"]) for model in
@@ -88,7 +90,8 @@ class LLM:
             "OPENAI": OpenAi(),
             "GOOGLE": Gemini(),
             "MISTRAL": MistralAi(),
-            "GROQ": Groq()
+            "GROQ": Groq(),
+            "OPENROUTER" : OpenRouter()
         }
 
         try:
@@ -101,5 +104,4 @@ class LLM:
             logger.debug(f"Response ({model}): --> {response}")
 
         self.update_global_token_usage(response, project_name)
-
         return response

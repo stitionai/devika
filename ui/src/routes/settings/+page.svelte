@@ -51,7 +51,8 @@
       "GEMINI": settings["API_KEYS"]["GEMINI"],
       "MISTRAL": settings["API_KEYS"]["MISTRAL"],
       "GROQ": settings["API_KEYS"]["GROQ"],
-      "NETLIFY": settings["API_KEYS"]["NETLIFY"]
+      "NETLIFY": settings["API_KEYS"]["NETLIFY"],
+      "OPENROUTER":settings["API_KEYS"]["OPENROUTER"]
     };
     // make a copy of the original settings
     original = JSON.parse(JSON.stringify(settings));
