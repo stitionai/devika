@@ -101,7 +101,7 @@ To install Devika, follow these steps:
    ```bash
    python devika.py
    ```
-7. if everything is working fine, you see the following output:
+6. if everything is working fine, you see the following output:
    ```bash
    root: INFO   : Devika is up and running!
    ```
