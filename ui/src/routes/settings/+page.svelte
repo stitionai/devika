@@ -2,9 +2,9 @@
   import { updateSettings, fetchSettings } from "$lib/api";
   import { onMount } from "svelte";
   import * as Tabs from "$lib/components/ui/tabs";
-  import Separator from "$lib/components/ui/separator/separator.svelte";
   import { setMode } from "mode-watcher";
   import * as Select from "$lib/components/ui/select/index.js";
+    import Seperator from "../../lib/components/ui/Seperator.svelte";
 
   let settings = {};
   let editMode = false;
@@ -86,7 +86,7 @@
         <Tabs.Trigger value="endpoints">API Endpoints</Tabs.Trigger>
         <Tabs.Trigger value="appearance">Appearance</Tabs.Trigger>
       </Tabs.List>
-      <Separator />
+      <Seperator direction="vertical"/>
       <Tabs.Content value="apikeys" class="mt-4">
         {#if settings["API_KEYS"]}
           <div class="flex gap-4 w-full">
