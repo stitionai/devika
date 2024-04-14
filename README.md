@@ -58,7 +58,7 @@ Read [**README.md**](docs/architecture) for the detailed documentation.
 ### Requirements
 ```
 - Linux, MacOS, or Windows
-- Python >= 3.9
+- Python >= 3.9 and < 3.12
 - NodeJs >= 18
 - bun
 ```
@@ -140,19 +140,15 @@ when you first time run Devika, it will create a `config.toml` file for you in t
 Make sure to keep your API keys secure and do not share them publicly. For setting up the Bing and Google search API keys, follow the instructions in the [search engine setup](docs/Installation/search_engine.md)
 
 
-# Community Discord Server
-
-We have a Discord server for the Devika community, where you can connect with other users, share your experiences, ask questions, and collaborate on the project. To join the server, please follow these guidelines:
-
-- Be respectful: Treat all members of the community with kindness and respect. Harassment, hate speech, and other forms of inappropriate behavior will not be tolerated.
-- Contribute positively: Share your ideas, insights, and feedback to help improve Devika. Offer assistance to other community members when possible.
-- Maintain privacy: Respect the privacy of others and do not share personal information without their consent.
-
-To join the Devika community Discord server, [click here](https://discord.gg/CYRp43878y).
-
 ## Contributing
 
 We welcome contributions to enhance Devika's capabilities and improve its performance. To contribute, please see the [`CONTRIBUTING.md`](CONTRIBUTING.md) file for steps.
+
+## Help and Support
+
+If you have any questions, feedback, or suggestions, please feel free to reach out to us. you can raise an issue in the [issue tracker](https://github.com/stitionai/devika/issues) or join the [discussions](https://github.com/stitionai/devika/discussions) for general discussions.
+
+We also have a Discord server for the Devika community, where you can connect with other users, share your experiences, ask questions, and collaborate on the project. To join the Devika community Discord server, [click here](https://discord.gg/CYRp43878y).
 
 ## License
 

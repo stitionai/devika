@@ -35,7 +35,7 @@ Explain what existing problem does the pull request solve?
 Demonstrate the code is solid. Example: The exact commands you ran and their output, screenshots / videos if the pull request changes UI.
 
 
-**Closing issues** (optional)
+### Closing issues (optional)
 
 <!-- Put `closes #XXXX` in your comment to auto-close the issue that your PR fixes (if such). -->
 Fixes #
