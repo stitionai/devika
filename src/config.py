@@ -117,6 +117,10 @@ class Config:
         self.config["API_KEYS"]["OPENAI"] = key
         self.save_config()
 
+    def set_openai_api_endpoint(self,endpoint):
+        self.config["API_ENDPOINTS"]["OPENAI"] = endpoint
+        self.save_config()
+
     def set_gemini_api_key(self, key):
         self.config["API_KEYS"]["GEMINI"] = key
         self.save_config()
