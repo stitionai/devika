@@ -147,7 +147,7 @@ when you first time run Devika, it will create a `config.toml` file for you in t
    - `BING`: The Bing API endpoint for web searching.
    - `GOOGLE`: The Google API endpoint for web searching.
    - `OLLAMA`: The Ollama API endpoint for accessing Local LLMs.
-
+   - `OPENAI`: The OpenAI API endpoint for accessing OpenAI models.
 
 Make sure to keep your API keys secure and do not share them publicly. For setting up the Bing and Google search API keys, follow the instructions in the [search engine setup](docs/Installation/search_engine.md)
 
