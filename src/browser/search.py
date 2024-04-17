@@ -66,7 +66,7 @@ class GoogleSearch:
 #         self.query_result = None
 #
 #     def search(self, query):
-#         from duckduckgo_search import DDGS
+        from duckduckgo_search import DDGS
 #         try:
 #             self.query_result = DDGS().text(query, max_results=5, region="us")
 #             print(self.query_result)
@@ -102,6 +102,8 @@ class DuckDuckGoSearch:
                 return resp.content
             if resp.status_code == (202, 301, 403):
                 raise Exception(f"Error: {resp.status_code} rate limit error")
+            if not resp:
+                return None
         except Exception as error:
             if "timeout" in str(error).lower():
                 raise TimeoutError("Duckduckgo timed out error")
