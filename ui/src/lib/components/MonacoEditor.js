@@ -23,8 +23,8 @@ function getFileLanguage(fileType) {
 }
 
 const getTheme = () => {
-    const theme = localStorage.getItem('theme');
-    return theme === 'dark' ? 'vs-dark' : 'vs-light';
+    const theme = localStorage.getItem('mode-watcher-mode');
+    return theme === 'light' ? 'vs-light' : 'vs-dark';
 };
 
 export async function initializeMonaco() {
@@ -36,7 +36,7 @@ export async function initializeMonaco() {
 export function createEditors(container, monaco, file) {
     const editor = monaco.editor.create(container, {
         theme: getTheme(),
-        readOnly: true, 
+        readOnly: false, 
         automaticLayout: true 
     });
     const model = monaco.editor.createModel(
@@ -73,9 +73,9 @@ function switchTab(editors, filename, tabElement) {
             if (domNode) {
                 domNode.style.display = 'block';
             }
-            editor[1].updateOptions({ readOnly: false }); 
+            // editor[1].updateOptions({ readOnly: false }); 
         } else {
-            editor[1].updateOptions({ readOnly: true });
+            // editor[1].updateOptions({ readOnly: true });
             const domNode = editor[1].getDomNode();
             if (domNode) {
                 domNode.style.display = 'none';
