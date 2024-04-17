@@ -4,7 +4,8 @@
   import * as Tabs from "$lib/components/ui/tabs";
   import { setMode } from "mode-watcher";
   import * as Select from "$lib/components/ui/select/index.js";
-    import Seperator from "../../lib/components/ui/Seperator.svelte";
+  import Seperator from "../../lib/components/ui/Seperator.svelte";
+    import { toast } from "svelte-sonner";
 
   let settings = {};
   let editMode = false;
@@ -213,6 +214,23 @@
               </Select.Content>
               <Select.Input name="favoriteFruit" />
             </Select.Root>
+          </div>
+        </div>
+        <div class="flex w-full justify-between items-center  my-2 gap-8">
+          <div>
+            Reset layout
+          </div>
+          <div>
+            <button
+              class="min-w-[180px] p-2 border-2 rounded-lg flex gap-3 items-center justify-between hover:bg-secondary"
+              on:click={() => {
+                toast.warning("Resetting layout");
+                localStorage.removeItem('paneforge:default');
+              }}
+            >
+              Reset
+              <i class="fas fa-undo"></i>
+            </button>
           </div>
         </div>
       </Tabs.Content>

@@ -125,6 +125,13 @@ export async function getBrowserSnapshot(snapshotPath) {
   return data.snapshot;
 }
 
+export async function fetchProjectFiles() {
+  const projectName = localStorage.getItem("selectedProject");
+  const response = await fetch(`${API_BASE_URL}/api/get-project-files?project_name=${projectName}`)
+  const data = await response.json();
+  return data.files;
+}
+
 export async function checkInternetStatus() {
   if (navigator.onLine) {
     internet.set(true);

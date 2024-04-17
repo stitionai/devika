@@ -36,7 +36,7 @@
   });
 </script>
 
-<div class="flex h-full flex-col flex-1 gap-4 p-4">
+<div class="flex h-full flex-col flex-1 gap-4 p-4 overflow-hidden">
   <ControlPanel />
 
   <Resizable.PaneGroup direction="horizontal" class="max-w-full">

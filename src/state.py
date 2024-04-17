@@ -1,4 +1,5 @@
 import json
+import os
 from datetime import datetime
 from typing import Optional
 from sqlmodel import Field, Session, SQLModel, create_engine
@@ -173,3 +174,24 @@ class AgentState:
             if agent_state:
                 return json.loads(agent_state.state_stack_json)[-1]["token_usage"]
             return 0
+
+    def get_project_files(self, project_name: str):
+        if not project_name:
+            return []
+        directory = os.path.join(os.getcwd(), 'data', 'projects', "-".join(project_name.split(" "))) 
+        if(not os.path.exists(directory)):
+            return []
+        files = []
+        for root, _, filenames in os.walk(directory):
+            for filename in filenames:
+                file_path = os.path.join(root, filename)
+                try:
+                    with open(file_path, 'r') as file:
+                        print("File:", filename)
+                        files.append({
+                            "file": filename,
+                            "code": file.read()
+                        })
+                except Exception as e:
+                    print(f"Error reading file {filename}: {e}")
+        return files

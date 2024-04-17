@@ -118,6 +118,14 @@ def get_agent_state():
     return jsonify({"state": agent_state})
 
 
+@app.route("/api/get-project-files/", methods=["GET"])
+@route_logger(logger)
+def project_files():
+    project_name = request.args.get("project_name")
+    files = AgentState.get_project_files(project_name)  
+    return jsonify({"files": files})
+
+
 @app.route("/api/get-browser-snapshot", methods=["GET"])
 @route_logger(logger)
 def browser_snapshot():
