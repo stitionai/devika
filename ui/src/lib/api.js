@@ -11,7 +11,6 @@ import { io } from "socket.io-client";
 
 const getApiBaseUrl = () => {
   if (typeof window !== 'undefined') {
-    // Client-side code
     const host = window.location.hostname;
     if (host === 'localhost' || host === '127.0.0.1') {
       return 'http://127.0.0.1:1337';
@@ -19,7 +18,6 @@ const getApiBaseUrl = () => {
       return `http://${host}:1337`;
     }
   } else {
-    // Server-side code (Node.js)
     return 'http://127.0.0.1:1337';
   }
 };

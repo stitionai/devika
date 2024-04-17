@@ -27,7 +27,7 @@ class Config:
 
     def get_bing_api_key(self):
         return self.config["API_KEYS"]["BING"]
-    
+
     def get_google_search_api_key(self):
         return self.config["API_KEYS"]["GOOGLE_SEARCH"]
 
@@ -36,7 +36,7 @@ class Config:
 
     def get_google_search_api_endpoint(self):
         return self.config["API_ENDPOINTS"]["GOOGLE"]
-    
+
     def get_ollama_api_endpoint(self):
         return self.config["API_ENDPOINTS"]["OLLAMA"]
 
@@ -45,6 +45,9 @@ class Config:
 
     def get_openai_api_key(self):
         return self.config["API_KEYS"]["OPENAI"]
+
+    def get_openai_api_base_url(self):
+        return self.config["API_ENDPOINTS"]["OPENAI"]
 
     def get_gemini_api_key(self):
         return self.config["API_KEYS"]["GEMINI"]
@@ -112,6 +115,10 @@ class Config:
 
     def set_openai_api_key(self, key):
         self.config["API_KEYS"]["OPENAI"] = key
+        self.save_config()
+
+    def set_openai_api_endpoint(self,endpoint):
+        self.config["API_ENDPOINTS"]["OPENAI"] = endpoint
         self.save_config()
 
     def set_gemini_api_key(self, key):
