@@ -66,13 +66,13 @@ class Feature:
         project_name = project_name.lower().replace(" ", "-")
 
         for file in response:
-            file_path = f"{self.project_dir}/{project_name}/{file['file']}"
-            file_path_dir = file_path[:file_path.rfind("/")]
+            file_path = os.path.join(self.project_dir, project_name, file['file'])
+            file_path_dir = os.path.dirname(file_path)
             os.makedirs(file_path_dir, exist_ok=True)
-
-            with open(file_path, "w") as f:
-                f.write(file["code"])
     
+            with open(file_path, "w", encoding="utf-8") as f:
+                f.write(file["code"])
+        
         return file_path_dir
 
     def get_project_path(self, project_name: str):

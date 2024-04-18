@@ -1,12 +1,3 @@
----
-name: Pull request
-about: Create a pull request to help us improve
-title: ''
-labels: ''
-assignees: ''
-
----
-
 <!-- NOTE: A similar PR may already be submitted! Please search among the [Pull request] before creating one.
 
 Thanks for submitting a pull request! Please provide enough information so that others can review your pull request:

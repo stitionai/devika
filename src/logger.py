@@ -58,10 +58,16 @@ def route_logger(func):
         # Log exit point, including response summary if possible
         try:
             if log_enabled:
-                response_summary = response.get_data(as_text=True)
-                logger.debug(f"{request.path} {request.method} - Response: {response_summary}")
+              if isinstance(response, Response) and response.direct_passthrough:
+                  logger.debug(f"{request.path} {request.method} - Response: File response")
+              else:
+                  response_summary = response.get_data(as_text=True)
+                  if 'settings' in request.path:
+                      response_summary = "*** Settings are not logged ***"
+                  logger.debug(f"{request.path} {request.method} - Response: {response_summary}")
         except Exception as e:
             logger.exception(f"{request.path} {request.method} - {e})")
 
         return response
     return wrapper
+  
