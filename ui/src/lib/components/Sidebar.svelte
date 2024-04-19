@@ -20,6 +20,7 @@
       route: "/logs",
     },
   ];
+  console.log($page.url)
 </script>
 
 <div
@@ -28,7 +29,7 @@
   {#each navItems as { icon, tooltip, route }, i}
     <SidebarButton
     icon={icon}
-      href={$page.url.pathname + route}
+      href={route}
       {tooltip}
       isSelected={$page.url.pathname == route}
     />
