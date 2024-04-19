@@ -1,15 +1,15 @@
 ---
-name: Bug report
+name: Issue
 about: Create a report to help us improve
-title: '[Bug]'
+title: '[ISSUE]'
 labels: ''
 assignees: ''
 
 ---
 <!-- NOTE: check if a similar issue is already submitted. Please search among the [Issues] -->
 
-### Describe the bug 
-A clear and concise description of what the bug is.
+### Describe your issue
+A clear and concise description of what the issue is.
 
 ### How To Reproduce
 Steps to reproduce the behavior (example):
