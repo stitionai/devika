@@ -32,8 +32,8 @@ class LLM:
                 ("Claude 3 Haiku", "claude-3-haiku-20240307"),
             ],
             "OPENAI": [
-                ("GPT-4 Turbo", "gpt-4-0125-preview"),
-                ("GPT-3.5", "gpt-3.5-turbo-0125"),
+                ("GPT-4 Turbo", "gpt-4-turbo"),
+                ("GPT-3.5 Turbo", "gpt-3.5-turbo-0125"),
             ],
             "GOOGLE": [
                 ("Gemini 1.0 Pro", "gemini-pro"),
@@ -46,9 +46,11 @@ class LLM:
                 ("Mistral Large", "mistral-large-latest"),
             ],
             "GROQ": [
-                ("GROQ Mixtral", "mixtral-8x7b-32768"),
-                ("GROQ LLAMA2 70B", "llama2-70b-4096"),
-                ("GROQ GEMMA 7B IT", "gemma-7b-it"),
+                ("LLAMA3 8B", "llama3-8b-8192"),
+                ("LLAMA3 70B", "llama3-70b-8192"),
+                ("LLAMA2 70B", "llama2-70b-4096"),
+                ("Mixtral", "mixtral-8x7b-32768"),
+                ("GEMMA 7B", "gemma-7b-it"),
             ],
             "OLLAMA": []
         }
