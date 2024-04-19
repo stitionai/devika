@@ -28,7 +28,7 @@
   {#each navItems as { icon, tooltip, route }, i}
     <SidebarButton
     icon={icon}
-      href={route}
+      href={$page.url.pathname + route}
       {tooltip}
       isSelected={$page.url.pathname == route}
     />
