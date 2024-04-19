@@ -361,6 +361,6 @@ class Agent:
         self.agent_state.set_agent_active(project_name, False)
         self.agent_state.set_agent_completed(project_name, True)
         self.project_manager.add_message_from_devika(project_name,
-                                                     "I have completed the my task. \n"
+                                                     "I have completed my task. \n"
                                                      "if you would like me to do anything else, please let me know. \n"
                                                      )
