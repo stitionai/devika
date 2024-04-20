@@ -16,6 +16,7 @@ class Decision:
         return template.render(prompt=prompt)
 
     def validate_response(self, response: str):
+        print("Hi there from decision")
         response = response.strip().replace("```json", "```")
         
         if response.startswith("```") and response.endswith("```"):

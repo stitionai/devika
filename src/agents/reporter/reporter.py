@@ -19,6 +19,7 @@ class Reporter:
         )
 
     def validate_response(self, response: str):
+        print("Hi there from reporter")
         response = response.strip().replace("```md", "```")
         
         if response.startswith("```") and response.endswith("```"):

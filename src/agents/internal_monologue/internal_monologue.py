@@ -16,6 +16,7 @@ class InternalMonologue:
         return template.render(current_prompt=current_prompt)
 
     def validate_response(self, response: str):
+        print("Hi there from internal monologue")
         response = response.strip().replace("```json", "```")
         
         if response.startswith("```") and response.endswith("```"):

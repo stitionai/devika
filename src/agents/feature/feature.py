@@ -33,6 +33,7 @@ class Feature:
         )
 
     def validate_response(self, response: str) -> Union[List[Dict[str, str]], bool]:
+        print("Hi there from feature")
         response = response.strip()
 
         response = response.split("~~~", 1)[1]

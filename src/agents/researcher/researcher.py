@@ -23,8 +23,9 @@ class Researcher:
         )
 
     def validate_response(self, response: str) -> dict | bool:
+        print("Hi there from researcher")
         response = response.strip().replace("```json", "```")
-
+        print(f"response: {response}")
         if response.startswith("```") and response.endswith("```"):
             response = response[3:-3].strip()
         try:

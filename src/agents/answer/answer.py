@@ -25,6 +25,7 @@ class Answer:
         )
 
     def validate_response(self, response: str):
+        print("Hi there from answer")
         response = response.strip().replace("```json", "```")
         
         if response.startswith("```") and response.endswith("```"):

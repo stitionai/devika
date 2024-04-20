@@ -52,6 +52,7 @@ class Runner:
         )
 
     def validate_response(self, response: str):
+        print("Hi there from runner")
         response = response.strip().replace("```json", "```")
         
         if response.startswith("```") and response.endswith("```"):

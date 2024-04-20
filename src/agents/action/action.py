@@ -24,7 +24,9 @@ class Action:
         )
 
     def validate_response(self, response: str):
+        print("Hi there from action")
         response = response.strip().replace("```json", "```")
+        print(response)
         
         if response.startswith("```") and response.endswith("```"):
             response = response[3:-3].strip()
@@ -46,6 +48,7 @@ class Action:
         valid_response = self.validate_response(response)
         
         while not valid_response:
+            print("Hi there!")
             print("Invalid response from the model, trying again...")
             return self.execute(conversation, project_name)
         

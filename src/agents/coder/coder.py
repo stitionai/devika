@@ -30,6 +30,7 @@ class Coder:
         )
 
     def validate_response(self, response: str) -> Union[List[Dict[str, str]], bool]:
+        print("Hi there from coder")
         response = response.strip()
 
         self.logger.debug(f"Response from the model: {response}")
