@@ -56,7 +56,3 @@ class TestConfig:
         config_loaded = Config().get_config()
 
         assert config_saved == config_loaded
-        
-
-
-
