@@ -18,7 +18,7 @@ TIKTOKEN_ENC = tiktoken.get_encoding("cl100k_base")
 
 ollama = Ollama()
 logger = Logger()
-agentState = AgentState()
+agent_state = AgentState()
 
 
 class LLM:
@@ -71,9 +71,9 @@ class LLM:
     @staticmethod
     def update_global_token_usage(string: str, project_name: str):
         token_usage = len(TIKTOKEN_ENC.encode(string))
-        agentState.update_token_usage(project_name, token_usage)
+        agent_state.update_token_usage(project_name, token_usage)
 
-        total = agentState.get_latest_token_usage(project_name) + token_usage
+        total = agent_state.get_latest_token_usage(project_name) + token_usage
         emit_agent("tokens", {"token_usage": total})
 
     def inference(self, prompt: str, project_name: str) -> str:
