@@ -1,366 +1,126 @@
-from .planner import Planner
-from .researcher import Researcher
-from .formatter import Formatter
-from .coder import Coder
-from .action import Action
-from .internal_monologue import InternalMonologue
-from .answer import Answer
-from .runner import Runner
-from .feature import Feature
-from .patcher import Patcher
-from .reporter import Reporter
-from .decision import Decision
-
-from src.project import ProjectManager
-from src.state import AgentState
-from src.logger import Logger
-
-from src.bert.sentence import SentenceBert
-from src.memory import KnowledgeBase
-from src.browser.search import BingSearch, GoogleSearch, DuckDuckGoSearch
-from src.browser import Browser
-from src.browser import start_interaction
-from src.filesystem import ReadCode
-from src.services import Netlify
-from src.documenter.pdf import PDF
-
 import json
-import time
-import platform
-import tiktoken
-import asyncio
+import re
+import os
+import inspect
+import logging
 
-from src.socket_instance import emit_agent
+from jinja2 import BaseLoader, Environment
 
 
 class Agent:
-    def __init__(self, base_model: str, search_engine: str, browser: Browser = None):
-        if not base_model:
-            raise ValueError("base_model is required")
+    """ "
+    This class is the parent class of all the agents. It defines the methods and attributes common to all agents.
+    """
 
-        self.logger = Logger()
+    def __init__(self):
+        pass
 
+    def render(self, **kwargs):
         """
-        Accumulate contextual keywords from chained prompts of all preparation agents
+        This method renders the prompt template of the child class with the provided arguments.
+
+        Args:
+            **kwargs: The arguments to provide to the prompt template.
+
+        Returns:
+            str: The rendered prompt.
         """
-        self.collected_context_keywords = []
-
-        """
-        Agents
-        """
-        self.planner = Planner(base_model=base_model)
-        self.researcher = Researcher(base_model=base_model)
-        self.formatter = Formatter(base_model=base_model)
-        self.coder = Coder(base_model=base_model)
-        self.action = Action(base_model=base_model)
-        self.internal_monologue = InternalMonologue(base_model=base_model)
-        self.answer = Answer(base_model=base_model)
-        self.runner = Runner(base_model=base_model)
-        self.feature = Feature(base_model=base_model)
-        self.patcher = Patcher(base_model=base_model)
-        self.reporter = Reporter(base_model=base_model)
-        self.decision = Decision(base_model=base_model)
-
-        self.project_manager = ProjectManager()
-        self.agent_state = AgentState()
-        self.engine = search_engine
-        self.tokenizer = tiktoken.get_encoding("cl100k_base")
-
-    async def open_page(self, project_name, url):
-        browser = await Browser().start()
-
-        await browser.go_to(url)
-        _, raw = await browser.screenshot(project_name)
-        data = await browser.extract_text()
-        await browser.close()
-
-        return browser, raw, data
-
-    def search_queries(self, queries: list, project_name: str) -> dict:
-        results = {}
-
-        knowledge_base = KnowledgeBase()
-
-        if self.engine == "bing":
-            web_search = BingSearch()
-        elif self.engine == "google":
-            web_search = GoogleSearch()
-        else:
-            web_search = DuckDuckGoSearch()
-
-        self.logger.info(f"\nSearch Engine :: {self.engine}")
-
-        for query in queries:
-            query = query.strip().lower()
-
-            # knowledge = knowledge_base.get_knowledge(tag=query)
-            # if knowledge:
-            #     results[query] = knowledge
-            #     continue
-
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-
-            web_search.search(query)
-
-            link = web_search.get_first_link()
-            print("\nLink :: ", link, '\n')
-            if not link:
-                continue
-            browser, raw, data = loop.run_until_complete(self.open_page(project_name, link))
-            emit_agent("screenshot", {"data": raw, "project_name": project_name}, False)
-            results[query] = self.formatter.execute(data, project_name)
-
-            self.logger.info(f"got the search results for : {query}")
-            # knowledge_base.add_knowledge(tag=query, contents=results[query])
-        return results
-
-    def update_contextual_keywords(self, sentence: str):
-        """
-            Update the context keywords with the latest sentence/prompt
-        """
-        keywords = SentenceBert(sentence).extract_keywords()
-        for keyword in keywords:
-            self.collected_context_keywords.append(keyword[0])
-
-        return self.collected_context_keywords
-
-    def make_decision(self, prompt: str, project_name: str) -> str:
-        decision = self.decision.execute(prompt, project_name)
-
-        for item in decision:
-            function = item["function"]
-            args = item["args"]
-            reply = item["reply"]
-
-            self.project_manager.add_message_from_devika(project_name, reply)
-
-            if function == "git_clone":
-                url = args["url"]
-                # Implement git clone functionality here
-
-            elif function == "generate_pdf_document":
-                user_prompt = args["user_prompt"]
-                # Call the reporter agent to generate the PDF document
-                markdown = self.reporter.execute([user_prompt], "", project_name)
-                _out_pdf_file = PDF().markdown_to_pdf(markdown, project_name)
-
-                project_name_space_url = project_name.replace(" ", "%20")
-                pdf_download_url = "http://127.0.0.1:1337/api/download-project-pdf?project_name={}".format(
-                    project_name_space_url)
-                response = f"I have generated the PDF document. You can download it from here: {pdf_download_url}"
-
-                #asyncio.run(self.open_page(project_name, pdf_download_url))
-
-                self.project_manager.add_message_from_devika(project_name, response)
-
-            elif function == "browser_interaction":
-                user_prompt = args["user_prompt"]
-                # Call the interaction agent to interact with the browser
-                start_interaction(self.base_model, user_prompt, project_name)
-
-            elif function == "coding_project":
-                user_prompt = args["user_prompt"]
-                # Call the planner, researcher, coder agents in sequence
-                plan = self.planner.execute(user_prompt, project_name)
-                planner_response = self.planner.parse_response(plan)
-
-                research = self.researcher.execute(plan, self.collected_context_keywords, project_name)
-                search_results = self.search_queries(research["queries"], project_name)
-
-                code = self.coder.execute(
-                    step_by_step_plan=plan,
-                    user_context=research["ask_user"],
-                    search_results=search_results,
-                    project_name=project_name
-                )
-                self.coder.save_code_to_project(code, project_name)
-
-    def subsequent_execute(self, prompt: str, project_name: str):
-        """
-        Subsequent flow of execution
-        """
-
-        os_system = platform.platform()
-
-        self.agent_state.set_agent_active(project_name, True)
-
-        conversation = self.project_manager.get_all_messages_formatted(project_name)
-        code_markdown = ReadCode(project_name).code_set_to_markdown()
-
-        response, action = self.action.execute(conversation, project_name)
-
-        self.project_manager.add_message_from_devika(project_name, response)
-
-        print("\naction :: ", action, '\n')
-
-        if action == "answer":
-            response = self.answer.execute(
-                conversation=conversation,
-                code_markdown=code_markdown,
-                project_name=project_name
-            )
-            self.project_manager.add_message_from_devika(project_name, response)
-
-        elif action == "run":
-            project_path = self.project_manager.get_project_path(project_name)
-            self.runner.execute(
-                conversation=conversation,
-                code_markdown=code_markdown,
-                os_system=os_system,
-                project_path=project_path,
-                project_name=project_name
-            )
-
-        elif action == "deploy":
-            deploy_metadata = Netlify().deploy(project_name)
-            deploy_url = deploy_metadata["deploy_url"]
-
-            response = {
-                "message": "Done! I deployed your project on Netlify.",
-                "deploy_url": deploy_url
-            }
-            response = json.dumps(response, indent=4)
-
-            self.project_manager.add_message_from_devika(project_name, response)
-
-        elif action == "feature":
-            code = self.feature.execute(
-                conversation=conversation,
-                code_markdown=code_markdown,
-                system_os=os_system,
-                project_name=project_name
-            )
-            print("\nfeature code :: ", code, '\n')
-            self.feature.save_code_to_project(code, project_name)
-
-        elif action == "bug":
-            code = self.patcher.execute(
-                conversation=conversation,
-                code_markdown=code_markdown,
-                commands=None,
-                error=prompt,
-                system_os=os_system,
-                project_name=project_name
-            )
-            print("\nbug code :: ", code, '\n')
-            self.patcher.save_code_to_project(code, project_name)
-
-        elif action == "report":
-            markdown = self.reporter.execute(conversation, code_markdown, project_name)
-
-            _out_pdf_file = PDF().markdown_to_pdf(markdown, project_name)
-
-            project_name_space_url = project_name.replace(" ", "%20")
-            pdf_download_url = "http://127.0.0.1:1337/api/download-project-pdf?project_name={}".format(
-                project_name_space_url)
-            response = f"I have generated the PDF document. You can download it from here: {pdf_download_url}"
-
-            #asyncio.run(self.open_page(project_name, pdf_download_url))
-
-            self.project_manager.add_message_from_devika(project_name, response)
-
-        self.agent_state.set_agent_active(project_name, False)
-        self.agent_state.set_agent_completed(project_name, True)
-
-    def execute(self, prompt: str, project_name_from_user: str = None) -> str:
-        """
-        Agentic flow of execution
-        """
-        if project_name_from_user:
-            self.project_manager.add_message_from_user(project_name_from_user, prompt)
-
-        plan = self.planner.execute(prompt, project_name_from_user)
-        print("\nplan :: ", plan, '\n')
-
-        planner_response = self.planner.parse_response(plan)
-        project_name = planner_response["project"]
-        reply = planner_response["reply"]
-        focus = planner_response["focus"]
-        plans = planner_response["plans"]
-        summary = planner_response["summary"]
-
-        if project_name_from_user:
-            project_name = project_name_from_user
-        else:
-            project_name = planner_response["project"]
-            self.project_manager.create_project(project_name)
-            self.project_manager.add_message_from_user(project_name, prompt)
-
-        self.agent_state.set_agent_active(project_name, True)
-
-        self.project_manager.add_message_from_devika(project_name, reply)
-        self.project_manager.add_message_from_devika(project_name, json.dumps(plans, indent=4))
-        # self.project_manager.add_message_from_devika(project_name, f"In summary: {summary}")
-
-        self.update_contextual_keywords(focus)
-        print("\ncontext_keywords :: ", self.collected_context_keywords, '\n')
-
-        internal_monologue = self.internal_monologue.execute(current_prompt=plan, project_name=project_name)
-        print("\ninternal_monologue :: ", internal_monologue, '\n')
-
-        new_state = self.agent_state.new_state()
-        new_state["internal_monologue"] = internal_monologue
-        self.agent_state.add_to_current_state(project_name, new_state)
-
-        research = self.researcher.execute(plan, self.collected_context_keywords, project_name=project_name)
-        print("\nresearch :: ", research, '\n')
-
-        queries = research["queries"]
-        queries_combined = ", ".join(queries)
-        ask_user = research["ask_user"]
-
-        if (queries and len(queries) > 0) or ask_user != "":
-            self.project_manager.add_message_from_devika(
-                project_name,
-                f"I am browsing the web to research the following queries: {queries_combined}."
-                f"\n If I need anything, I will make sure to ask you."
-            )
-        if not queries and len(queries) == 0:
-            self.project_manager.add_message_from_devika(project_name,
-                                                         "I think I can proceed without searching the web.")
-
-        ask_user_prompt = "Nothing from the user."
-
-        if ask_user != "" and ask_user is not None:
-            self.project_manager.add_message_from_devika(project_name, ask_user)
-            self.agent_state.set_agent_active(project_name, False)
-            got_user_query = False
-
-            while not got_user_query:
-                self.logger.info("Waiting for user query...")
-
-                latest_message_from_user = self.project_manager.get_latest_message_from_user(project_name)
-                validate_last_message_is_from_user = self.project_manager.validate_last_message_is_from_user(
-                    project_name)
-
-                if latest_message_from_user and validate_last_message_is_from_user:
-                    ask_user_prompt = latest_message_from_user["message"]
-                    got_user_query = True
-                    self.project_manager.add_message_from_devika(project_name, "Thanks! 🙌")
-                time.sleep(5)
-
-        self.agent_state.set_agent_active(project_name, True)
-
-        if queries and len(queries) > 0:
-            search_results = self.search_queries(queries, project_name)
-
-        else:
-            search_results = {}
-
-        code = self.coder.execute(
-            step_by_step_plan=plan,
-            user_context=ask_user_prompt,
-            search_results=search_results,
-            project_name=project_name
+        # Load the prompt template of the child class
+        env = Environment(loader=BaseLoader())
+        template_path = os.path.join(
+            os.path.dirname(inspect.getfile(self.__class__)), "prompt.jinja2"
         )
-        print("\ncode :: ", code, '\n')
+        with open(template_path, "r") as f:
+            template_string = f.read()
+            template = env.from_string(template_string)
 
-        self.coder.save_code_to_project(code, project_name)
+        # Check if all the variables in the template are provided
+        required_variables = re.findall(r"{{ (.*?) }}", template_string)
+        for variable in required_variables:
+            if variable not in kwargs:
+                raise ValueError(f"Missing variable {variable} in the render method.")
 
-        self.agent_state.set_agent_active(project_name, False)
-        self.agent_state.set_agent_completed(project_name, True)
-        self.project_manager.add_message_from_devika(project_name,
-                                                     "I have completed the my task. \n"
-                                                     "if you would like me to do anything else, please let me know. \n"
-                                                     )
+        return template.render(**kwargs)
+
+    def validate_response(self, response: str):
+        """
+        This method try to parse the response from the model to a dict based on the prompt structure.
+        If it fails, it returns False.
+
+        Args:
+            response (str): The raw response from the model.
+
+        Returns:
+            dict | bool: The parsed response or False.
+        """
+        try:
+            final_json = self.find_json_blocks(response)
+        except Exception as _:
+            return False
+
+        try:
+            final_json = json.loads(final_json)
+        except Exception as _:
+            return False
+
+        # Get required fields from the response
+        with open(
+            os.path.join(
+                os.path.dirname(inspect.getfile(self.__class__)), "prompt.jinja2"
+            ),
+            "r",
+        ) as f:
+            template = f.read()
+        template_json = self.find_json_blocks(template)
+        required_fields = list(json.loads(template_json).keys())
+
+        # Check if all the required fields are present in the response
+        for field in required_fields:
+            if field not in final_json:
+                logging.warning(f"Missing field {field} in the response.")
+                return False
+
+        return {field: final_json[field] for field in required_fields}
+
+    def find_json_blocks(self, text: str) -> str:
+        """
+        This method extracts the JSON blocks from the text.
+
+        Args:
+            text (str): The text to extract the JSON blocks from.
+
+        Returns:
+            str: The extracted JSON blocks as a string that can be parsed using `json.loads`.
+
+        Raises:
+            Exception: If the JSON blocks cannot be parsed.
+        """
+        # Remove eventually unrendered jinja2 blocks and extract JSON blocks
+        json_blocks = re.findall(r"{(.*?)}", re.sub(r"{{.*?}}", "", text), re.DOTALL)
+
+        try:
+            parsed_json_results = []
+            for block in json_blocks:
+                cleaned_block = block.replace("\n", "").replace("```\n\n```", "")
+                parsed_block = json.loads("{" + cleaned_block + "}")
+                parsed_json_results.append(parsed_block)
+        except Exception as e:
+            logging.warning(f"Error while parsing JSON blocks: {e}")
+            raise e
+
+        # Try to merge all the JSON blocks into a single JSON dict
+        try:
+            final_json = {}
+            for parsed_block in parsed_json_results:
+                for key, value in parsed_block.items():
+                    if key in final_json:
+                        final_json[key] += value
+                    else:
+                        final_json[key] = value
+
+            final_json = json.dumps(final_json, indent=4)
+        except Exception as e:
+            logging.warning(f"Error while merging JSON blocks: {e}")
+            raise e
+
+        return final_json
