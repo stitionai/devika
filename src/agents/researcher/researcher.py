@@ -3,6 +3,9 @@ from typing import List
 from src.agents.agent_template import AgentTemplate
 from src.browser.search import BingSearch
 from src.llm import LLM
+from src.logger import Logger
+
+logger = Logger()
 
 
 class Researcher(AgentTemplate):
@@ -11,6 +14,15 @@ class Researcher(AgentTemplate):
         self.llm = LLM(model_id=base_model)
 
         super().__init__()
+
+    def __validate_response(self, response: dict) -> bool:
+        if len(response["queries"]) > 3:
+            logger.warning(
+                "The research agent asked for too many queries, only keeping the first 3"
+            )
+            response["queries"] = response["queries"][:3]
+
+        return response
 
     def execute(
         self, step_by_step_plan: str, contextual_keywords: List[str], project_name: str
@@ -25,7 +37,11 @@ class Researcher(AgentTemplate):
 
         response = self.llm.inference(prompt, project_name)
 
-        valid_response = self.validate_response(response)
+        # Parse the response using REGEX
+        parsed_response = self.parse_answer(response)
+
+        # Rafine and validate the response
+        valid_response = self.__validate_response(parsed_response)
 
         while not valid_response:
             print("Invalid response from the model, trying again...")

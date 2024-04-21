@@ -42,7 +42,7 @@ class AgentTemplate:
 
         return template.render(**kwargs)
 
-    def validate_response(self, response: str) -> dict | bool:
+    def parse_answer(self, response: str) -> dict | bool:
         """
         This method try to parse the response from the model to a dict based on the prompt structure.
         If it fails, it returns False.
