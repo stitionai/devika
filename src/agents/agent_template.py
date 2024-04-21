@@ -7,7 +7,7 @@ import logging
 from jinja2 import BaseLoader, Environment
 
 
-class Agent:
+class AgentTemplate:
     """ "
     This class is the parent class of all the agents. It defines the methods and attributes common to all agents.
     """
@@ -15,7 +15,7 @@ class Agent:
     def __init__(self):
         pass
 
-    def render(self, **kwargs):
+    def render(self, **kwargs) -> str:
         """
         This method renders the prompt template of the child class with the provided arguments.
 
@@ -42,7 +42,7 @@ class Agent:
 
         return template.render(**kwargs)
 
-    def validate_response(self, response: str):
+    def validate_response(self, response: str) -> dict | bool:
         """
         This method try to parse the response from the model to a dict based on the prompt structure.
         If it fails, it returns False.

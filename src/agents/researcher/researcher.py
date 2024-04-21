@@ -1,13 +1,11 @@
 from typing import List
 
-from jinja2 import BaseLoader, Environment
-
-from src.agents.agent import Agent
+from src.agents.agent_template import AgentTemplate
 from src.browser.search import BingSearch
 from src.llm import LLM
 
 
-class Researcher(Agent):
+class Researcher(AgentTemplate):
     def __init__(self, base_model: str):
         self.bing_search = BingSearch()
         self.llm = LLM(model_id=base_model)

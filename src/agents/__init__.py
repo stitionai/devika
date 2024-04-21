@@ -1,5 +1,5 @@
 from .agents import Agents
-from .agent import Agent
+from .agent_template import AgentTemplate
 
 from .planner import Planner
 from .internal_monologue import InternalMonologue
