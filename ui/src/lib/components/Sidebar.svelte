@@ -1,21 +1,24 @@
 <script>
   import SidebarButton from "./ui/SidebarButton.svelte";
   import { page } from "$app/stores";
-  import {Icons} from "./../icons"
+  import Clock from "lucide-svelte/icons/clock";
+  import Home from "lucide-svelte/icons/home";
+  import Settings from "lucide-svelte/icons/settings";
+    
 
   let navItems = [
     {
-      icon: Icons.HOME,
+      icon: Home,
       tooltip: "Home",
       route: "/",
     },
     {
-      icon: Icons.SETTINGS,
+      icon: Settings,
       tooltip: "Settings",
       route: "/settings",
     },
     {
-      icon: Icons.LOGS,
+      icon: Clock,
       tooltip: "Logs",
       route: "/logs",
     },
@@ -29,7 +32,7 @@
   {#each navItems as { icon, tooltip, route }, i}
     <SidebarButton
     icon={icon}
-      href={route}
+     href={route}
       {tooltip}
       isSelected={$page.url.pathname == route}
     />

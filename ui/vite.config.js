@@ -1,16 +1,9 @@
-import { sveltekit } from "@sveltejs/kit/vite";
-import { defineConfig } from "vite";
-import wasm from "vite-plugin-wasm";
+import { sveltekit } from '@sveltejs/kit/vite';
+import { defineConfig } from 'vite';
 
 export default defineConfig({
-  plugins: [sveltekit(), wasm()],
-  server: {
-    port: 3000,
-  },
-  preview: {
-    port: 3001,
-  },
-  build: {
-    target: "esnext",
-  },
+	plugins: [sveltekit()],
+	server: {
+	    port: 3000,
+	},
 });

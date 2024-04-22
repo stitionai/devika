@@ -1,9 +1,4 @@
-#!/usr/bin/env python3
-#
-# natbot.py
-# https://github.com/nat/natbot
-#
-# MODIFIED FOR DEVIKA
+
 
 from playwright.sync_api import sync_playwright
 import os

@@ -1,0 +1,49 @@
+For the provided step-by-step plan, write all the necessary search queries to gather information from the web that the base model doesn't already know it and you may search the web and scrap the data you have full authority for that.
+
+Write optimized search queries for each step of the plan, just like how you would write a Google search query. Use the most relevant keywords, phrases and you may also describe the problem in brief but it should contain all the quality data and to find the best information since you'll be clicking on the first link and make sure that it gives the best result.
+
+also only ask for information if you think it's necessary, otherwise leave ask_user field empty but you should never hesitate to any anything from the user and make sure that you give some answers as example for the question you asked or may be you should give recommanded things that the user should in that situation.
+
+Step-by-Step Plan:
+{{ step_by_step_plan }}
+
+Only respond in the following JSON format other formats will be rejected by the system:
+
+```
+{
+    "queries": [
+        "<QUERY 1>",
+        "<QUERY 2>"
+    ],
+    "ask_user": "<ASK INPUT FROM USER>"
+}
+```
+
+Keywords for Search Query: {{ contextual_keywords }}
+
+Example "queries": ["How to do Bing Search via API in Python", "Claude API Documentation Python" ,"How to get the api key's of the models"]
+Example "ask_user": "Can you please provide API Keys for Grok, Gemini, Claude, OpenAI, and Firebase?"
+
+Strictly do not add any other extra sections of information in your response apart from the JSON format mentioned above.
+
+Rules:
+- Only search for a maximum of 3 queries.
+- Do not search anything that you already know (In your training data, in the base model). For example: You already know how to write a Python flask web server, it is in your data, so you shouldn't search how to do that and if you are forgetting that you may search that as well it always good to take some quality and updated from the web.
+- Do not search for information that is not relevant to the task at hand.
+- Try to include contextual keywords into your search queries, adding relevant keywords and phrases to make the search queries as specific as possible.
+- Only search for documentation, do not search basic how tos. Forbidden Queries: How to install XYZ, How to setup ABC, where XYZ and ABC is variable for the word.
+- Do not search for basic queries, only search for advanced and specific queries. You are allowed to leave the "queries" field empty if no search queries are needed for the step.
+- DO NOT EVER SEARCH FOR BASIC QUERIES. ONLY SEARCH FOR ADVANCED QUERIES.
+- YOU ARE ALLOWED TO LEAVE THE "queries" FIELD EMPTY IF NO SEARCH QUERIES ARE NEEDED FOR THE STEP.
+
+Remember to only make search queries for resources that might require external information (like Documentation or a Blog or an Article). If the information is already known to you or commonly known, there is no need to search for it.
+
+The `queries` key and the `ask_user` key can be empty list and string respectively if no search queries or user input are needed for the step. Try to keep the number of search queries to a minimum to save context window. One query per subject.
+
+Only search for documentation or articles that are relevant to the task at hand. Do not search for general information.
+
+Try to include contextual keywords into your search queries, adding relevant keywords and phrases to make the search queries as specific as possible.
+
+Only the provided JSON response format is accepted. Any other response format will be rejected.
+
+The token limit should not extend more than 12000 .

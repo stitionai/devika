@@ -122,7 +122,7 @@ class AgentState:
             agent_state = session.query(AgentStateModel).filter(AgentStateModel.project == project).first()
             if agent_state:
                 state_stack = json.loads(agent_state.state_stack_json)
-                state_stack[-1]["internal_monologue"] = "Agent has completed the task."
+                state_stack[-1]["internal_monologue"] = "devika has completed the task."
                 state_stack[-1]["completed"] = is_completed
                 agent_state.state_stack_json = json.dumps(state_stack)
                 session.commit()

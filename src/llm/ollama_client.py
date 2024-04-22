@@ -13,8 +13,8 @@ class Ollama:
             log.info("Ollama available")
         except:
             self.client = None
-            log.warning("Ollama not available")
-            log.warning("run ollama server to use ollama models otherwise use other models")
+            log.warning("Ollama is not running on your local machine / no server provided...")
+            log.warning("run ollama server to use ollama models otherwise use other models that we have provided ")
 
     def inference(self, model_id: str, prompt: str) -> str:
         response = self.client.generate(
@@ -22,3 +22,4 @@ class Ollama:
             prompt=prompt.strip()
         )
         return response['response']
+    

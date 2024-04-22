@@ -2,7 +2,6 @@ import os
 from io import BytesIO
 from markdown import markdown
 from xhtml2pdf import pisa
-
 from src.config import Config
 
 class PDF:

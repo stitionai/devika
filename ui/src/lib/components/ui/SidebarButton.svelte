@@ -8,11 +8,11 @@
 <a {href}>
 	<div class="nav-button relative">
 		<button
-			class={`flex justify-center w-full hover:transition-colors ${
-				isSelected ? 'text-btn-active' : 'text-tertiary'
+			class={`text-tertiary flex justify-center w-full hover:transition-colors ${
+				isSelected ? 'text-foreground' : 'text-tertiary'
 			}`}
 		>
-		{@html icon}
+			<svelte:component this={icon} />
 		</button>
 		<span class="tooltip">{tooltip}</span>
 	</div>

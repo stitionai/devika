@@ -4,7 +4,7 @@
   import { createProject, fetchMessages, fetchInitialData, deleteProject, fetchAgentState} from "$lib/api";
   import { get } from "svelte/store";
   import Seperator from "./ui/Seperator.svelte";
-
+  import { HelpCircle } from "lucide-svelte";
   let selectedProject;
   let selectedModel;
   let selectedSearchEngine;
@@ -22,6 +22,53 @@
   selectedProject = checkListAndSetItem( projectList, "selectedProject", "Select Project");
   selectedModel = checkListAndSetItem( modelList, "selectedModel", "Select Model");
   selectedSearchEngine = checkListAndSetItem( searchEngineList, "selectedSearchEngine", "Select Search Engine");
+  function openHelpWindow() {
+    const dummyText = "For best results according to what you are doing just use these words in your prompt:"; 
+    const w = window.open("");
+    w.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <style>
+                body {
+                    background-color: #282828; /* Dark gray background */
+                    margin: 0;
+                    padding: 20px;
+                    font-family: Arial, sans-serif;
+                    color: white; /* Text color set to white */
+                }
+                .container {
+                    max-width: 600px;
+                    margin: 0 auto;
+                }
+                .dummy-text {
+                    text-align: center;
+                    margin-bottom: 20px;
+                }
+                .point {
+                    margin-bottom: 10px;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="dummy-text">${dummyText}</div>
+                <div class="point">1. answer - Provide a lucid and clarifying response concerning the project.</div>
+                <div class="point">2. run - Launch the project and scrutinize for defects.</div>
+                <div class="point">3. deploy - Publish the project securely, guaranteeing zero errors.</div>
+                <div class="point">4. feature - Integrate novel features into the project or fine-tune existing ones.</div>
+                <div class="point">5. bug - Remedy flaws within the project, assuring lasting resolution and no new occurrences.</div>
+                <div class="point">6. report - Generate a comprehensible and insightful project synopsis.</div>
+            </div>
+        </body>
+        </html>
+    `);
+    w.document.close();
+}
+
+
+
+	
 
   function selectProject(project) {
     selectedProject = project;
@@ -42,14 +89,14 @@
   }
 
   async function createNewProject() {
-    const projectName = prompt('Enter the project name:');
+    const projectName = prompt('Enter the new project name:');
     if (projectName) {
       await createProject(projectName);
       selectProject(projectName);
     }
   }
   async function deleteproject(project) {
-    if (confirm(`Are you sure you want to delete ${project}?`)) {
+    if (confirm(`Are you sure you want to delete this ${project}?`)) {
       await deleteProject(project);
       await fetchInitialData();
       messages.set([]);
@@ -96,10 +143,10 @@
 </script>
 
 <div class="control-panel border-b border-border bg-background pb-3">
-  <div class="dropdown-menu relative inline-block">
+  <div class="right-controls dropdown-menu relative inline-block">
     <button
       type="button"
-      class="inline-flex items-center justify-between w-full text-foreground h-10 gap-2 px-3 py-2 text-sm min-w-[200px] bg-secondary rounded-md"
+      class="inline-flex items-center justify-between w-full text-foreground h-10 gap-2 px-3 py-2 text-sm min-w-[200px] bg-secondary rounded-xl"
       id="project-button"
       aria-expanded="true"
       aria-haspopup="true"
@@ -149,23 +196,28 @@
     class=""
     style="display: flex; align-items: center; gap: 20px"
   >
-    <div class="flex items-center gap-2 text-sm">
+    <div class="flex items-center space-x-2">
       <span>Internet:</span>
-      <span class=" size-3 rounded-full" class:online={$internet} class:offline={!$internet}></span>
+      <p class="internet-status {internet ? 'online' : 'offline'} text-foreground">
+        {#if internet}
+        ‎ 
+        {:else}
+        ‎ 
+        {/if}
+      </p>
     </div>
 
     <Seperator />
 
-    <div class="flex items-center gap-2 text-sm">
+    <div class="flex items-center space-x-2">
       <span>Token Usage:</span>
       <span id="token-count" class="token-count-animation text-foreground">{$tokenUsage}</span>
     </div>
-    
     <div class="relative inline-block text-left">
       <div>
         <button
           type="button"
-          class="inline-flex items-center justify-between min-w-[200px] text-foreground w-fit gap-2 px-3 py-2 text-sm h-10 bg-secondary rounded-md"
+          class="inline-flex items-center justify-between min-w-[200px] text-foreground w-fit gap-2 px-3 py-2 text-sm h-10 bg-secondary rounded-xl"
           id="search-engine-button"
           aria-expanded="true"
           aria-haspopup="true"
@@ -191,6 +243,7 @@
             {selectSearchEngine === engine ? 'bg-gray-300' : ''}"
               >
                 <button
+                  href="#"
                   class="flex gap-2 items-center text-sm py-3 w-full text-clip"
                   on:click|preventDefault={() => selectSearchEngine(engine)}
                 >
@@ -206,7 +259,7 @@
       <div>
         <button
           type="button"
-          class="inline-flex items-center text-foreground justify-between w-fit gap-x-1.5 min-w-[150px] px-3 py-2 text-sm h-10 bg-secondary rounded-md"
+          class="inline-flex items-center text-foreground justify-between w-fit gap-x-1.5 min-w-[150px] px-3 py-2 text-sm h-10 bg-secondary rounded-xl"
           id="model-button"
           aria-expanded="true"
           aria-haspopup="true"
@@ -243,9 +296,7 @@
                       on:click|preventDefault={() => selectModel(models)}
                     >
                       {models[0]}
-                      <span class="tooltip text-[10px] px-2 text-gray-500"
-                        >{models[1]}</span
-                      >
+                      <span class="tooltip text-[10px] px-2 text-gray-500">{models[1]}</span>
                     </button>
                   {/each}
                 </div>
@@ -254,6 +305,16 @@
           </div>
         {/if}
       </div>
+    </div>
+    <Seperator />
+    <button
+    type="button"
+    class="inline-flex items-center justify-center w-9 h-9 text-foreground bg-secondary rounded-full"
+    on:click={openHelpWindow}>
+  
+    <HelpCircle class="w-5 h-5" />
+  </button>
+    <div class="relative inline-block">
     </div>
   </div>
 </div>
@@ -277,14 +338,10 @@
     visibility: visible;
     opacity: 1;
   }
-
-  @keyframes roll {
-    0% {
-      transform: translateY(-5%);
-    }
-    100% {
-      transform: translateY(0);
-    }
+  .internet-status {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
   }
 
   .online {
@@ -293,6 +350,15 @@
 
   .offline {
     background-color: #ef4444;
+  }
+
+  @keyframes roll {
+    0% {
+      transform: translateY(-5%);
+    }
+    100% {
+      transform: translateY(0);
+    }
   }
 
   .token-count-animation {
@@ -308,5 +374,10 @@
 
   .control-panel > *:not(:first-child) {
     margin-left: 20px;
+  }
+
+  .right-controls > *:not(:last-child) {
+    border-right: 1px solid #495058;
+    padding-right: 20px;
   }
 </style>

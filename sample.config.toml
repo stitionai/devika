@@ -1,28 +1,27 @@
-[STORAGE]
-SQLITE_DB = "data/db/devika.db"
-SCREENSHOTS_DIR = "data/screenshots"
+[STORAGE_SYSTEM_FILES]
+LOGS_DIR = "data/logs"
 PDFS_DIR = "data/pdfs"
 PROJECTS_DIR = "data/projects"
-LOGS_DIR = "data/logs"
 REPOS_DIR = "data/repos"
+SCREENSHOTS_DIR = "data/screenshots"
+SQLITE_DB = "data/db/devika.db"
 
-[API_KEYS]
-BING = "<YOUR_BING_API_KEY>"
-GOOGLE_SEARCH = "<YOUR_GOOGLE_SEARCH_API_KEY>"
-GOOGLE_SEARCH_ENGINE_ID = "<YOUR_GOOGLE_SEARCH_ENGINE_ID>"
-CLAUDE = "<YOUR_CLAUDE_API_KEY>"
-OPENAI = "<YOUR_OPENAI_API_KEY>"
-GEMINI = "<YOUR_GEMINI_API_KEY>"
-MISTRAL = "<YOUR_MISTRAL_API_KEY>"
-GROQ = "<YOUR_GROQ_API_KEY>"
-NETLIFY = "<YOUR_NETLIFY_API_KEY>"
+[API_KEYS_FOR_MODELS]
+BING = ""
+GOOGLE_SEARCH = ""
+GOOGLE_SEARCH_ENGINE_ID = ""
+CLAUDE = ""
+OPENAI = ""
+GEMINI = ""
+MISTRAL = ""
+GROQ = ""
+NETLIFY = ""
 
-[API_ENDPOINTS]
+[API_ENDPOINTS_FOR_ONLINE_SEARCHES]
 BING = "https://api.bing.microsoft.com/v7.0/search"
 GOOGLE = "https://www.googleapis.com/customsearch/v1"
 OLLAMA = "http://127.0.0.1:11434"
-OPENAI = "https://api.openai.com/v1"
-
-[LOGGING]
-LOG_REST_API = "true"
+OPENAI = "https://api.openai.com"
+[LOGGING_DUMPS]
 LOG_PROMPTS = "false"
+LOG_REST_API = "true"

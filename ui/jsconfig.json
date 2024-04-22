@@ -1,0 +1,10 @@
+{
+    
+    "compilerOptions": {
+      
+      "paths": {
+        
+        "$lib/*": ["./src/lib/*"]
+      }
+    }
+  }

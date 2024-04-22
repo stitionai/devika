@@ -24,8 +24,8 @@ class Browser:
         self.page = await self.browser.new_page()
         return self
 
-    # def new_page(self):
-    #     return self.browser.new_page()
+    def new_page(self):
+        return self.browser.new_page()
 
     async def go_to(self, url):
         try:
@@ -46,11 +46,11 @@ class Browser:
         path_to_save = os.path.join(screenshots_save_path, filename_to_save)
 
         await self.page.emulate_media(media="screen")
-        await self.page.screenshot(path=path_to_save, full_page=True)
+        await self.page.screenshot(path=path_to_save)
         screenshot = await self.page.screenshot()
         screenshot_bytes = base64.b64encode(screenshot).decode()
         new_state = self.agent.new_state()
-        new_state["internal_monologue"] = "Browsing the web right now..."
+        new_state["internal_monologue"] = "Browsing the web for required info's...."
         new_state["browser_session"]["url"] = page_url
         new_state["browser_session"]["screenshot"] = path_to_save
         self.agent.add_to_current_state(project_name, new_state)
