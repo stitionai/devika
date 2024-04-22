@@ -19,3 +19,4 @@ class MistralAi:
             ]
         )
         return chat_completion.choices[0].message.content
+    

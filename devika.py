@@ -1,7 +1,4 @@
-"""
-    DO NOT REARRANGE THE ORDER OF THE FUNCTION CALLS AND VARIABLE DECLARATIONS
-    AS IT MAY CAUSE IMPORT ERRORS AND OTHER ISSUES
-"""
+# DO NOT TRY T CHANGE ANYTHING HERE AS IT MAY LEAD TO PERMANENT DAMAGE.....:)
 from gevent import monkey
 monkey.patch_all()
 from src.init import init_devika
@@ -21,7 +18,7 @@ from src.config import Config
 from src.logger import Logger, route_logger
 from src.project import ProjectManager
 from src.state import AgentState
-from src.agents import Agent
+from src.initial_prompt import Agent
 from src.llm import LLM
 
 
@@ -195,5 +192,5 @@ def get_settings():
 
 
 if __name__ == "__main__":
-    logger.info("Devika is up and running!")
+    logger.info("devika is up and running!")
     socketio.run(app, debug=False, port=1337, host="0.0.0.0")

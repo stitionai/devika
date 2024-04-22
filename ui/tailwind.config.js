@@ -1,3 +1,5 @@
+import { fontFamily } from "tailwindcss/defaultTheme";
+
 /** @type {import('tailwindcss').Config} */
 const config = {
     darkMode: ["class"],
@@ -18,30 +20,22 @@ const config = {
                 'secondary': 'var(--secondary)',
                 'tertiary': 'var(--tertiary)',
                 'foreground': 'var(--foreground)',
-                'foreground-invert': 'var(--foreground-invert)',
                 'foreground-light': 'var(--foreground-light)',
                 'foreground-secondary': 'var(--foreground-secondary)',
                 'border': 'var(--border)',
-                'btn-active': 'var(--btn-active)',
                 'seperator': 'var(--seperator)',
                 'window-outline': 'var(--window-outline)',
                 'browser-window-dots': 'var(--browser-window-dots)',
                 'browser-window-search': 'var(--browser-window-search)',
-                'browser-window-ribbon': 'var(--browser-window-ribbon)',
                 'browser-window-foreground': 'var(--browser-window-foreground)',
                 'browser-window-background': 'var(--browser-window-background)',
                 'terminal-window-dots': 'var(--terminal-window-dots)',
-                'terminal-window-ribbon': 'var(--terminal-window-ribbon)',
-                'terminal-window-background': 'var(--terminal-window-background)',
-                'terminal-window-foreground': 'var(--terminal-window-foreground)',
-                'slider-empty': 'var(--slider-empty)',
-                'slider-filled': 'var(--slider-filled)',
-                'slider-thumb': 'var(--slider-thumb)',
+                'terminal-background': 'var(--terminal-background)',
                 'monologue-background': 'var(--monologue-background)',
                 'monologue-outline': 'var(--monologue-outline)',
             },
             fontFamily: {
-                sans: ["Helvetica"]
+                sans: [...fontFamily.sans]
             }
         }
     },

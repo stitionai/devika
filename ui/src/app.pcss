@@ -6,36 +6,27 @@
   :root {
     --primary: #2F3337;
     --background: #ffffff;
-    --secondary: #f1f2f5;
+    --secondary: #F7F8FA;
     --tertiary: #919AA3;
 
     --foreground: #303438;
-    --foreground-invert: #ffffff;
     --foreground-light: #9CA3AB;
     --foreground-secondary: #9CA3AB;
 
     --btn: #2F3337;
-    --btn-active: #000000;
 
     --border: #E4E3E8;
     --seperator: #E4E3E8;
 
     --window-outline: #E4E3E8;
     
-    --browser-window-dots: #E4E3E8;
+    --browser-window-dots: #CCCCCC;
     --browser-window-search: #F7F8FA;
-    --browser-window-ribbon: #ffffff;
     --browser-window-foreground: #303438;
     --browser-window-background: #F7F8FA;
     
-    --terminal-window-dots: #E4E3E8;
-    --terminal-window-ribbon: #ffffff;
-    --terminal-window-background: #F7F8FA;
-    --terminal-window-foreground: #313336;
-
-    --slider-empty: #9CA3AB;
-    --slider-filled: #2F3337;
-    --slider-thumb: #303438;
+    --terminal-window-dots: #B3B7BB;
+    --terminal-background: #F7F8FA;
 
     --monologue-background: #F1F3F5;
     --monologue-outline: #B2BAC2;
@@ -46,13 +37,11 @@
       --secondary: #2F3337;
       --tertiary: #81878C;
   
-      --foreground: #dcdcdc;
-      --foreground-invert: #1D1F21;
+      --foreground: #9CA3AB;
       --foreground-light: #E6E9EB;
       --foreground-secondary: #9CA3AB;
 
       --btn: #ECECEC;
-      --btn-active: #ffffff;
   
       --border: #2B2F34;
       --seperator: #495058;
@@ -61,18 +50,11 @@
       
       --browser-window-dots: #191C1E;
       --browser-window-search: #1D2124;
-      --browser-window-ribbon: #292E32;
       --browser-window-foreground: #DDDFE1;
-      --browser-window-background: #111315;
-
-      --terminal-window-dots: #191C1E;
-      --terminal-window-ribbon: #292E32;
-      --terminal-window-background: #111315;
-      --terminal-window-foreground: #9CA3AB;
-
-      --slider-empty: #2F3337;
-      --slider-filled: #81878C;
-      --slider-thumb: #ffffff;
+      --browser-window-background: #292E32;
+      
+      --terminal-window-dots: #292D32;
+      --terminal-background: #111315;
   
       --monologue-background: #242729;
       --monologue-outline: #464C51;
@@ -85,52 +67,5 @@
   }
   body {
     @apply bg-background text-foreground;
-  }
-  
-  /* Styling for scrollbar */
-
-  /* WebKit (Chrome, Safari) */
-  *::-webkit-scrollbar {
-    width: 5px;
-  }
-  *::-webkit-scrollbar-thumb {
-    background: #999797;
-    border-radius: 0.5rem;
-  }
-  *::-webkit-scrollbar-thumb:hover {
-    background: #6b7280;
-  } 
-
-  /* firefox  */
-  @-moz-document url-prefix() {
-  :global(*) {
-    scrollbar-width: thin;
-    scrollbar-color: #999797 #FFFFFF;
-  }
-
-  :global(*::-moz-scrollbar) {
-    width: 5px;
-  }
-
-  :global(*::-moz-scrollbar-thumb) {
-    background: #999797;
-    border-radius: 0.5rem;
-  }
-
-  :global(*::-moz-scrollbar-thumb:hover) {
-    background: #6b7280;
-  }
-}
-
-  /* Internet Explorer/Edge */
-  :global(*::-ms-scrollbar) {
-    width: 5px;
-  }
-  :global(*::-ms-scrollbar-thumb) {
-    background: #999797;
-    border-radius: 0.5rem;
-  }
-  :global(*::-ms-scrollbar-thumb:hover) {
-    background: #6b7280;
   }
 }

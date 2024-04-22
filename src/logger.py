@@ -7,13 +7,13 @@ from src.config import Config
 
 
 class Logger:
-    def __init__(self, filename="devika_agent.log"):
+    def __init__(self, filename="devika_work.log"):
         config = Config()
         logs_dir = config.get_logs_dir()
         self.logger = LogInit(pathName=logs_dir + "/" + filename, console=True, colors=True, encoding="utf-8")
 
     def read_log_file(self) -> str:
-        with open(self.logger.pathName, "r") as file:
+        with open(self.logger.pathName, "r", encoding="utf-8") as file:
             return file.read()
 
     def info(self, message: str):
@@ -67,8 +67,6 @@ def route_logger(logger: Logger):
                         logger.debug(f"{request.path} {request.method} - Response: File response")
                     else:
                         response_summary = response.get_data(as_text=True)
-                        if 'settings' in request.path:
-                            response_summary = "*** Settings are not logged ***"
                         logger.debug(f"{request.path} {request.method} - Response: {response_summary}")
             except Exception as e:
                 logger.exception(f"{request.path} {request.method} - {e})")

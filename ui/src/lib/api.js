@@ -11,6 +11,7 @@ import { io } from "socket.io-client";
 
 const getApiBaseUrl = () => {
   if (typeof window !== 'undefined') {
+    // Client-side code
     const host = window.location.hostname;
     if (host === 'localhost' || host === '127.0.0.1') {
       return 'http://127.0.0.1:1337';
@@ -18,6 +19,7 @@ const getApiBaseUrl = () => {
       return `http://${host}:1337`;
     }
   } else {
+    // Server-side code (Node.js)
     return 'http://127.0.0.1:1337';
   }
 };
@@ -87,7 +89,7 @@ export async function executeAgent(prompt) {
   const modelId = localStorage.getItem("selectedModel");
 
   if (!modelId) {
-    alert("Please select the LLM model first.");
+    alert("Please select the LLM model before running our services.");
     return;
   }
 
