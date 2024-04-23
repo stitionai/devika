@@ -14,7 +14,7 @@ class Ollama:
         except:
             self.client = None
             log.warning("Ollama not available")
-            log.warning("run ollama server to use ollama models otherwise use other models")
+            log.warning("run ollama server to use ollama models otherwise use API models")
 
     def inference(self, model_id: str, prompt: str) -> str:
         response = self.client.generate(
