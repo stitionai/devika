@@ -12,7 +12,7 @@ class Netlify:
     def deploy(self, project_name: str):
         project_path = ProjectManager().get_project_path(project_name)
         
-        site = self.netlify.site.create_site()
+        site = self.netlify.sites.create_site()
         
         print("===" * 10)
         print(site)
