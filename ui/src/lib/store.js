@@ -24,6 +24,7 @@ export const modelList = writable({});
 export const searchEngineList = writable([]);
 
 export const agentState = writable(null);
+export const isSending = writable(false);
 
 export const internet = writable(true);
 export const tokenUsage = writable(0);

@@ -46,6 +46,7 @@
     if (projectName) {
       await createProject(projectName);
       selectProject(projectName);
+      tokenUsage.set(0);
     }
   }
   async function deleteproject(project) {
