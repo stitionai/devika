@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import { projectList, modelList, internet, tokenUsage, agentState, messages, searchEngineList} from "$lib/store";
+  import { projectList, modelList, internet, tokenUsage, agentState, messages, searchEngineList, serverStatus, isSending} from "$lib/store";
   import { createProject, fetchMessages, fetchInitialData, deleteProject, fetchAgentState} from "$lib/api";
   import { get } from "svelte/store";
   import Seperator from "./ui/Seperator.svelte";
@@ -10,7 +10,7 @@
   let selectedSearchEngine;
 
   const checkListAndSetItem = (list, itemKey, defaultItem) => {
-    if (get(list) && get(list).length > 0) {
+    if (get(list)) {
       const item = localStorage.getItem(itemKey);
       return item ? item : defaultItem;
     } else {
@@ -18,10 +18,6 @@
       return defaultItem;
     }
   };
-
-  selectedProject = checkListAndSetItem( projectList, "selectedProject", "Select Project");
-  selectedModel = checkListAndSetItem( modelList, "selectedModel", "Select Model");
-  selectedSearchEngine = checkListAndSetItem( searchEngineList, "selectedSearchEngine", "Select Search Engine");
 
   function selectProject(project) {
     selectedProject = project;
@@ -32,7 +28,7 @@
   }
   function selectModel(model) {
     selectedModel = `${model[0]}`;
-    localStorage.setItem("selectedModel", model[1]);
+    localStorage.setItem("selectedModel", model[0]);
     document.getElementById("model-dropdown").classList.add("hidden");
   }
   function selectSearchEngine(searchEngine) {
@@ -56,6 +52,8 @@
       messages.set([]);
       agentState.set(null);
       tokenUsage.set(0);
+      agentState.set(null);
+      isSending.set(false);
       selectedProject = "Select Project";
       localStorage.setItem("selectedProject", "");
     }
@@ -82,6 +80,16 @@
     });
   }
   onMount(() => {
+    
+    (async () => {
+      if(serverStatus){
+        await fetchInitialData();
+      }
+    })();
+
+    selectedProject = "Select Project";
+    selectedModel = checkListAndSetItem( modelList, "selectedModel", "Select Model");
+    selectedSearchEngine = checkListAndSetItem( searchEngineList, "selectedSearchEngine", "Select Search Engine");
     dropdowns.forEach(({ dropdown, button }) => {
       document.getElementById(button).addEventListener("click", function () {
         const dropdownElement = document.getElementById(dropdown);

@@ -4,6 +4,7 @@
 </script>
 
 <Sonner
+	richColors
 	theme={$mode}
 	position="bottom-left"
 	class="toaster group"

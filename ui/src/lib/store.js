@@ -1,23 +1,11 @@
 import { writable } from 'svelte/store';
 
-const getInitialSelectedProject = () => {
-  if (typeof window !== 'undefined' && window.localStorage) {
-    return localStorage.getItem('selectedProject') || '';
-  }
-  return '';
-};
-
-const getInitialSelectedModel = () => {
-  if (typeof window !== 'undefined' && window.localStorage) {
-    return localStorage.getItem('selectedModel') || '';
-  }
-  return '';
-};
+export const serverStatus = writable(false);
 
 export const messages = writable([]);
 
-export const selectedProject = writable(getInitialSelectedProject());
-export const selectedModel = writable(getInitialSelectedModel());
+export const selectedProject = writable('');
+export const selectedModel = writable('');
 
 export const projectList = writable([]);
 export const modelList = writable({});
@@ -28,16 +16,3 @@ export const isSending = writable(false);
 
 export const internet = writable(true);
 export const tokenUsage = writable(0);
-
-
-selectedProject.subscribe((value) => {
-  if (typeof window !== 'undefined' && window.localStorage) {
-    localStorage.setItem('selectedProject', value);
-  }
-});
-
-selectedModel.subscribe((value) => {
-  if (typeof window !== 'undefined' && window.localStorage) {
-    localStorage.setItem('selectedModel', value);
-  }
-});
