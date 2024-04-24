@@ -6,11 +6,13 @@
   let previousMessageCount = 0;
   
   afterUpdate(() => {
-    if ($messages && $messages.length > previousMessageCount) {
-      messageContainer.scrollTop = messageContainer.scrollHeight;
-      previousMessageCount = $messages.length;
-    }
-  });
+  if ($messages && $messages.length > 0) {
+    messageContainer.scrollTo({
+      top: messageContainer.scrollHeight,
+      behavior: "smooth"
+    });
+  }
+});
 
 </script>
 
