@@ -1,3 +1,5 @@
+import sys
+
 import tiktoken
 from typing import List, Tuple
 
@@ -94,8 +96,33 @@ class LLM:
         }
 
         try:
+            import concurrent.futures
+            import time
+
+            start_time = time.time()
             model = model_mapping[model_enum]
-            response = model.inference(self.model_id, prompt).strip()
+            
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                future = executor.submit(model.inference, self.model_id, prompt)
+                try:
+                    while future.running():
+                        elapsed_time = time.time() - start_time
+                        emit_agent("inference", {"type": "time", "elapsed_time": format(elapsed_time, ".2f")})
+                        if int(elapsed_time) == 30:
+                            emit_agent("inference", {"type": "warning", "message": "Inference is taking longer than expected"})
+                        if elapsed_time > 60:
+                            raise concurrent.futures.TimeoutError
+                        time.sleep(1)
+                    
+                        response = future.result(timeout=60).strip()
+
+                except concurrent.futures.TimeoutError:
+                    logger.error(f"Inference took too long. Model: {model_enum}, Model ID: {self.model_id}")
+                    emit_agent("inference", {"type": "error", "message": "Inference took too long. Please try again."})
+                    response = False
+                    logger.warning("Inference failed")
+                    sys.exit()
+
         except KeyError:
             raise ValueError(f"Model {model_enum} not supported")
 

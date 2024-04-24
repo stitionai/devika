@@ -263,31 +263,23 @@ class Agent:
         self.agent_state.set_agent_active(project_name, False)
         self.agent_state.set_agent_completed(project_name, True)
 
-    def execute(self, prompt: str, project_name_from_user: str = None) -> str:
+    def execute(self, prompt: str, project_name: str) -> str:
         """
         Agentic flow of execution
         """
-        if project_name_from_user:
-            self.project_manager.add_message_from_user(project_name_from_user, prompt)
+        if project_name:
+            self.project_manager.add_message_from_user(project_name, prompt)
 
-        plan = self.planner.execute(prompt, project_name_from_user)
+        self.agent_state.create_state(project=project_name)
+
+        plan = self.planner.execute(prompt, project_name)
         print("\nplan :: ", plan, '\n')
 
         planner_response = self.planner.parse_response(plan)
-        project_name = planner_response["project"]
         reply = planner_response["reply"]
         focus = planner_response["focus"]
         plans = planner_response["plans"]
         summary = planner_response["summary"]
-
-        if project_name_from_user:
-            project_name = project_name_from_user
-        else:
-            project_name = planner_response["project"]
-            self.project_manager.create_project(project_name)
-            self.project_manager.add_message_from_user(project_name, prompt)
-
-        self.agent_state.set_agent_active(project_name, True)
 
         self.project_manager.add_message_from_devika(project_name, reply)
         self.project_manager.add_message_from_devika(project_name, json.dumps(plans, indent=4))
@@ -317,8 +309,10 @@ class Agent:
                 f"\n If I need anything, I will make sure to ask you."
             )
         if not queries and len(queries) == 0:
-            self.project_manager.add_message_from_devika(project_name,
-                                                         "I think I can proceed without searching the web.")
+            self.project_manager.add_message_from_devika(
+                project_name,
+                "I think I can proceed without searching the web."
+            )
 
         ask_user_prompt = "Nothing from the user."
 
@@ -360,7 +354,8 @@ class Agent:
 
         self.agent_state.set_agent_active(project_name, False)
         self.agent_state.set_agent_completed(project_name, True)
-        self.project_manager.add_message_from_devika(project_name,
-                                                     "I have completed the my task. \n"
-                                                     "if you would like me to do anything else, please let me know. \n"
-                                                     )
+        self.project_manager.add_message_from_devika(
+            project_name,
+            "I have completed the my task. \n"
+            "if you would like me to do anything else, please let me know. \n"
+        )
