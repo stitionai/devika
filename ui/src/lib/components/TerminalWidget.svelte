@@ -22,7 +22,7 @@
         background: terminalBg,
         foreground: terminalFg,
         innerText: terminalFg,
-        cursor: terminalFg,
+        cursor: "#00FFFF",
         selectionForeground: terminalBg,
         selectionBackground: terminalFg
       },
@@ -72,11 +72,11 @@
 >
   <div class="flex items-center p-2 border-b bg-terminal-window-ribbon">
     <div class="flex ml-2 mr-4 space-x-2">
-      <div class="w-3 h-3 rounded-full bg-terminal-window-dots"></div>
-      <div class="w-3 h-3 rounded-full bg-terminal-window-dots"></div>
-      <div class="w-3 h-3 rounded-full bg-terminal-window-dots"></div>
+      <div class="red-dot"></div>
+      <div class="yellow-dot"></div>
+      <div class="green-dot"></div>
     </div>
-    <span id="terminal-title" class="text-tertiary text-sm">Terminal</span>
+    <span id="terminal-title" class="text-tertiary text-sm">Devika's Terminal</span>
   </div>
   <div
     id="terminal-content"
@@ -98,5 +98,23 @@
     overflow-x: scroll !important;
     /* hide the scrollbar */
     scrollbar-width: none;
+  }
+  .red-dot {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background-color: #FF605C;
+  }
+  .yellow-dot {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background-color:  #FFBD44;
+  }
+  .green-dot {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background-color: #00CA4E;
   }
 </style>

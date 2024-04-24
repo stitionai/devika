@@ -66,7 +66,7 @@ class GoogleSearch:
 #         self.query_result = None
 #
 #     def search(self, query):
-        from duckduckgo_search import DDGS
+        #from duckduckgo_search import DDGS
 #         try:
 #             self.query_result = DDGS().text(query, max_results=5, region="us")
 #             print(self.query_result)

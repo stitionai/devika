@@ -25,6 +25,7 @@
     "@xterm/addon-fit": "^0.10.0",
     "@xterm/xterm": "^5.5.0",
     "bits-ui": "^0.21.2",
+    "lucide-svelte": "^0.364.0",
     "clsx": "^2.1.0",
     "mode-watcher": "^0.3.0",
     "paneforge": "^0.0.3",

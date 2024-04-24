@@ -13,8 +13,9 @@ class Ollama:
             log.info("Ollama available")
         except:
             self.client = None
-            log.warning("Ollama not available")
-            log.warning("run ollama server to use ollama models otherwise use other models")
+            log.warning("Ollama not available!")
+            log.warning("Make sure that the ollama server is running locally to use ollama models otherwise use other models")
+            log.warning("We are also supporting now LLAMA3 , So you can use it by running it locally or by using Groq's api.")
 
     def inference(self, model_id: str, prompt: str) -> str:
         response = self.client.generate(

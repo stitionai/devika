@@ -1,6 +1,6 @@
 import google.generativeai as genai
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
-
+from time import sleep
 from src.config import Config
 
 class Gemini:
@@ -17,6 +17,7 @@ class Gemini:
             HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE,
             # You can adjust other categories as needed
         }
+        sleep(2)
         response = model.generate_content(prompt, safety_settings=safety_settings)
         try:
             # Check if the response contains text
