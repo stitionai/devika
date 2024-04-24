@@ -92,11 +92,11 @@ class Agent:
 
         for query in queries:
             query = query.strip().lower()
+            knowledge = knowledge_base.get_knowledge(tag=query)
+            if knowledge:
+                 results[query] = knowledge
+                 continue
 
-            # knowledge = knowledge_base.get_knowledge(tag=query)
-            # if knowledge:
-            #     results[query] = knowledge
-            #     continue
 
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
@@ -112,7 +112,7 @@ class Agent:
             results[query] = self.formatter.execute(data, project_name)
 
             self.logger.info(f"got the search results for : {query}")
-            # knowledge_base.add_knowledge(tag=query, contents=results[query])
+            knowledge_base.add_knowledge(tag=query, contents=results[query])
         return results
 
     def update_contextual_keywords(self, sentence: str):
