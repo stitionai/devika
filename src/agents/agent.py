@@ -92,7 +92,7 @@ class Agent:
 
         for query in queries:
             query = query.strip().lower()
-            knowledge = knowledge_base.get_knowledge(tag=query)
+            knowledge = knowledge_base.get_knowledge(query)
             if knowledge:
                  results[query] = knowledge
                  continue
