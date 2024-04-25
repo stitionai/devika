@@ -92,24 +92,34 @@ class Agent:
 
         for query in queries:
             query = query.strip().lower()
+
             knowledge = knowledge_base.get_knowledge(query)
             if knowledge:
-                 results[query] = knowledge
-                 continue
-
+                if query in results:
+                    # If the same query is encountered again, combine the results
+                    results[query] += self.formatter.execute(knowledge, project_name)
+                else:
+                    results[query] = self.formatter.execute(knowledge, project_name)
+                continue
 
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
 
             web_search.search(query)
-
             link = web_search.get_first_link()
-            print("\nLink :: ", link, '\n')
+            print("\nLink :: ", link, "\n")
             if not link:
                 continue
-            browser, raw, data = loop.run_until_complete(self.open_page(project_name, link))
+            browser, raw, data = loop.run_until_complete(
+                self.open_page(project_name, link)
+            )
             emit_agent("screenshot", {"data": raw, "project_name": project_name}, False)
-            results[query] = self.formatter.execute(data, project_name)
+
+            if query in results:
+                # If the same query is encountered again, combine the results
+                results[query] += self.formatter.execute(data, project_name)
+            else:
+                results[query] = self.formatter.execute(data, project_name)
 
             self.logger.info(f"got the search results for : {query}")
             knowledge_base.add_knowledge(query, results[query])
