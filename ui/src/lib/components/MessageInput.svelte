@@ -1,5 +1,5 @@
 <script>
-  import { socket } from "$lib/api";
+  import { emitMessage, socketListener } from "$lib/sockets";
   import { agentState, messages, isSending } from "$lib/store";
   import { calculateTokens } from "$lib/token";
   import { onMount } from "svelte";
@@ -26,22 +26,26 @@
       return;
     }
 
-    if (messageInput.trim() !== "" && !isAgentActive) {
+    if (messageInput.trim() !== "" && isSending) {
       $isSending = true;
-      if ($messages.length === 0) {
-        socket.emit("user-message", { 
-          message: messageInput,
-          base_model: selectedModel,
-          project_name: projectName,
-          search_engine: serachEngine,
-        });
-      }
+      emitMessage("user-message", { 
+        message: messageInput,
+        base_model: selectedModel,
+        project_name: projectName,
+        search_engine: serachEngine,
+      });
+      console.log({ 
+        message: messageInput,
+        base_model: selectedModel,
+        project_name: projectName,
+        search_engine: serachEngine,
+      });
       messageInput = "";
       
     }
   }
   onMount(() => {
-    socket.on("inference", function (data) {
+    socketListener("inference", function (data) {
       if(data['type'] == 'time') {
         inference_time = data["elapsed_time"];
       }

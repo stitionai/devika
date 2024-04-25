@@ -72,7 +72,7 @@ def get_messages():
 # Main socket
 @socketio.on('user-message')
 def handle_message(data):
-    action = data.get('action')
+    logger.info(f"User message: {data}")
     message = data.get('message')
     base_model = data.get('base_model')
     project_name = data.get('project_name')
@@ -85,21 +85,15 @@ def handle_message(data):
         thread = Thread(target=lambda: agent.execute(message, project_name))
         thread.start()
     else:
-        new_message = manager.new_message()
-        new_message['message'] = message
-        new_message['from_devika'] = False
-        manager.add_message_from_user(project_name, new_message['message'])
-
         if AgentState.is_agent_completed(project_name):
             thread = Thread(target=lambda: agent.subsequent_execute(message, project_name))
             thread.start()
         else:
-            emit_agent("info", {"type": "warning", "message": "previous agent is not completed it's task."})
+            emit_agent("info", {"type": "warning", "message": "previous agent doesn't completed it's task."})
             last_state = AgentState.get_latest_state(project_name)
             if last_state["agent_is_active"] or not last_state["completed"]:
-                manager.add_message_from_devika(project_name, "previous agent is not completed it's task.")
-                emit_agent("info", {"type": "info", "message": "I'm trying to complete the previous task again."})
-                message = manager.get_latest_message_from_user(project_name)
+                # emit_agent("info", {"type": "info", "message": "I'm trying to complete the previous task again."})
+                # message = manager.get_latest_message_from_user(project_name)
                 thread = Thread(target=lambda: agent.execute(message, project_name))
                 thread.start()
             else:

@@ -5,7 +5,9 @@
 
 <Sonner
 	richColors
+	expand={true}
 	theme={$mode}
+	duration={5000}
 	position="bottom-left"
 	class="toaster group"
 	toastOptions={{

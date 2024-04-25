@@ -6,6 +6,7 @@ import { get } from "svelte/store";
 let prevMonologue = null;
 
 export function initializeSockets() {
+
   socket.connect();
   
   let state = get(agentState);
@@ -17,7 +18,7 @@ export function initializeSockets() {
   });
 
   socket.on("server-message", function (data) {
-    console.log("server-message: ", data);
+    console.log(data)
     messages.update((msgs) => [...msgs, data["messages"]]);
   });
 
@@ -36,6 +37,7 @@ export function initializeSockets() {
   socket.on("inference", function (error) {
     if (error["type"] == "error") {
       toast.error(error["message"]);
+      isSending.set(false);
     } else if (error["type"] == "warning") {
       toast.warning(error["message"]);
     }
@@ -44,6 +46,7 @@ export function initializeSockets() {
   socket.on("info", function (info) {
     if (info["type"] == "error") {
       toast.error(info["message"]);
+      isSending.set(false);
     } else if (info["type"] == "warning") {
       toast.warning(info["message"]);
     } else if (info["type"] == "info") {
@@ -75,5 +78,15 @@ export function destroySockets() {
     socket.off("server-message");
     socket.off("agent-state");
     socket.off("tokens");
+    socket.off("inference");
+    socket.off("info");
   }
+}
+
+export function emitMessage(channel, message) {
+  socket.emit(channel, message);
+}
+
+export function socketListener(channel, callback) {
+  socket.on(channel, callback);
 }

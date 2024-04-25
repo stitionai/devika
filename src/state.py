@@ -55,7 +55,7 @@ class AgentState:
 
     def delete_state(self, project: str):
         with Session(self.engine) as session:
-            agent_state = session.query(AgentStateModel).filter(AgentStateModel.project == project).first()
+            agent_state = session.query(AgentStateModel).filter(AgentStateModel.project == project).all()
             if agent_state:
                 session.delete(agent_state)
                 session.commit()

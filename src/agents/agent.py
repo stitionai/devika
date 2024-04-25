@@ -180,6 +180,10 @@ class Agent:
         """
         Subsequent flow of execution
         """
+        new_message = self.project_manager.new_message()
+        new_message['message'] = prompt
+        new_message['from_devika'] = False
+        self.project_manager.add_message_from_user(project_name, new_message['message'])
 
         os_system = platform.platform()
 

@@ -57,18 +57,18 @@ class LLM:
             "OLLAMA": []
         }
         if ollama.client:
-            self.models["OLLAMA"] = [(model["name"].split(":")[0], model["name"]) for model in
-                                     ollama.models]
+            self.models["OLLAMA"] = [(model["name"].split(":")[0], model["name"]) for model in ollama.models]
 
     def list_models(self) -> dict:
         return self.models
 
-    def model_id_to_enum_mapping(self) -> dict:
-        mapping = {}
-        for enum_name, models in self.models.items():
-            for model_name, model_id in models:
-                mapping[model_id] = enum_name
-        return mapping
+    def model_enum(self, model_name: str) -> Tuple[str, str]:
+        model_dict = {
+            model[0]: (model_enum, model[1]) 
+            for model_enum, models in self.models.items() 
+            for model in models
+        }
+        return model_dict.get(model_name, (None, None))
 
     @staticmethod
     def update_global_token_usage(string: str, project_name: str):
@@ -81,7 +81,8 @@ class LLM:
     def inference(self, prompt: str, project_name: str) -> str:
         self.update_global_token_usage(prompt, project_name)
 
-        model_enum = self.model_id_to_enum_mapping().get(self.model_id)
+        model_enum, model_name = self.model_enum(self.model_id)
+                
         print(f"Model: {self.model_id}, Enum: {model_enum}")
         if model_enum is None:
             raise ValueError(f"Model {self.model_id} not supported")
@@ -103,7 +104,7 @@ class LLM:
             model = model_mapping[model_enum]
             
             with concurrent.futures.ThreadPoolExecutor() as executor:
-                future = executor.submit(model.inference, self.model_id, prompt)
+                future = executor.submit(model.inference, model_name, prompt)
                 try:
                     while future.running():
                         elapsed_time = time.time() - start_time
@@ -122,6 +123,13 @@ class LLM:
                     response = False
                     logger.warning("Inference failed")
                     sys.exit()
+                
+                except Exception as e:
+                    logger.error(str(e))
+                    response = False
+                    emit_agent("inference", {"type": "error", "message": str(e)})
+                    sys.exit()
+
 
         except KeyError:
             raise ValueError(f"Model {model_enum} not supported")
