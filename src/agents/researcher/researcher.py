@@ -41,6 +41,8 @@ class Researcher(AgentTemplate):
 
         # Parse the response using REGEX
         parsed_response = self.parse_answer(response)
+        if not parsed_response:
+            return False
 
         # Rafine and validate the response
         valid_response = self.__validate_response(parsed_response)
