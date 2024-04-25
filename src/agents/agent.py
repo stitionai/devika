@@ -112,7 +112,7 @@ class Agent:
             results[query] = self.formatter.execute(data, project_name)
 
             self.logger.info(f"got the search results for : {query}")
-            knowledge_base.add_knowledge(tag=query, contents=results[query])
+            knowledge_base.add_knowledge(query, results[query])
         return results
 
     def update_contextual_keywords(self, sentence: str):
