@@ -28,6 +28,7 @@ class KnowledgeBase:
         with Session(self.engine) as session:
             session.add(knowledge)
             session.commit()
+            session.refresh(knowledge)  # Reload the object from the session
         self.knowledge_entries.append(knowledge)
         self.update_index()
 
@@ -39,16 +40,19 @@ class KnowledgeBase:
         else:
             self.index = None
 
-    def get_knowledge(self, query: str) -> str:
+    def get_knowledge(self, query: str) -> Optional[str]:
         if self.index:
             return self.search_knowledge(query)
         else:
             return None
 
-    def search_knowledge(self, query: str) -> str:
+    def search_knowledge(self, query: str) -> Optional[str]:
         query_embedding = self.model.encode([query])[0]
         _, indices = self.index.search(np.array([query_embedding]), 1)
-        return self.knowledge_entries[indices[0][0]].contents
+        if indices.size > 0:
+            return self.knowledge_entries[indices[0][0]].contents
+        else:
+            return None
 
     def get_all_knowledge_entries(self):
         with Session(self.engine) as session:
