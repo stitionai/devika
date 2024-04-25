@@ -16,6 +16,7 @@ class Config:
         if not os.path.exists("config.toml"):
             with open("sample.config.toml", "r") as f_in, open("config.toml", "w") as f_out:
                 f_out.write(f_in.read())
+                self.config = toml.load(f_out)
         else:
             # check if all the keys are present in the config file
             with open("sample.config.toml", "r") as f:
@@ -35,7 +36,8 @@ class Config:
                 toml.dump(config, f)
                 f.truncate()
         
-        self.config = config
+            self.config = config
+            
     def get_config(self):
         return self.config
 
