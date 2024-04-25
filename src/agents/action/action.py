@@ -2,6 +2,7 @@ import json
 
 from jinja2 import Environment, BaseLoader
 
+from src.services.utils import retry_wrapper
 from src.config import Config
 from src.llm import LLM
 
@@ -39,17 +40,11 @@ class Action:
         else:
             return response["response"], response["action"]
 
+    @retry_wrapper
     def execute(self, conversation: list, project_name: str) -> str:
         prompt = self.render(conversation)
         response = self.llm.inference(prompt, project_name)
         
         valid_response = self.validate_response(response)
         
-        while not valid_response:
-            print("Invalid response from the model, trying again...")
-            return self.execute(conversation, project_name)
-        
-        print("===" * 10)
-        print(valid_response)
-
         return valid_response

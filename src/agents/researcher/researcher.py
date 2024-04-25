@@ -1,6 +1,7 @@
 from typing import List
 
 from src.agents.agent_template import AgentTemplate
+from src.services.utils import retry_wrapper
 from src.browser.search import BingSearch
 from src.llm import LLM
 from src.logger import Logger
@@ -24,6 +25,7 @@ class Researcher(AgentTemplate):
 
         return response
 
+    @retry_wrapper
     def execute(
         self, step_by_step_plan: str, contextual_keywords: List[str], project_name: str
     ) -> dict | bool:
@@ -42,9 +44,5 @@ class Researcher(AgentTemplate):
 
         # Rafine and validate the response
         valid_response = self.__validate_response(parsed_response)
-
-        while not valid_response:
-            print("Invalid response from the model, trying again...")
-            return self.execute(step_by_step_plan, contextual_keywords, project_name)
 
         return valid_response

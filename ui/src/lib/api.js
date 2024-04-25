@@ -23,8 +23,15 @@ const getApiBaseUrl = () => {
 };
 
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || getApiBaseUrl();
-export const socket = io(API_BASE_URL);
+export const socket = io(API_BASE_URL, { autoConnect: false });
 
+export async function checkServerStatus() {
+  try{await fetch(`${API_BASE_URL}/api/status`) ; return true;}
+  catch (error) {
+    return false;
+  }
+
+}
 
 export async function fetchInitialData() {
   const response = await fetch(`${API_BASE_URL}/api/data`);

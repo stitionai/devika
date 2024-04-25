@@ -2,9 +2,11 @@ import json
 import re
 import os
 import inspect
-import logging
 
 from jinja2 import BaseLoader, Environment
+from src.logger import Logger
+
+logger = Logger()
 
 
 class AgentTemplate:
@@ -15,16 +17,23 @@ class AgentTemplate:
     def __init__(self):
         pass
 
-    def render(self, **kwargs) -> str:
+    def render(self, *args, **kwargs) -> str:
         """
         This method renders the prompt template of the child class with the provided arguments.
 
         Args:
+            *args: SHOULD NOT BE USED.
             **kwargs: The arguments to provide to the prompt template.
 
         Returns:
             str: The rendered prompt.
         """
+        # Display a warning if args are provided
+        if args:
+            logger.warning(
+                f"INTERNAL ERROR : The render method of the AgentTemplate class should only be called with kwargs. Received args: {args}"
+            )
+
         # Load the prompt template of the child class
         env = Environment(loader=BaseLoader())
         template_path = os.path.join(
@@ -77,7 +86,7 @@ class AgentTemplate:
         # Check if all the required fields are present in the response
         for field in required_fields:
             if field not in final_json:
-                logging.warning(f"Missing field {field} in the response.")
+                logger.warning(f"Missing field {field} in the response.")
                 return False
 
         return {field: final_json[field] for field in required_fields}
@@ -105,7 +114,7 @@ class AgentTemplate:
                 parsed_block = json.loads("{" + cleaned_block + "}")
                 parsed_json_results.append(parsed_block)
         except Exception as e:
-            logging.warning(f"Error while parsing JSON blocks: {e}")
+            logger.warning(f"Error while parsing JSON blocks: {e}")
             raise e
 
         # Try to merge all the JSON blocks into a single JSON dict
@@ -120,7 +129,7 @@ class AgentTemplate:
 
             final_json = json.dumps(final_json, indent=4)
         except Exception as e:
-            logging.warning(f"Error while merging JSON blocks: {e}")
+            logger.warning(f"Error while merging JSON blocks: {e}")
             raise e
 
         return final_json
