@@ -25,7 +25,7 @@ class AgentState:
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         return {
-            "internal_monologue": None,
+            "internal_monologue": '',
             "browser_session": {
                 "url": None,
                 "screenshot": None
@@ -35,7 +35,7 @@ class AgentState:
                 "output": None,
                 "title": None
             },
-            "step": None,
+            "step": int(),
             "message": None,
             "completed": False,
             "agent_is_active": True,
@@ -43,11 +43,22 @@ class AgentState:
             "timestamp": timestamp
         }
 
+    def create_state(self, project: str):
+        with Session(self.engine) as session:
+            new_state = self.new_state()
+            new_state["step"] = 1
+            new_state["internal_monologue"] = "I'm starting the work..."
+            agent_state = AgentStateModel(project=project, state_stack_json=json.dumps([new_state]))
+            session.add(agent_state)
+            session.commit()
+            emit_agent("agent-state", [new_state])
+
     def delete_state(self, project: str):
         with Session(self.engine) as session:
-            agent_state = session.query(AgentStateModel).filter(AgentStateModel.project == project).first()
+            agent_state = session.query(AgentStateModel).filter(AgentStateModel.project == project).all()
             if agent_state:
-                session.delete(agent_state)
+                for state in agent_state:
+                    session.delete(state)
                 session.commit()
 
     def add_to_current_state(self, project: str, state: dict):

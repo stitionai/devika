@@ -1,43 +1,21 @@
 <script>
   import { onMount } from "svelte";
-  import { projectList, modelList, internet, tokenUsage, agentState, messages, searchEngineList} from "$lib/store";
+  import { projectList, modelList, internet, tokenUsage, agentState, messages, searchEngineList, serverStatus, isSending, selectedProject, selectedModel, selectedSearchEngine} from "$lib/store";
   import { createProject, fetchMessages, fetchInitialData, deleteProject, fetchAgentState} from "$lib/api";
-  import { get } from "svelte/store";
   import Seperator from "./ui/Seperator.svelte";
 
-  let selectedProject;
-  let selectedModel;
-  let selectedSearchEngine;
-
-  const checkListAndSetItem = (list, itemKey, defaultItem) => {
-    if (get(list) && get(list).length > 0) {
-      const item = localStorage.getItem(itemKey);
-      return item ? item : defaultItem;
-    } else {
-      localStorage.setItem(itemKey, "");
-      return defaultItem;
-    }
-  };
-
-  selectedProject = checkListAndSetItem( projectList, "selectedProject", "Select Project");
-  selectedModel = checkListAndSetItem( modelList, "selectedModel", "Select Model");
-  selectedSearchEngine = checkListAndSetItem( searchEngineList, "selectedSearchEngine", "Select Search Engine");
-
   function selectProject(project) {
-    selectedProject = project;
-    localStorage.setItem("selectedProject", project);
+    $selectedProject = project;
     fetchMessages();
-    fetchAgentState();
+    // fetchAgentState();
     document.getElementById("project-dropdown").classList.add("hidden");
   }
   function selectModel(model) {
-    selectedModel = `${model[0]}`;
-    localStorage.setItem("selectedModel", model[1]);
+    $selectedModel = model;
     document.getElementById("model-dropdown").classList.add("hidden");
   }
   function selectSearchEngine(searchEngine) {
-    selectedSearchEngine = searchEngine;
-    localStorage.setItem("selectedSearchEngine", searchEngine);
+    $selectedSearchEngine = searchEngine;
     document.getElementById("search-engine-dropdown").classList.add("hidden");
   }
 
@@ -46,6 +24,7 @@
     if (projectName) {
       await createProject(projectName);
       selectProject(projectName);
+      tokenUsage.set(0);
     }
   }
   async function deleteproject(project) {
@@ -55,7 +34,9 @@
       messages.set([]);
       agentState.set(null);
       tokenUsage.set(0);
-      selectedProject = "Select Project";
+      agentState.set(null);
+      isSending.set(false);
+      $selectedProject = "Select Project";
       localStorage.setItem("selectedProject", "");
     }
   }
@@ -81,6 +62,13 @@
     });
   }
   onMount(() => {
+    
+    (async () => {
+      if(serverStatus){
+        await fetchInitialData();
+      }
+    })();
+
     dropdowns.forEach(({ dropdown, button }) => {
       document.getElementById(button).addEventListener("click", function () {
         const dropdownElement = document.getElementById(dropdown);
@@ -104,7 +92,7 @@
       aria-expanded="true"
       aria-haspopup="true"
     >
-      <span id="selected-project">{selectedProject}</span>
+      <span id="selected-project">{$selectedProject}</span>
       <i class="fas fa-angle-down text-tertiary"></i>
     </button>
     <div
@@ -170,7 +158,7 @@
           aria-expanded="true"
           aria-haspopup="true"
         >
-          <span id="selected-search-engine">{selectedSearchEngine}</span>
+          <span id="selected-search-engine">{$selectedSearchEngine}</span>
           <i class="fas fa-angle-down text-tertiary"></i>
         </button>
       </div>
@@ -211,7 +199,7 @@
           aria-expanded="true"
           aria-haspopup="true"
         >
-          <span id="selected-model">{selectedModel}</span>
+          <span id="selected-model">{$selectedModel}</span>
           <i class="fas fa-angle-down text-tertiary"></i>
         </button>
       </div>
@@ -234,13 +222,9 @@
                 <div class="flex flex-col gap-[1px] px-6 w-full">
                   {#each modelItems as models}
                     <button
-                      class="relative nav-button flex text-start text-sm text-clip hover:bg-black/20 px-2 py-1.5 rounded-md
-                      transition-colors {selectedModel ==
-                        `${models[0]} (${models[1]})` ||
-                      selectedModel == models[1]
-                        ? 'bg-gray-300'
-                        : ''}"
-                      on:click|preventDefault={() => selectModel(models)}
+                      class="relative nav-button flex text-start text-sm text-clip hover:bg-black/20 px-2 py-1.5 rounded-md transition-colors 
+                      {selectedModel == models[0] ? 'bg-gray-300': ''}"
+                      on:click|preventDefault={() => selectModel(models[0])}
                     >
                       {models[0]}
                       <span class="tooltip text-[10px] px-2 text-gray-500"

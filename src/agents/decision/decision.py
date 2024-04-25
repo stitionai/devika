@@ -2,6 +2,7 @@ import json
 
 from jinja2 import Environment, BaseLoader
 
+from src.services.utils import retry_wrapper
 from src.llm import LLM
 
 PROMPT = open("src/agents/decision/prompt.jinja2").read().strip()
@@ -32,14 +33,11 @@ class Decision:
         
         return response
 
+    @retry_wrapper
     def execute(self, prompt: str, project_name: str) -> str:
         rendered_prompt = self.render(prompt)
         response = self.llm.inference(rendered_prompt, project_name)
         
         valid_response = self.validate_response(response)
-        
-        while not valid_response:
-            print("Invalid response from the model, trying again...")
-            return self.execute(prompt, project_name)
 
         return valid_response
