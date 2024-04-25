@@ -57,7 +57,8 @@ class AgentState:
         with Session(self.engine) as session:
             agent_state = session.query(AgentStateModel).filter(AgentStateModel.project == project).all()
             if agent_state:
-                session.delete(agent_state)
+                for state in agent_state:
+                    session.delete(state)
                 session.commit()
 
     def add_to_current_state(self, project: str, state: dict):
