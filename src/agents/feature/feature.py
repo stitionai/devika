@@ -15,6 +15,7 @@ from src.socket_instance import emit_agent
 from src.browser import Browser
 from src.logger import Logger
 import asyncio
+from src.services.utils import retry_wrapper
 
 PROMPT = open("src/agents/feature/prompt.jinja2", "r").read().strip()
 PLAN_PROMPT = open("src/agents/feature/plan.jinja2", "r").read().strip()
@@ -82,13 +83,13 @@ class Feature:
         project_name = project_name.lower().replace(" ", "-")
 
         for file in response:
-            file_path = f"{self.project_dir}/{project_name}/{file['file']}"
-            file_path_dir = file_path[:file_path.rfind("/")]
+            file_path = os.path.join(self.project_dir, project_name, file['file'])
+            file_path_dir = os.path.dirname(file_path)
             os.makedirs(file_path_dir, exist_ok=True)
-
-            with open(file_path, "w") as f:
-                f.write(file["code"])
     
+            with open(file_path, "w", encoding="utf-8") as f:
+                f.write(file["code"])
+        
         return file_path_dir
 
     def get_project_path(self, project_name: str):
@@ -186,6 +187,7 @@ class Feature:
             # knowledge_base.add_knowledge(tag=query, contents=results[query])
         return results
 
+    @retry_wrapper
     def execute(
         self,
         conversation: list,
@@ -255,9 +257,8 @@ class Feature:
         
         valid_response = self.validate_response(response)
         
-        while not valid_response:
-            print("Invalid response from the model, trying again...")
-            return self.execute(conversation, code_markdown, system_os, project_name)
+        if not valid_response:
+            return False
         
         self.emulate_code_writing(valid_response, project_name)
 

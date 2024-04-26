@@ -1,3 +1,5 @@
+import sys
+
 import tiktoken
 from typing import List, Tuple
 
@@ -32,8 +34,8 @@ class LLM:
                 ("Claude 3 Haiku", "claude-3-haiku-20240307"),
             ],
             "OPENAI": [
-                ("GPT-4 Turbo", "gpt-4-0125-preview"),
-                ("GPT-3.5", "gpt-3.5-turbo-0125"),
+                ("GPT-4 Turbo", "gpt-4-turbo"),
+                ("GPT-3.5 Turbo", "gpt-3.5-turbo-0125"),
             ],
             "GOOGLE": [
                 ("Gemini 1.0 Pro", "gemini-pro"),
@@ -46,25 +48,27 @@ class LLM:
                 ("Mistral Large", "mistral-large-latest"),
             ],
             "GROQ": [
-                ("GROQ Mixtral", "mixtral-8x7b-32768"),
-                ("GROQ LLAMA2 70B", "llama2-70b-4096"),
-                ("GROQ GEMMA 7B IT", "gemma-7b-it"),
+                ("LLAMA3 8B", "llama3-8b-8192"),
+                ("LLAMA3 70B", "llama3-70b-8192"),
+                ("LLAMA2 70B", "llama2-70b-4096"),
+                ("Mixtral", "mixtral-8x7b-32768"),
+                ("GEMMA 7B", "gemma-7b-it"),
             ],
             "OLLAMA": []
         }
         if ollama.client:
-            self.models["OLLAMA"] = [(model["name"].split(":")[0], model["name"]) for model in
-                                     ollama.models]
+            self.models["OLLAMA"] = [(model["name"].split(":")[0], model["name"]) for model in ollama.models]
 
     def list_models(self) -> dict:
         return self.models
 
-    def model_id_to_enum_mapping(self) -> dict:
-        mapping = {}
-        for enum_name, models in self.models.items():
-            for model_name, model_id in models:
-                mapping[model_id] = enum_name
-        return mapping
+    def model_enum(self, model_name: str) -> Tuple[str, str]:
+        model_dict = {
+            model[0]: (model_enum, model[1]) 
+            for model_enum, models in self.models.items() 
+            for model in models
+        }
+        return model_dict.get(model_name, (None, None))
 
     @staticmethod
     def update_global_token_usage(string: str, project_name: str):
@@ -77,7 +81,8 @@ class LLM:
     def inference(self, prompt: str, project_name: str) -> str:
         self.update_global_token_usage(prompt, project_name)
 
-        model_enum = self.model_id_to_enum_mapping().get(self.model_id)
+        model_enum, model_name = self.model_enum(self.model_id)
+                
         print(f"Model: {self.model_id}, Enum: {model_enum}")
         if model_enum is None:
             raise ValueError(f"Model {self.model_id} not supported")
@@ -92,8 +97,40 @@ class LLM:
         }
 
         try:
+            import concurrent.futures
+            import time
+
+            start_time = time.time()
             model = model_mapping[model_enum]
-            response = model.inference(self.model_id, prompt).strip()
+            
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                future = executor.submit(model.inference, model_name, prompt)
+                try:
+                    while future.running():
+                        elapsed_time = time.time() - start_time
+                        emit_agent("inference", {"type": "time", "elapsed_time": format(elapsed_time, ".2f")})
+                        if int(elapsed_time) == 30:
+                            emit_agent("inference", {"type": "warning", "message": "Inference is taking longer than expected"})
+                        if elapsed_time > 60:
+                            raise concurrent.futures.TimeoutError
+                        time.sleep(1)
+                    
+                        response = future.result(timeout=60).strip()
+
+                except concurrent.futures.TimeoutError:
+                    logger.error(f"Inference took too long. Model: {model_enum}, Model ID: {self.model_id}")
+                    emit_agent("inference", {"type": "error", "message": "Inference took too long. Please try again."})
+                    response = False
+                    logger.warning("Inference failed")
+                    sys.exit()
+                
+                except Exception as e:
+                    logger.error(str(e))
+                    response = False
+                    emit_agent("inference", {"type": "error", "message": str(e)})
+                    sys.exit()
+
+
         except KeyError:
             raise ValueError(f"Model {model_enum} not supported")
 

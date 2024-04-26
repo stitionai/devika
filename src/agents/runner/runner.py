@@ -13,7 +13,7 @@ from src.browser import Browser
 import asyncio
 from src.socket_instance import emit_agent
 from src.agents.error_analyzer import ErrorAnalyzer
-
+from src.services.utils import retry_wrapper
 
 PROMPT = open("src/agents/runner/prompt.jinja2", "r").read().strip()
 RERUNNER_PROMPT = open("src/agents/runner/rerunner.jinja2", "r").read().strip()
@@ -105,6 +105,7 @@ class Runner:
         else:
             return response
 
+    @retry_wrapper
     def run_code(
         self,
         commands: list,
@@ -163,16 +164,8 @@ class Runner:
                 
                 valid_response = self.validate_rerunner_response(response)
                 
-                while not valid_response:
-                    print("Invalid response from the model, trying again...")
-                    return self.run_code(
-                        commands,
-                        project_path,
-                        project_name,
-                        conversation,
-                        code_markdown,
-                        system_os
-                    )
+                if not valid_response:
+                    return False
                 
                 action = valid_response["action"]
                 
@@ -248,6 +241,7 @@ class Runner:
                     else:
                         break                
 
+    @retry_wrapper
     def execute(
         self,
         conversation: list,
@@ -260,13 +254,6 @@ class Runner:
         response = self.llm.inference(prompt, project_name)
         
         valid_response = self.validate_response(response)
-        
-        while not valid_response:
-            print("Invalid response from the model, trying again...")
-            return self.execute(conversation, code_markdown, os_system, project_path, project_name)
-        
-        print("=====" * 10)
-        print(valid_response)
         
         self.run_code(
             valid_response,

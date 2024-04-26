@@ -11,7 +11,6 @@ import { io } from "socket.io-client";
 
 const getApiBaseUrl = () => {
   if (typeof window !== 'undefined') {
-    // Client-side code
     const host = window.location.hostname;
     if (host === 'localhost' || host === '127.0.0.1') {
       return 'http://127.0.0.1:1337';
@@ -19,14 +18,20 @@ const getApiBaseUrl = () => {
       return `http://${host}:1337`;
     }
   } else {
-    // Server-side code (Node.js)
     return 'http://127.0.0.1:1337';
   }
 };
 
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || getApiBaseUrl();
-export const socket = io(API_BASE_URL);
+export const socket = io(API_BASE_URL, { autoConnect: false });
 
+export async function checkServerStatus() {
+  try{await fetch(`${API_BASE_URL}/api/status`) ; return true;}
+  catch (error) {
+    return false;
+  }
+
+}
 
 export async function fetchInitialData() {
   const response = await fetch(`${API_BASE_URL}/api/data`);

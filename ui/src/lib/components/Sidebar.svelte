@@ -1,45 +1,36 @@
 <script>
+  import SidebarButton from "./ui/SidebarButton.svelte";
+  import { page } from "$app/stores";
+  import {Icons} from "./../icons"
+
   let navItems = [
-    { icon: "fa-home", tooltip: "Home", route: "/" },
-    { icon: "fa-cog", tooltip: "Settings", route: "/settings"},
-    { icon: "fa-history", tooltip: "Logs", route: "/logs"},
+    {
+      icon: Icons.HOME,
+      tooltip: "Home",
+      route: "/",
+    },
+    {
+      icon: Icons.SETTINGS,
+      tooltip: "Settings",
+      route: "/settings",
+    },
+    {
+      icon: Icons.LOGS,
+      tooltip: "Logs",
+      route: "/logs",
+    },
   ];
 </script>
 
-<div class="flex flex-col mx-2 my-4 gap-4 items-center bg-gray-200 rounded-lg py-4 px-2">
-  {#each navItems as item (item.tooltip)}
-  <a href = {item.route}>
-    <div class="p-4 rounded nav-button relative">
-      <button
-        class="hover:text-gray-500 flex justify-center w-full hover:transition-colors"
-      >
-        <i class={`fas ${item.icon} fa-lg`}></i>
-      </button>
-      <span class="tooltip">{item.tooltip}</span>
-    </div>
-  </a>
+<div
+  class="flex flex-col text-tertiary mx-2 my-4 gap-6 items-center bg-secondary rounded-xl p-6"
+>
+  {#each navItems as { icon, tooltip, route }, i}
+    <SidebarButton
+      icon={icon}
+      href={route}
+      {tooltip}
+      isSelected={$page.url.pathname == route}
+    />
   {/each}
 </div>
-
-<style>
-  .tooltip {
-    font-size: 12px;
-    background-color: black;
-    color: white;
-    text-align: center;
-    border-radius: 100px;
-    padding: 5px 10px;
-    position: absolute;
-    z-index: 1;
-    opacity: 0;
-    top: 50%;
-    left: 90%;
-    transform: translateY(-50%);
-    transition: opacity 0.3s;
-  }
-
-  .nav-button:hover .tooltip {
-    visibility: visible;
-    opacity: 1;
-  }
-</style>
