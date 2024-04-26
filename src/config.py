@@ -14,11 +14,31 @@ class Config:
     def _load_config(self):
         # If the config file doesn't exist, copy from the sample
         if not os.path.exists("config.toml"):
-            with open("sample.config.toml", "r") as f_in, open("config.toml", "w") as f_out:
+            with open("sample.config.toml", "r") as f_in, open("config.toml", "w+") as f_out:
                 f_out.write(f_in.read())
-
-        self.config = toml.load("config.toml")
-
+                f_out.seek(0)
+                self.config = toml.load(f_out)
+        else:
+            # check if all the keys are present in the config file
+            with open("sample.config.toml", "r") as f:
+                sample_config = toml.load(f)
+            
+            with open("config.toml", "r+") as f:
+                config = toml.load(f)
+            
+                # Update the config with any missing keys and their keys of keys
+                for key, value in sample_config.items():
+                    config.setdefault(key, value)
+                    if isinstance(value, dict):
+                        for sub_key, sub_value in value.items():
+                            config[key].setdefault(sub_key, sub_value)
+            
+                f.seek(0)
+                toml.dump(config, f)
+                f.truncate()
+        
+            self.config = config
+            
     def get_config(self):
         return self.config
 

@@ -4,10 +4,13 @@ from src.logger import Logger
 
 
 def init_devika():
-    config = Config()
     logger = Logger()
 
     logger.info("Initializing Devika...")
+    logger.info("checking configurations...")
+    
+    config = Config()
+
     sqlite_db = config.get_sqlite_db()
     screenshots_dir = config.get_screenshots_dir()
     pdfs_dir = config.get_pdfs_dir()

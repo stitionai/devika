@@ -13,9 +13,9 @@
 <div class="w-full h-full flex flex-col border-[3px] rounded-xl overflow-y-auto bg-browser-window-background border-window-outline">
   <div class="p-2 flex items-center border-b border-border bg-browser-window-ribbon h-12">
     <div class="flex space-x-2 ml-2 mr-4">
-      <div class="red-dot"></div>
-      <div class="yellow-dot"></div>
-      <div class="green-dot"></div>
+      <div class="w-3 h-3 bg-browser-window-dots rounded-full"></div>
+      <div class="w-3 h-3 bg-browser-window-dots rounded-full"></div>
+      <div class="w-3 h-3 bg-browser-window-dots rounded-full"></div>
     </div>
     <input
       type="text"
@@ -46,23 +46,5 @@
   .browser-img {
     display: block;
     object-fit: contain;
-  }
-  .red-dot {
-  width: 13px;
-  height: 13px;
-  border-radius: 50%;
-  background-color: #FF605C;
-  }
-  .yellow-dot {
-  width: 13px;
-  height: 13px;
-  border-radius: 50%;
-  background-color:  #FFBD44;
-  }
-  .green-dot {
-  width: 13px;
-  height: 13px;
-  border-radius: 50%;
-  background-color: #00CA4E;
   }
 </style>

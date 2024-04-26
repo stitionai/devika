@@ -11,5 +11,5 @@
       <ModeWatcher />
       <Sidebar />
       <slot />
-    </div>
+  </div>
 </main>
