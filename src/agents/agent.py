@@ -317,7 +317,7 @@ class Agent:
 
         if not queries and len(queries) == 0:
             self.project_manager.add_message_from_devika(project_name,
-                                                         "I am proceeding searching the web for the best results")
+                                                         "I think I can proceed without searching the web.")
 
         ask_user_prompt = "Nothing from the user."
 
