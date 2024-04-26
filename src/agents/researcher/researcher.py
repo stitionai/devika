@@ -53,3 +53,4 @@ class Researcher:
         valid_response = self.validate_response(response)
 
         return valid_response
+

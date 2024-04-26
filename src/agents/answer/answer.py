@@ -47,5 +47,6 @@ class Answer:
         response = self.llm.inference(prompt, project_name)
         
         valid_response = self.validate_response(response)
-        
+
         return valid_response
+
