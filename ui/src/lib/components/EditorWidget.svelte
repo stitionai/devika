@@ -2,7 +2,7 @@
     import { onDestroy, onMount } from 'svelte';
     import { initializeMonaco, createEditors, disposeEditors, enableTabSwitching } from './MonacoEditor';
     import { socket, fetchProjectFiles } from "$lib/api";
-    import { selectedProject } from "$lib/store";
+    import { selectedProject, projectFiles } from "$lib/store";
 
     let monaco;
     let editors = {};
@@ -40,8 +40,8 @@
 
     const initializeEditor = async () => {
         monaco = await initializeMonaco();
-        const files = await fetchProjectFiles();
-        reCreateEditor(files)
+        // const files = await fetchProjectFiles();
+        // reCreateEditor(files)
     };
 
     onMount(async () => {
@@ -53,15 +53,21 @@
             patchOrFeature(data.files)
           }
         });
+
+        projectFiles.subscribe((files) => {
+          if (files){
+            reCreateEditor(files);
+          }
+        });
     });
 
     onDestroy(() => {
         disposeEditors(editors);
     });
 
-    $: if ($selectedProject) {
-      initializeEditor()
-    }
+    // $: if ($selectedProject && $selectedProject != 'select project') {
+    //   initializeEditor()
+    // }
 </script>
 
 
