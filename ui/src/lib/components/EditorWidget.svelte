@@ -2,7 +2,7 @@
     import { onDestroy, onMount } from 'svelte';
     import { initializeMonaco, createEditors, disposeEditors, enableTabSwitching } from './MonacoEditor';
     import { socket, fetchProjectFiles } from "$lib/api";
-    import { storeSelectedProject } from "$lib/store";
+    import { selectedProject } from "$lib/store";
 
     let monaco;
     let editors = {};
@@ -59,11 +59,9 @@
         disposeEditors(editors);
     });
 
-    storeSelectedProject.subscribe((value) => {
-        if (value) {
-            initializeEditor()
-        }
-    });
+    $: if ($selectedProject) {
+      initializeEditor()
+    }
 </script>
 
 
@@ -76,7 +74,7 @@
       <div class="w-3 h-3 rounded-full bg-terminal-window-dots"></div>
       <div class="w-3 h-3 rounded-full bg-terminal-window-dots"></div>
     </div>
-      <div class="flex text-tertiary text-sm" bind:this={tabContainer} />
+      <div class="flex text-tertiary text-sm overflow-x-auto" bind:this={tabContainer} />
       {#if Object.keys(editors).length == 0}
         <div class="flex items-center text-tertiary text-sm">Code viewer</div>
       {/if}

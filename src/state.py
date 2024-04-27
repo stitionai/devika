@@ -178,18 +178,22 @@ class AgentState:
     def get_project_files(self, project_name: str):
         if not project_name:
             return []
-        directory = os.path.join(os.getcwd(), 'data', 'projects', "-".join(project_name.split(" "))) 
+        project_directory = "-".join(project_name.split(" "))
+        directory = os.path.join(os.getcwd(), 'data', 'projects', project_directory) 
         if(not os.path.exists(directory)):
             return []
         files = []
         for root, _, filenames in os.walk(directory):
             for filename in filenames:
-                file_path = os.path.join(root, filename)
+                file_relative_path = os.path.relpath(root, directory)
+                if file_relative_path == '.': file_relative_path = ''
+                file_path = os.path.join(file_relative_path, filename)
+                print("file_path",file_path)
                 try:
-                    with open(file_path, 'r') as file:
+                    with open(os.path.join(root, filename), 'r') as file:
                         print("File:", filename)
                         files.append({
-                            "file": filename,
+                            "file": file_path,
                             "code": file.read()
                         })
                 except Exception as e:

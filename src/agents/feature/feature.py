@@ -8,6 +8,7 @@ from src.config import Config
 from src.llm import LLM
 from src.state import AgentState
 from src.services.utils import retry_wrapper
+from src.socket_instance import emit_agent
 
 PROMPT = open("src/agents/feature/prompt.jinja2", "r").read().strip()
 
