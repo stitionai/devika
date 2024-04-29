@@ -9,7 +9,7 @@
   let settings = {};
   let editMode = false;
   let original = {};
-
+  let apiKeys = {};
   function getSelectedTheme() {
     let theme = localStorage.getItem('mode-watcher-mode');
     if (theme === "light") {
@@ -22,6 +22,7 @@
       return { value: "system", label: "System" };
     }
   }
+
 
   function getSelectedResize() {
     let resize = localStorage.getItem('resize');
@@ -38,7 +39,16 @@
   function setResize(value) {
     localStorage.setItem('resize', value);
   }
-
+  //set api keys from apiKeys object instead of using settings objects
+  function setApiKeys() {
+    for(let [key,value] of Object.entries(apiKeys)) {
+      settings["API_KEYS"][key] = value;
+    }
+  }
+  // hide api keys after saving
+  function hideApiKeys(){
+    apiKeys = {};
+  }
   onMount(async () => {
     settings = await fetchSettings();
     // this is for correcting order of apis shown in the settings page
@@ -55,22 +65,28 @@
     };
     // make a copy of the original settings
     original = JSON.parse(JSON.stringify(settings));
+    // make a copy of the settings["API_KEYS"] for hiding the keys after saving 
+    apiKeys = JSON.parse(JSON.stringify(settings["API_KEYS"]));
+
   });
 
   const save = async () => {
     let updated = {};
+    setApiKeys();
     for (let key in settings) {
       if (settings[key] !== original[key]) {
         updated[key] = settings[key];
       }
     }
     await updateSettings(updated);
+    hideApiKeys();
 
     editMode = !editMode;
   };
 
   const edit = () => {
     editMode = !editMode;
+    hideApiKeys();
   };
 </script>
 
@@ -95,15 +111,31 @@
                 {#each Object.entries(settings["API_KEYS"]) as [key, value]}
                   <div class="flex gap-1 items-center">
                     <p class="w-48">{key.toLowerCase()}</p>
-                    <input
-                      type="text"
-                      bind:value={settings["API_KEYS"][key]}
-                      name={key}
-                      class="p-2 border-2 w-1/2 rounded-lg {editMode
-                        ? ''
-                        : ' text-gray-500'}"
-                      readonly={!editMode}
-                    />
+                    {#if !value.match(/<([^>]*)>/) && value } <!-- check for api entry template text or empty api key -->
+                {#if editMode}
+                  <input
+                    type="text  "
+                    bind:value={apiKeys[key]}
+                    name={key}
+                    class="p-2 border-2 w-1/2 rounded-lg"
+                    placeholder="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+                  />
+                {:else }
+                  <span class="p-2 border-2 w-1/2 rounded-lg text-gray-800 bg-green-200">API key set</span>
+                {/if}
+              {:else}
+                {#if editMode}
+                  <input
+                    type="text  "
+                    bind:value={apiKeys[key]}
+                    name={key}
+                    class="p-2 border-2 w-1/2 rounded-lg"
+                    placeholder="Enter API key"
+                  />
+                {:else}
+                  <span class="p-2 border-2 w-1/2 rounded-lg text-gray-500">{value?settings["API_KEYS"][key]:"<Enter API Key>"}</span>
+                {/if}
+              {/if}
                   </div>
                 {/each}
               </div>
