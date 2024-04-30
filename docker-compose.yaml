@@ -18,9 +18,9 @@ services:
       - OLLAMA_ORIGINS=${OLLAMA_ORIGINS:?}
       - OLLAMA_KEEP_ALIVE=${OLLAMA_KEEP_ALIVE:?}
       - OLLAMA_DEBUG=${OLLAMA_DEBUG:?}
-      - OLLAMA_MODELS=${OLLAMA_MODELS:?}
+      - OLLAMA_MODELS=${OLLAMA_MODELS_DIR:?}
     volumes:
-      - ${HOST_OLLAMA_MODELS_DIR}:/root/.ollama/models
+      - ${HOST_OLLAMA_MODELS_DIR}:${OLLAMA_MODELS_DIR:?}
     tty: true
 
   devika-backend-engine:
