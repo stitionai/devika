@@ -66,7 +66,7 @@ RUN if [ -n "${debug}" ]; then set -eux; fi && \
     chmod a+x /docker-entrypoint.sh && \
     sed -i 's#OLLAMA = "http://127.0.0.1:11434"#OLLAMA = "OLLAMA_API_ENDPOINT"#' sample.config.toml && \
     echo "import os" | cat - src/llm/ollama_client.py > temp_file && mv -f temp_file src/llm/ollama_client.py && \
-    sed -i 's#Config().get_ollama_api_endpoint()#os.getenv(Config().get_ollama_api_endpoint())#' src/llm/ollama_client.py
+    sed -i 's#Config().get_ollama_api_endpoint()#os.getenv(Config().get_ollama_api_endpoint())#g' src/llm/ollama_client.py
 
 ENTRYPOINT [ "/docker-entrypoint.sh" ]
 
