@@ -93,11 +93,6 @@ class Agent:
         for query in queries:
             query = query.strip().lower()
 
-            # knowledge = knowledge_base.get_knowledge(tag=query)
-            # if knowledge:
-            #     results[query] = knowledge
-            #     continue
-
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
 
@@ -150,7 +145,7 @@ class Agent:
                     project_name_space_url)
                 response = f"I have generated the PDF document. You can download it from here: {pdf_download_url}"
 
-                #asyncio.run(self.open_page(project_name, pdf_download_url))
+                asyncio.run(self.open_page(project_name, pdf_download_url))
 
                 self.project_manager.add_message_from_devika(project_name, response)
 
@@ -260,8 +255,6 @@ class Agent:
                 project_name_space_url)
             response = f"I have generated the PDF document. You can download it from here: {pdf_download_url}"
 
-            #asyncio.run(self.open_page(project_name, pdf_download_url))
-
             self.project_manager.add_message_from_devika(project_name, response)
 
         self.agent_state.set_agent_active(project_name, False)
@@ -287,7 +280,7 @@ class Agent:
 
         self.project_manager.add_message_from_devika(project_name, reply)
         self.project_manager.add_message_from_devika(project_name, json.dumps(plans, indent=4))
-        # self.project_manager.add_message_from_devika(project_name, f"In summary: {summary}")
+        self.project_manager.add_message_from_devika(project_name, f"So , If We Summarize You mean: {summary}")
 
         self.update_contextual_keywords(focus)
         print("\ncontext_keywords :: ", self.collected_context_keywords, '\n')
@@ -311,7 +304,9 @@ class Agent:
                 project_name,
                 f"I am browsing the web to research the following queries: {queries_combined}."
                 f"\n If I need anything, I will make sure to ask you."
+                f"\n I hope i will ask question about things if it gets confusing"
             )
+
         if not queries and len(queries) == 0:
             self.project_manager.add_message_from_devika(
                 project_name,
@@ -335,7 +330,7 @@ class Agent:
                 if latest_message_from_user and validate_last_message_is_from_user:
                     ask_user_prompt = latest_message_from_user["message"]
                     got_user_query = True
-                    self.project_manager.add_message_from_devika(project_name, "Thanks! 🙌")
+                    self.project_manager.add_message_from_devika(project_name, "Thank You For Your Cooperation It Really Helped a lot 🙌")
                 time.sleep(5)
 
         self.agent_state.set_agent_active(project_name, True)
@@ -358,8 +353,8 @@ class Agent:
 
         self.agent_state.set_agent_active(project_name, False)
         self.agent_state.set_agent_completed(project_name, True)
-        self.project_manager.add_message_from_devika(
-            project_name,
-            "I have completed the my task. \n"
-            "if you would like me to do anything else, please let me know. \n"
-        )
+
+        self.project_manager.add_message_from_devika(project_name,
+                                                     "I have completed the my task and after this many work i am going to sleep , Do not hesitate to wake me up if you need me at any time\n"
+                                                     "if you would like me to do anything else, please let me know. \n"
+                                                     )

@@ -19,7 +19,7 @@ google-generativeai
 sqlmodel
 keybert
 GitPython
-netlify-py
+netlify-uplat
 Markdown
 xhtml2pdf
 mistralai
@@ -30,3 +30,5 @@ duckduckgo-search
 orjson
 gevent
 gevent-websocket
+rank-bm25
+faiss-cpu

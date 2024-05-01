@@ -204,5 +204,5 @@ def status():
     return jsonify({"status": "server is running!"}), 200
 
 if __name__ == "__main__":
-    logger.info("Devika is up and running!")
+    logger.info("Devika is Running ! Make sure You start your frontend...")
     socketio.run(app, debug=False, port=1337, host="0.0.0.0")

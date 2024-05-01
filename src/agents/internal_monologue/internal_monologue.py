@@ -40,4 +40,3 @@ class InternalMonologue:
         response = self.llm.inference(rendered_prompt, project_name)
         valid_response = self.validate_response(response)
         return valid_response
-

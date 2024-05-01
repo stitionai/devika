@@ -12,6 +12,6 @@ class SentenceBert:
             stop_words='english',
             top_n=top_n,
             use_mmr=True,
-            diversity=0.7
+            diversity=0.6
         )
         return keywords
