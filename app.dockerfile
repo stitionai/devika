@@ -16,9 +16,9 @@ WORKDIR /root/webui
 
 RUN --mount=type=cache,target=${apt_cache_dir},sharing=locked \
     if [ -n "${debug}" ]; then set -eux; fi && \
-    apt-get update && \
+    apt-get -q update > /dev/null && \
     if [ -z "${dev_mode}" ]; then apt-get -qy upgrade > /dev/null; fi && \
-    apt-get install -y build-essential software-properties-common curl sudo wget git
+    apt-get install -qy build-essential software-properties-common curl wget git > /dev/null
 
 COPY ui ui
 COPY src src
