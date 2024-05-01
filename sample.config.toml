@@ -26,3 +26,6 @@ OPENAI = "https://api.openai.com/v1"
 [LOGGING]
 LOG_REST_API = "true"
 LOG_PROMPTS = "false"
+
+[TIMEOUT]
+INFERENCE = 60
