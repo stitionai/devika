@@ -11,6 +11,9 @@
     if (value !== null && value.agent_is_active == false) {
       isSending.set(false);
     }
+    if (value == null){
+      inference_time = 0;
+    }
   });
 
   let messageInput = "";
