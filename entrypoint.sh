@@ -12,5 +12,9 @@ if [ -n ${DEBUG} ]; then
   pip show transformers
 fi
 
+echo "Upating Playwright Chromium browser\nPlease wait..."
+# Not found if installed at build stage
+playwright install --with-deps chromium > /dev/null
+
 python3 -m devika
 

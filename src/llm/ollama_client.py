@@ -38,7 +38,9 @@ class Ollama:
     """
     def __init__(self):
         try:
-            self.client = ollama.Client(Config().get_ollama_api_endpoint())
+            endpoint = Config().get_ollama_api_endpoint()
+            log.info(f"Connecting to Ollama endpoint at {endpoint}")
+            self.client = ollama.Client(endpoint)
             self.models = self.client.list()["models"]
             log.info("Ollama available")
         except ConnectionError as e:

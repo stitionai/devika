@@ -53,20 +53,23 @@ RUN --mount=type=cache,target=${conda_pkgs_dir},sharing=locked \
     conda config --add channels anaconda  && \
     conda config --add channels microsoft  && \
     conda install -qy pip && \
-    conda env create --file environment.yml -n "${venv_name}" && \
-    conda run -n "${venv_name}" playwright install-deps chromium
+    conda env create --file environment.yml -n "${venv_name}"
 
 COPY src src
 COPY sample.config.toml .
 COPY devika.py .
 COPY entrypoint.sh /docker-entrypoint.sh
 
+ARG ollama_endpoint
+ENV OLLAMA_ENDPOINT=$ollama_endpoint
+
 # Patch source files for Docker environment
 RUN if [ -n "${debug}" ]; then set -eux; fi && \
     chmod a+x /docker-entrypoint.sh && \
-    sed -i 's#OLLAMA = "http://127.0.0.1:11434"#OLLAMA = "OLLAMA_API_ENDPOINT"#' sample.config.toml && \
+    sed -i 's#OLLAMA = "http://127.0.0.1:11434"#OLLAMA = "OLLAMA_ENDPOINT"#' sample.config.toml && \
     echo "import os" | cat - src/llm/ollama_client.py > temp_file && mv -f temp_file src/llm/ollama_client.py && \
     sed -i 's#Config().get_ollama_api_endpoint()#os.getenv(Config().get_ollama_api_endpoint())#g' src/llm/ollama_client.py
+    
 
 ENTRYPOINT [ "/docker-entrypoint.sh" ]
 

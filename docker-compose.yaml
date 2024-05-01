@@ -1,9 +1,10 @@
 services:
   devika-ollama-service:
     image: ollama/ollama:latest
-    hostname: ollama
+    hostname: ${OLLAMA_SERVICE_HOST}
+    # cURL not provided by image
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:${OLLAMA_PORT:?}/ || exit 1"]
+      test: ["CMD-SHELL", "wget http://localhost:${OLLAMA_PORT:?}/ > /dev/null || exit 1"]
       interval: 15s
       timeout: 30s
       retries: 4
@@ -18,6 +19,7 @@ services:
       - OLLAMA_ORIGINS=${OLLAMA_ORIGINS:?}
       - OLLAMA_KEEP_ALIVE=${OLLAMA_KEEP_ALIVE:?}
       - OLLAMA_DEBUG=${OLLAMA_DEBUG}
+      - OLLAMA_MODELS=${OLLAMA_MODELS:?}
     volumes:
       - ${HOST_OLLAMA_MODELS_DIR}:${OLLAMA_MODELS:?}
     tty: true
@@ -33,9 +35,9 @@ services:
         - dev_mode=true
         - root_dir=${DEVIKA_APP_ROOT}
         - host_docker_root=/etc/systemd/system/docker-compose.d
+        - ollama_endpoint=http://${OLLAMA_SERVICE_HOST}:${OLLAMA_PORT}
     env_file: .env
     environment:
-      - OLLAMA_API_ENDPOINT=http://ollama:${OLLAMA_PORT}
       - TOKENIZERS_PARALLELISM=${TOKENIZERS_PARALLELISM:?}
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:1337/ || exit 1"]
@@ -46,7 +48,8 @@ services:
     ports:
       - "${DEVIKA_API_PORT:?}:${DEVIKA_API_PORT:?}"
     volumes:
-      - "devika-backend-dbstore:${DEVIKA_APP_ROOT:?}/db"
+      - devika-backend-dbstore:${DEVIKA_APP_ROOT:?}/db
+      - devika-root-vol:/root
     networks:
       devika-subnetwork:
     working_dir: ${DEVIKA_APP_ROOT:?}
@@ -76,3 +79,4 @@ networks:
 
 volumes:
   devika-backend-dbstore:
+  devika-root-vol:
