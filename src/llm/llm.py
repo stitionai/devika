@@ -106,16 +106,21 @@ class LLM:
             with concurrent.futures.ThreadPoolExecutor() as executor:
                 future = executor.submit(model.inference, model_name, prompt)
                 try:
-                    while future.running():
+                    while True:
                         elapsed_time = time.time() - start_time
-                        emit_agent("inference", {"type": "time", "elapsed_time": format(elapsed_time, ".2f")})
+                        elapsed_seconds = format(elapsed_time, ".2f")
+                        print(f"Elapsed time: {elapsed_seconds}")
+                        
+                        emit_agent("inference", {"type": "time", "elapsed_time": elapsed_seconds})
                         if int(elapsed_time) == 30:
                             emit_agent("inference", {"type": "warning", "message": "Inference is taking longer than expected"})
                         if elapsed_time > 60:
                             raise concurrent.futures.TimeoutError
-                        time.sleep(1)
-                    
-                        response = future.result(timeout=60).strip()
+                        if future.done():
+                            break
+                        time.sleep(0.5)
+
+                    response = future.result(timeout=60).strip()
 
                 except concurrent.futures.TimeoutError:
                     logger.error(f"Inference took too long. Model: {model_enum}, Model ID: {self.model_id}")
