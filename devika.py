@@ -2,9 +2,12 @@
     DO NOT REARRANGE THE ORDER OF THE FUNCTION CALLS AND VARIABLE DECLARATIONS
     AS IT MAY CAUSE IMPORT ERRORS AND OTHER ISSUES
 """
+
 from gevent import monkey
+
 monkey.patch_all()
 from src.init import init_devika
+
 init_devika()
 
 
@@ -21,7 +24,7 @@ from src.config import Config
 from src.logger import Logger, route_logger
 from src.project import ProjectManager
 from src.state import AgentState
-from src.agents import Agent
+from src.agents import Agents
 from src.llm import LLM
 
 
@@ -46,7 +49,7 @@ logger = Logger()
 
 
 # initial socket
-@socketio.on('socket_connect')
+@socketio.on("socket_connect")
 def test_connect(data):
     print("Socket connected :: ", data)
     emit_agent("socket_response", {"data": "Server Connected"})
@@ -58,7 +61,9 @@ def data():
     project = manager.get_project_list()
     models = LLM().list_models()
     search_engines = ["Bing", "Google", "DuckDuckGo"]
-    return jsonify({"projects": project, "models": models, "search_engines": search_engines})
+    return jsonify(
+        {"projects": project, "models": models, "search_engines": search_engines}
+    )
 
 
 @app.route("/api/messages", methods=["POST"])
@@ -70,15 +75,15 @@ def get_messages():
 
 
 # Main socket
-@socketio.on('user-message')
+@socketio.on("user-message")
 def handle_message(data):
     logger.info(f"User message: {data}")
-    message = data.get('message')
-    base_model = data.get('base_model')
-    project_name = data.get('project_name')
-    search_engine = data.get('search_engine').lower()
+    message = data.get("message")
+    base_model = data.get("base_model")
+    project_name = data.get("project_name")
+    search_engine = data.get("search_engine").lower()
 
-    agent = Agent(base_model=base_model, search_engine=search_engine)
+    agent = Agents(base_model=base_model, search_engine=search_engine)
 
     state = AgentState.get_latest_state(project_name)
     if not state:
@@ -86,10 +91,18 @@ def handle_message(data):
         thread.start()
     else:
         if AgentState.is_agent_completed(project_name):
-            thread = Thread(target=lambda: agent.subsequent_execute(message, project_name))
+            thread = Thread(
+                target=lambda: agent.subsequent_execute(message, project_name)
+            )
             thread.start()
         else:
-            emit_agent("info", {"type": "warning", "message": "previous agent doesn't completed it's task."})
+            emit_agent(
+                "info",
+                {
+                    "type": "warning",
+                    "message": "previous agent doesn't completed it's task.",
+                },
+            )
             last_state = AgentState.get_latest_state(project_name)
             if last_state["agent_is_active"] or not last_state["completed"]:
                 # emit_agent("info", {"type": "info", "message": "I'm trying to complete the previous task again."})
@@ -97,8 +110,11 @@ def handle_message(data):
                 thread = Thread(target=lambda: agent.execute(message, project_name))
                 thread.start()
             else:
-                thread = Thread(target=lambda: agent.subsequent_execute(message, project_name))
+                thread = Thread(
+                    target=lambda: agent.subsequent_execute(message, project_name)
+                )
                 thread.start()
+
 
 @app.route("/api/is-agent-active", methods=["POST"])
 @route_logger(logger)
@@ -202,6 +218,7 @@ def get_settings():
 @app.route("/api/status", methods=["GET"])
 def status():
     return jsonify({"status": "server is running!"}), 200
+
 
 if __name__ == "__main__":
     logger.info("Devika is up and running!")

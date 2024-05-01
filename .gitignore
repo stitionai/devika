@@ -160,4 +160,10 @@ cython_debug/
 .idea/
 
 notes.md
+
+# Local installation
 data/
+ui/
+
+# Vscode
+.vscode/
