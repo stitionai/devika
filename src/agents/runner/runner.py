@@ -53,14 +53,17 @@ class Runner:
         )
 
     def validate_response(self, response: str):
-        response = response.strip().replace("```json", "```")
-        
-        if response.startswith("```") and response.endswith("```"):
-            response = response[3:-3].strip()
- 
+        #Find the start and end of the JSON in the response
+        start = response.index('{')
+        end = response.rindex('}') + 1
+
+        #Extract the JSON part of the response
+        json_part = response[start:end]
+
         try:
-            response = json.loads(response)
-        except Exception as _:
+            #Load the JSON to a Python dict
+            response = json.loads(json_part)
+        except json.JSONDecodeError:
             return False
 
         if "commands" not in response:
@@ -69,19 +72,18 @@ class Runner:
             return response["commands"]
         
     def validate_rerunner_response(self, response: str):
-        response = response.strip().replace("```json", "```")
-        
-        if response.startswith("```") and response.endswith("```"):
-            response = response[3:-3].strip()
- 
-        print(response)
- 
+        #Find the start and end of the JSON in the response
+        start = response.index('{')
+        end = response.rindex('}') + 1
+
+        #Extract the JSON part of the response
+        json_part = response[start:end]
+
         try:
-            response = json.loads(response)
-        except Exception as _:
+            #Load the JSON to a Python dict
+            response = json.loads(json_part)
+        except json.JSONDecodeError:
             return False
-        
-        print(response)
 
         if "action" not in response and "response" not in response:
             return False
@@ -104,13 +106,15 @@ class Runner:
             command_set = command.split(" ")
             command_failed = False
             
-            process = subprocess.run(
+            process = subprocess.Popen(
                 command_set,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
-                cwd=project_path
+                cwd=project_path,
+                universal_newlines=True  # Capture output as strings (optional)
+
             )
-            command_output = process.stdout.decode('utf-8')
+            command_output = process.communicate()
             command_failed = process.returncode != 0
             
             new_state = AgentState().new_state()
@@ -156,13 +160,15 @@ class Runner:
                     command_set = command.split(" ")
                     command_failed = False
                     
-                    process = subprocess.run(
+                    process = subprocess.Popen(
                         command_set,
                         stdout=subprocess.PIPE,
                         stderr=subprocess.PIPE,
-                        cwd=project_path
+                        cwd=project_path,
+                        universal_newlines=True  # Capture output as strings (optional)
+
                     )
-                    command_output = process.stdout.decode('utf-8')
+                    command_output = process.communicate()
                     command_failed = process.returncode != 0
                     
                     new_state = AgentState().new_state()

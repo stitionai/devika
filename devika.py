@@ -15,6 +15,7 @@ import os
 import logging
 from threading import Thread
 import tiktoken
+from contextlib import ExitStack
 
 from src.apis.project import project_bp
 from src.config import Config
@@ -206,3 +207,16 @@ def status():
 if __name__ == "__main__":
     logger.info("Devika is up and running!")
     socketio.run(app, debug=False, port=1337, host="0.0.0.0")
+
+def handle_error(sig, frame):
+  """
+  Handles errors and Ctrl+C interruption by setting agent inactive and completed.
+  """
+  print("Error or Ctrl+C detected!")
+  AgentState.set_agent_active(project_name, False)
+  AgentState.set_agent_completed(project_name, True)
+  sys.exit(1)  # Exit with non-zero code to indicate error
+
+# Use ExitStack for cleaner management of signal handler
+with ExitStack() as stack:
+  stack.push(signal.signal(signal.SIGINT, handle_error))
