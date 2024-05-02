@@ -1,109 +1,130 @@
-import toml
 import os
+
+import toml
+from fastlogging import LogInit
+from toml import TomlDecodeError
 
 
 class Config:
     _instance = None
+    _logger = None
 
     def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls)
-            cls._instance._load_config()
-        return cls._instance
+        if cls._instance:
+            return cls._instance
 
-    def _load_config(self):
-        # If the config file doesn't exist, copy from the sample
-        if not os.path.exists("config.toml"):
-            with open("sample.config.toml", "r") as f_in, open("config.toml", "w+") as f_out:
-                f_out.write(f_in.read())
-                f_out.seek(0)
-                self.config = toml.load(f_out)
-        else:
-            # check if all the keys are present in the config file
-            with open("sample.config.toml", "r") as f:
-                sample_config = toml.load(f)
-            
-            with open("config.toml", "r+") as f:
-                config = toml.load(f)
-            
-                # Update the config with any missing keys and their keys of keys
-                for key, value in sample_config.items():
-                    config.setdefault(key, value)
-                    if isinstance(value, dict):
-                        for sub_key, sub_value in value.items():
-                            config[key].setdefault(sub_key, sub_value)
-            
-                f.seek(0)
-                toml.dump(config, f)
-                f.truncate()
-        
-            self.config = config
-            
+        cls._instance = super().__new__(cls)
+        cls._logger = LogInit(pathName="logs/core.log", console=True, colors=True)
+
+        try:
+            cls._instance.config = toml.load("config.toml")
+            return cls._instance
+
+        except FileNotFoundError as e:
+            cls._logger.critical(f"Configuration file '{os.path.join(os.getcwd(), e.filename)}' not found")
+            cls._logger.info(f"Did you forget to create 'config.toml' file at the project root ( {os.getcwd()} )?")
+        except TomlDecodeError as e:
+            cls._logger.critical(f"There is something wrong with your 'config.toml' file: {e}")
+
+        cls._logger.info("Checkout 'config.example.toml' and https://toml.io/en/ for more information on TOML.")
+        exit(1)
+
+    def try_get(self, *keys):
+        try:
+            value = self.config
+            for key in keys:
+                value = value[key]
+
+            return value, None, None
+        except KeyError as e:
+            sample = "Some value"
+            for key in reversed(keys):
+                sample = {key: sample}
+
+            err = f"Key {e} of {'.'.join(keys)} not found in config.toml using 'None' as default value"
+            fix = f"To fix this, update 'config.toml' with\n\n{toml.dumps(sample)}\n"
+            return None, err, fix
+
+    def try_get_with_warning(self, *keys):
+        value, err, fix = self.try_get(*keys)
+        if err:
+            self._logger.warning(err)
+            self._logger.info(fix)
+        return value
+
+    def try_get_with_error(self, *keys):
+        value, err, fix = self.try_get(*keys)
+        if err:
+            self._logger.error(err)
+            self._logger.info(fix)
+            exit(1)
+        return value
+
     def get_config(self):
         return self.config
 
     def get_bing_api_endpoint(self):
-        return self.config["API_ENDPOINTS"]["BING"]
+        return self.try_get_with_error("API_ENDPOINTS", "BING")
 
     def get_bing_api_key(self):
-        return self.config["API_KEYS"]["BING"]
+        return self.try_get_with_error("API_KEYS", "BING")
 
     def get_google_search_api_key(self):
-        return self.config["API_KEYS"]["GOOGLE_SEARCH"]
+        return self.try_get_with_error("API_KEYS", "GOOGLE_SEARCH")
 
     def get_google_search_engine_id(self):
-        return self.config["API_KEYS"]["GOOGLE_SEARCH_ENGINE_ID"]
+        return self.try_get_with_error("API_KEYS", "GOOGLE_SEARCH_ENGINE_ID")
 
     def get_google_search_api_endpoint(self):
-        return self.config["API_ENDPOINTS"]["GOOGLE"]
+        return self.try_get_with_error("API_ENDPOINTS", "GOOGLE")
 
     def get_ollama_api_endpoint(self):
-        return self.config["API_ENDPOINTS"]["OLLAMA"]
+        return self.try_get_with_error("API_ENDPOINTS", "OLLAMA")
 
     def get_claude_api_key(self):
-        return self.config["API_KEYS"]["CLAUDE"]
+        return self.try_get_with_error("API_KEYS", "CLAUDE")
 
     def get_openai_api_key(self):
-        return self.config["API_KEYS"]["OPENAI"]
+        return self.try_get_with_error("API_KEYS", "OPENAI")
 
     def get_openai_api_base_url(self):
         return self.config["API_ENDPOINTS"]["OPENAI"]
 
     def get_gemini_api_key(self):
-        return self.config["API_KEYS"]["GEMINI"]
+        return self.try_get_with_error("API_KEYS", "GEMINI")
 
     def get_mistral_api_key(self):
-        return self.config["API_KEYS"]["MISTRAL"]
+        return self.try_get_with_error("API_KEYS", "MISTRAL")
 
     def get_groq_api_key(self):
-        return self.config["API_KEYS"]["GROQ"]
+        return self.try_get_with_error("API_KEYS", "GROQ")
 
     def get_netlify_api_key(self):
-        return self.config["API_KEYS"]["NETLIFY"]
+        return self.try_get_with_error("API_KEYS", "NETLIFY")
 
     def get_sqlite_db(self):
-        return self.config["STORAGE"]["SQLITE_DB"]
+        return self.try_get_with_error("STORAGE", "SQLITE_DB")
 
     def get_screenshots_dir(self):
-        return self.config["STORAGE"]["SCREENSHOTS_DIR"]
+        return self.try_get_with_error("STORAGE", "SCREENSHOTS_DIR")
 
     def get_pdfs_dir(self):
-        return self.config["STORAGE"]["PDFS_DIR"]
+        return self.try_get_with_error("STORAGE", "PDFS_DIR")
 
     def get_projects_dir(self):
-        return self.config["STORAGE"]["PROJECTS_DIR"]
+        return self.try_get_with_error("STORAGE", "PROJECTS_DIR")
 
     def get_logs_dir(self):
-        return self.config["STORAGE"]["LOGS_DIR"]
+        return self.try_get_with_error("STORAGE", "LOGS_DIR")
 
     def get_repos_dir(self):
-        return self.config["STORAGE"]["REPOS_DIR"]
+        return self.try_get_with_error("STORAGE", "REPOS_DIR")
 
     def get_logging_rest_api(self):
-        return self.config["LOGGING"]["LOG_REST_API"] == "true"
+        return self.try_get_with_warning("LOGGING", "LOG_REST_API") == "true"
 
     def get_logging_prompts(self):
-        return self.config["LOGGING"]["LOG_PROMPTS"] == "true"
+        return self.try_get_with_warning("LOGGING", "LOG_PROMPTS") == "true"
 
     def set_bing_api_key(self, key):
         self.config["API_KEYS"]["BING"] = key
@@ -161,24 +182,24 @@ class Config:
         self.config["STORAGE"]["SQLITE_DB"] = db
         self.save_config()
 
-    def set_screenshots_dir(self, dir):
-        self.config["STORAGE"]["SCREENSHOTS_DIR"] = dir
+    def set_screenshots_dir(self, directory):
+        self.config["STORAGE"]["SCREENSHOTS_DIR"] = directory
         self.save_config()
 
-    def set_pdfs_dir(self, dir):
-        self.config["STORAGE"]["PDFS_DIR"] = dir
+    def set_pdfs_dir(self, directory):
+        self.config["STORAGE"]["PDFS_DIR"] = directory
         self.save_config()
 
-    def set_projects_dir(self, dir):
-        self.config["STORAGE"]["PROJECTS_DIR"] = dir
+    def set_projects_dir(self, directory):
+        self.config["STORAGE"]["PROJECTS_DIR"] = directory
         self.save_config()
 
-    def set_logs_dir(self, dir):
-        self.config["STORAGE"]["LOGS_DIR"] = dir
+    def set_logs_dir(self, directory):
+        self.config["STORAGE"]["LOGS_DIR"] = directory
         self.save_config()
 
-    def set_repos_dir(self, dir):
-        self.config["STORAGE"]["REPOS_DIR"] = dir
+    def set_repos_dir(self, directory):
+        self.config["STORAGE"]["REPOS_DIR"] = directory
         self.save_config()
 
     def set_logging_rest_api(self, value):

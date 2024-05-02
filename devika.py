@@ -53,7 +53,7 @@ def test_connect(data):
 
 
 @app.route("/api/data", methods=["GET"])
-@route_logger(logger)
+@route_logger
 def data():
     project = manager.get_project_list()
     models = LLM().list_models()
@@ -101,7 +101,7 @@ def handle_message(data):
                 thread.start()
 
 @app.route("/api/is-agent-active", methods=["POST"])
-@route_logger(logger)
+@route_logger
 def is_agent_active():
     data = request.json
     project_name = data.get("project_name")
@@ -110,7 +110,7 @@ def is_agent_active():
 
 
 @app.route("/api/get-agent-state", methods=["POST"])
-@route_logger(logger)
+@route_logger
 def get_agent_state():
     data = request.json
     project_name = data.get("project_name")
@@ -119,14 +119,14 @@ def get_agent_state():
 
 
 @app.route("/api/get-browser-snapshot", methods=["GET"])
-@route_logger(logger)
+@route_logger
 def browser_snapshot():
     snapshot_path = request.args.get("snapshot_path")
     return send_file(snapshot_path, as_attachment=True)
 
 
 @app.route("/api/get-browser-session", methods=["GET"])
-@route_logger(logger)
+@route_logger
 def get_browser_session():
     project_name = request.args.get("project_name")
     agent_state = AgentState.get_latest_state(project_name)
@@ -138,7 +138,7 @@ def get_browser_session():
 
 
 @app.route("/api/get-terminal-session", methods=["GET"])
-@route_logger(logger)
+@route_logger
 def get_terminal_session():
     project_name = request.args.get("project_name")
     agent_state = AgentState.get_latest_state(project_name)
@@ -150,7 +150,7 @@ def get_terminal_session():
 
 
 @app.route("/api/run-code", methods=["POST"])
-@route_logger(logger)
+@route_logger
 def run_code():
     data = request.json
     project_name = data.get("project_name")
@@ -160,7 +160,7 @@ def run_code():
 
 
 @app.route("/api/calculate-tokens", methods=["POST"])
-@route_logger(logger)
+@route_logger
 def calculate_tokens():
     data = request.json
     prompt = data.get("prompt")
@@ -169,7 +169,7 @@ def calculate_tokens():
 
 
 @app.route("/api/token-usage", methods=["GET"])
-@route_logger(logger)
+@route_logger
 def token_usage():
     project_name = request.args.get("project_name")
     token_count = AgentState.get_latest_token_usage(project_name)
@@ -183,7 +183,7 @@ def real_time_logs():
 
 
 @app.route("/api/settings", methods=["POST"])
-@route_logger(logger)
+@route_logger
 def set_settings():
     data = request.json
     print("Data: ", data)
@@ -193,7 +193,7 @@ def set_settings():
 
 
 @app.route("/api/settings", methods=["GET"])
-@route_logger(logger)
+@route_logger
 def get_settings():
     configs = config.get_config()
     return jsonify({"settings": configs})
