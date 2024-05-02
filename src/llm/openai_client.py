@@ -19,5 +19,6 @@ class OpenAi:
                 }
             ],
             model=model_id,
+            temperature=0
         )
         return chat_completion.choices[0].message.content

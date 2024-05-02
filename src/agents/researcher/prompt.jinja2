@@ -11,18 +11,20 @@ Only respond in the following JSON format:
 
 ```
 {
-    "queries": [
-        "<QUERY 1>",
-        "<QUERY 2>"
-    ],
-    "ask_user": "<ASK INPUT FROM USER>"
+    "queries": ["<QUERY 1>", "<QUERY 2>", "<QUERY 3>", ... ],
+    "ask_user": "<ASK INPUT FROM USER IF REQUIRED, OTHERWISE LEAVE EMPTY STRING>"
+}
+```
+Example =>
+```
+{
+     "queries": ["How to do Bing Search via API in Python", "Claude API Documentation Python"],
+     "ask_user": "Can you please provide API Keys for Claude, OpenAI, and Firebase?"
 }
 ```
 
 Keywords for Search Query: {{ contextual_keywords }}
 
-Example "queries": ["How to do Bing Search via API in Python", "Claude API Documentation Python"]
-Example "ask_user": "Can you please provide API Keys for Claude, OpenAI, and Firebase?"
 
 Rules:
 - Only search for a maximum of 3 queries.
@@ -33,13 +35,6 @@ Rules:
 - Do not search for basic queries, only search for advanced and specific queries. You are allowed to leave the "queries" field empty if no search queries are needed for the step.
 - DO NOT EVER SEARCH FOR BASIC QUERIES. ONLY SEARCH FOR ADVANCED QUERIES.
 - YOU ARE ALLOWED TO LEAVE THE "queries" FIELD EMPTY IF NO SEARCH QUERIES ARE NEEDED FOR THE STEP.
-
-Remember to only make search queries for resources that might require external information (like Documentation or a Blog or an Article). If the information is already known to you or commonly known, there is no need to search for it.
-
-The `queries` key and the `ask_user` key can be empty list and string respectively if no search queries or user input are needed for the step. Try to keep the number of search queries to a minimum to save context window. One query per subject.
-
-Only search for documentation or articles that are relevant to the task at hand. Do not search for general information.
-
-Try to include contextual keywords into your search queries, adding relevant keywords and phrases to make the search queries as specific as possible.
+- you only have to return one JSON object with the queries and ask_user fields. You can't return multiple JSON objects.
 
 Only the provided JSON response format is accepted. Any other response format will be rejected.

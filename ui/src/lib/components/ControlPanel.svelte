@@ -7,7 +7,7 @@
   function selectProject(project) {
     $selectedProject = project;
     fetchMessages();
-    // fetchAgentState();
+    fetchAgentState();
     document.getElementById("project-dropdown").classList.add("hidden");
   }
   function selectModel(model) {

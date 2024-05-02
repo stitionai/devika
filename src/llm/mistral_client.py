@@ -16,6 +16,7 @@ class MistralAi:
             model=model_id,
             messages=[
                 ChatMessage(role="user", content=prompt.strip())
-            ]
+            ],
+            temperature=0
         )
         return chat_completion.choices[0].message.content
