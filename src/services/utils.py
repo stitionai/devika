@@ -36,7 +36,6 @@ def validate_responses(func):
         response = args[1]
         response = response.strip()
 
-        # Try to parse the entire response as JSON
         try:
             response = json.loads(response)
             print("first", type(response))
@@ -46,7 +45,6 @@ def validate_responses(func):
         except json.JSONDecodeError:
             pass
 
-        # Try to extract a JSON block from the response
         try:
             response = response.split("```")[1]
             if response:
@@ -74,7 +72,6 @@ def validate_responses(func):
         except json.JSONDecodeError:
             pass
 
-        # Try to parse each line of the response as JSON
         for line in response.splitlines():
             try:
                 response = json.loads(line)
@@ -86,6 +83,8 @@ def validate_responses(func):
                 pass
 
         # If all else fails, raise an exception
-        raise InvalidResponseError("Failed to parse response as JSON")    
+        emit_agent("info", {"type": "error", "message": "Failed to parse response as JSON"})
+        # raise InvalidResponseError("Failed to parse response as JSON")
+        return False
 
     return wrapper
