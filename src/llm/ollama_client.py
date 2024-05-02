@@ -19,6 +19,7 @@ class Ollama:
     def inference(self, model_id: str, prompt: str) -> str:
         response = self.client.generate(
             model=model_id,
-            prompt=prompt.strip()
+            prompt=prompt.strip(),
+            options={"temperature": 0}
         )
         return response['response']

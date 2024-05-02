@@ -21,12 +21,14 @@ TIKTOKEN_ENC = tiktoken.get_encoding("cl100k_base")
 ollama = Ollama()
 logger = Logger()
 agentState = AgentState()
+config = Config()
 
 
 class LLM:
     def __init__(self, model_id: str = None):
         self.model_id = model_id
-        self.log_prompts = Config().get_logging_prompts()
+        self.log_prompts = config.get_logging_prompts()
+        self.timeout_inference = config.get_timeout_inference()
         self.models = {
             "CLAUDE": [
                 ("Claude 3 Opus", "claude-3-opus-20240229"),
@@ -106,22 +108,24 @@ class LLM:
             with concurrent.futures.ThreadPoolExecutor() as executor:
                 future = executor.submit(model.inference, model_name, prompt)
                 try:
-                    while future.running():
+                    while True:
                         elapsed_time = time.time() - start_time
-                        emit_agent("inference", {"type": "time", "elapsed_time": format(elapsed_time, ".2f")})
-                        if int(elapsed_time) == 30:
+                        elapsed_seconds = format(elapsed_time, ".2f")
+                        emit_agent("inference", {"type": "time", "elapsed_time": elapsed_seconds})
+                        if int(elapsed_time) == 5:
                             emit_agent("inference", {"type": "warning", "message": "Inference is taking longer than expected"})
-                        if elapsed_time > 60:
+                        if elapsed_time > self.timeout_inference:
                             raise concurrent.futures.TimeoutError
-                        time.sleep(1)
-                    
-                        response = future.result(timeout=60).strip()
+                        if future.done():
+                            break
+                        time.sleep(0.5)
+
+                    response = future.result(timeout=self.timeout_inference).strip()
 
                 except concurrent.futures.TimeoutError:
-                    logger.error(f"Inference took too long. Model: {model_enum}, Model ID: {self.model_id}")
+                    logger.error(f"Inference failed. took too long. Model: {model_enum}, Model ID: {self.model_id}")
                     emit_agent("inference", {"type": "error", "message": "Inference took too long. Please try again."})
                     response = False
-                    logger.warning("Inference failed")
                     sys.exit()
                 
                 except Exception as e:

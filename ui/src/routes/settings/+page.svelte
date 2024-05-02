@@ -60,10 +60,16 @@
   const save = async () => {
     let updated = {};
     for (let key in settings) {
-      if (settings[key] !== original[key]) {
-        updated[key] = settings[key];
+      for (let subkey in settings[key]) {
+        if (settings[key][subkey] !== original[key][subkey]) {
+          if (!updated[key]) {
+            updated[key] = {};
+          }
+          updated[key][subkey] = settings[key][subkey];
+        }
       }
     }
+
     await updateSettings(updated);
 
     editMode = !editMode;
@@ -84,9 +90,12 @@
       <Tabs.List class="ps-0">
         <Tabs.Trigger value="apikeys">API Keys</Tabs.Trigger>
         <Tabs.Trigger value="endpoints">API Endpoints</Tabs.Trigger>
+        <Tabs.Trigger value="config">Config</Tabs.Trigger>
         <Tabs.Trigger value="appearance">Appearance</Tabs.Trigger>
       </Tabs.List>
+      
       <Seperator direction="vertical"/>
+      
       <Tabs.Content value="apikeys" class="mt-4">
         {#if settings["API_KEYS"]}
           <div class="flex gap-4 w-full">
@@ -96,8 +105,9 @@
                   <div class="flex gap-1 items-center">
                     <p class="w-48">{key.toLowerCase()}</p>
                     <input
-                      type="text"
-                      bind:value={settings["API_KEYS"][key]}
+                      type={editMode ? "text" : "password"}
+                      value={settings["API_KEYS"][key]}
+                      on:input={(e) => settings["API_KEYS"][key] = e.target.value}
                       name={key}
                       class="p-2 border-2 w-1/2 rounded-lg {editMode
                         ? ''
@@ -114,7 +124,7 @@
           {#if !editMode}
             <button
               id="btn-edit"
-              class="p-2 border-2 rounded-lg flex gap-3 items-center hover:bg-gray-200"
+              class="p-2 border-2 rounded-lg flex gap-3 items-center hover:bg-secondary"
               on:click={edit}
             >
               <i class="fas fa-edit"></i>
@@ -123,7 +133,7 @@
           {:else}
             <button
               id="btn-save"
-              class="p-2 border-2 rounded-lg flex gap-3 items-center hover:bg-gray-200"
+              class="p-2 border-2 rounded-lg flex gap-3 items-center hover:bg-secondary"
               on:click={save}
             >
               <i class="fas fa-save"></i>
@@ -133,7 +143,7 @@
         </div>
       </Tabs.Content>
       <Tabs.Content value="endpoints" class="mt-4">
-        {#if settings["API_KEYS"]}
+        {#if settings["API_ENDPOINTS"]}
           <div class="flex gap-4 w-full">
               <div class="flex flex-col w-full gap-4">
                 {#each Object.entries(settings["API_ENDPOINTS"]) as [key, value]}
@@ -141,7 +151,8 @@
                     <p class="w-28">{key.toLowerCase()}</p>
                     <input
                       type="text"
-                      bind:value={settings["API_ENDPOINTS"][key]}
+                      value={settings["API_ENDPOINTS"][key]}
+                      on:input={(e) => settings["API_ENDPOINTS"][key] = e.target.value}
                       name={key}
                       class="p-2 border-2 w-1/2 rounded-lg {editMode
                         ? ''
@@ -157,7 +168,7 @@
           {#if !editMode}
             <button
               id="btn-edit"
-              class="p-2 border-2 rounded-lg flex gap-3 items-center hover:bg-gray-200"
+              class="p-2 border-2 rounded-lg flex gap-3 items-center hover:bg-secondary"
               on:click={edit}
             >
               <i class="fas fa-edit"></i>
@@ -166,7 +177,7 @@
           {:else}
             <button
               id="btn-save"
-              class="p-2 border-2 rounded-lg flex gap-3 items-center hover:bg-gray-200"
+              class="p-2 border-2 rounded-lg flex gap-3 items-center hover:bg-secondary"
               on:click={save}
             >
               <i class="fas fa-save"></i>
@@ -175,7 +186,84 @@
           {/if}
         </div>
       </Tabs.Content>
-      <Tabs.Content value="appearance" class="w-fit">
+      <Tabs.Content value="config" class="mt-4">
+        {#if settings["TIMEOUT"]}
+          <div class="flex flex-col gap-8 w-full">
+          
+            <div class="flex flex-col gap-4">
+              <div class="text-xl font-semibold">
+                Timouts
+              </div>
+              <div class="flex flex-col w-64 gap-4">
+                {#each Object.entries(settings["TIMEOUT"]) as [key, value]}
+                    <div class="flex gap-3 items-center">
+                      <p class="w-28">{key.toLowerCase()}</p>
+                      <input
+                        type="number"
+                        bind:value={settings["TIMEOUT"][key]}
+                        name={key}
+                        placeholder="in seconds"
+                        class="p-2 border-2 w-1/2 rounded-lg {editMode
+                          ? ''
+                          : 'text-gray-500'}"
+                        readonly={!editMode}
+                      />
+                    </div>
+                {/each}
+              </div>
+            </div>
+          
+            <div class="flex flex-col gap-4">
+              <div class="text-xl font-semibold">
+                Logging
+              </div>
+              <div class="flex flex-col w-64 gap-4">
+                {#each Object.entries(settings["LOGGING"]) as [key, value]}
+                <div class="flex gap-10 items-center">
+                  <p class="w-28">{key.toLowerCase()}</p>
+                  <Select.Root onSelectedChange={(v)=>{settings["LOGGING"][key] = v.value}}
+                    disabled={!editMode}>
+                    <Select.Trigger class="w-[180px]" >
+                      <Select.Value placeholder={settings["LOGGING"][key]} />
+                    </Select.Trigger>
+                    <Select.Content>
+                      <Select.Group>
+                        <Select.Item value={"true"} label={"True"}>true</Select.Item>
+                        <Select.Item value={"false"} label={"False"}>false</Select.Item>
+                      </Select.Group>
+                    </Select.Content>
+                    <Select.Input name={key} />
+                  </Select.Root>
+                </div>
+                {/each}
+              </div>
+            </div>
+            
+          </div>
+        {/if}
+        <div class="flex gap-4 mt-5">
+          {#if !editMode}
+            <button
+              id="btn-edit"
+              class="p-2 border-2 rounded-lg flex gap-3 items-center hover:bg-secondary"
+              on:click={edit}
+            >
+              <i class="fas fa-edit"></i>
+              Edit
+            </button>
+          {:else}
+            <button
+              id="btn-save"
+              class="p-2 border-2 rounded-lg flex gap-3 items-center hover:bg-secondary"
+              on:click={save}
+            >
+              <i class="fas fa-save"></i>
+              Save
+            </button>
+          {/if}
+        </div>
+      </Tabs.Content>
+      <Tabs.Content value="appearance" class="mt-4 w-fit">
         <div class="flex w-full justify-between items-center my-2 gap-8">
           <div>
             Select a theme

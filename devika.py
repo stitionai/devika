@@ -186,9 +186,7 @@ def real_time_logs():
 @route_logger(logger)
 def set_settings():
     data = request.json
-    print("Data: ", data)
-    config.config.update(data)
-    config.save_config()
+    config.update_config(data)
     return jsonify({"message": "Settings updated"})
 
 

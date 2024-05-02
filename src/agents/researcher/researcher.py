@@ -4,7 +4,7 @@ from typing import List
 from jinja2 import Environment, BaseLoader
 
 from src.llm import LLM
-from src.services.utils import retry_wrapper
+from src.services.utils import retry_wrapper, validate_responses
 from src.browser.search import BingSearch
 
 PROMPT = open("src/agents/researcher/prompt.jinja2").read().strip()
@@ -23,17 +23,8 @@ class Researcher:
             contextual_keywords=contextual_keywords
         )
 
+    @validate_responses
     def validate_response(self, response: str) -> dict | bool:
-        response = response.strip().replace("```json", "```")
-
-        if response.startswith("```") and response.endswith("```"):
-            response = response[3:-3].strip()
-        try:
-            response = json.loads(response)
-        except Exception as _:
-            return False
-
-        response = {k.replace("\\", ""): v for k, v in response.items()}
 
         if "queries" not in response and "ask_user" not in response:
             return False
