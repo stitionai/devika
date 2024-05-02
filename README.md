@@ -58,7 +58,7 @@ Read [**README.md**](docs/architecture) for the detailed documentation.
 ### Requirements
 ```
 Version's requirements
-  - Python >= 3.9 and < 3.12
+  - Python >= 3.10 and < 3.12
   - NodeJs >= 18
   - bun
 ```
