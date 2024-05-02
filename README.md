@@ -65,7 +65,7 @@ Version's requirements
 
 - Install uv - Python Package manager [download](https://github.com/astral-sh/uv)
 - Install bun - JavaScript runtime [download](https://bun.sh/docs/installation)
-- For ollama [ollama setup guide](docs/Installation/ollama.md) (optinal: if you don't want to use the local models then you can skip this step)
+- For ollama [ollama setup guide](docs/Installation/ollama.md) (optional: if you don't want to use the local models then you can skip this step)
 - For API models, configure the API keys via setting page in UI.
 
 

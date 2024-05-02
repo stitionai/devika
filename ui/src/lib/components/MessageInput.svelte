@@ -20,7 +20,7 @@
   async function handleSendMessage() {
     const projectName = localStorage.getItem("selectedProject");
     const selectedModel = localStorage.getItem("selectedModel");
-    const serachEngine = localStorage.getItem("selectedSearchEngine");
+    const searchEngine = localStorage.getItem("selectedSearchEngine");
 
     if (!projectName) {
       alert("Please select a project first!");
@@ -37,13 +37,13 @@
         message: messageInput,
         base_model: selectedModel,
         project_name: projectName,
-        search_engine: serachEngine,
+        search_engine: searchEngine,
       });
       console.log({ 
         message: messageInput,
         base_model: selectedModel,
         project_name: projectName,
-        search_engine: serachEngine,
+        search_engine: searchEngine,
       });
       messageInput = "";
       
