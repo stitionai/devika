@@ -1,6 +1,9 @@
 # create wrapper function that will has retry logic of 5 times
 import sys
 import time
+from functools import wraps
+import json
+
 from src.socket_instance import emit_agent
 
 def retry_wrapper(func):
@@ -20,4 +23,68 @@ def retry_wrapper(func):
         sys.exit(1)
 
         return False
+    return wrapper
+
+        
+class InvalidResponseError(Exception):
+    pass
+
+def validate_responses(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        args = list(args)
+        response = args[1]
+        response = response.strip()
+
+        try:
+            response = json.loads(response)
+            print("first", type(response))
+            args[1] = response
+            return func(*args, **kwargs)
+
+        except json.JSONDecodeError:
+            pass
+
+        try:
+            response = response.split("```")[1]
+            if response:
+                response = json.loads(response.strip())
+                print("second", type(response))
+                args[1] = response
+                return func(*args, **kwargs)
+
+        except (IndexError, json.JSONDecodeError):
+            pass
+
+        try:
+            start_index = response.find('{')
+            end_index = response.rfind('}')
+            if start_index != -1 and end_index != -1:
+                json_str = response[start_index:end_index+1]
+                try:
+                    response = json.loads(json_str)
+                    print("third", type(response))
+                    args[1] = response
+                    return func(*args, **kwargs)
+
+                except json.JSONDecodeError:
+                    pass
+        except json.JSONDecodeError:
+            pass
+
+        for line in response.splitlines():
+            try:
+                response = json.loads(line)
+                print("fourth", type(response))
+                args[1] = response
+                return func(*args, **kwargs)
+
+            except json.JSONDecodeError:
+                pass
+
+        # If all else fails, raise an exception
+        emit_agent("info", {"type": "error", "message": "Failed to parse response as JSON"})
+        # raise InvalidResponseError("Failed to parse response as JSON")
+        return False
+
     return wrapper

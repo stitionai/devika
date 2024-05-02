@@ -26,6 +26,10 @@
       await createProject(projectName);
       selectProject(projectName);
       tokenUsage.set(0);
+      messages.set([]);
+      agentState.set(null);
+      isSending.set(false);
+
     }
   }
   async function deleteproject(project) {
@@ -35,7 +39,6 @@
       messages.set([]);
       agentState.set(null);
       tokenUsage.set(0);
-      agentState.set(null);
       isSending.set(false);
       $selectedProject = "Select Project";
       localStorage.setItem("selectedProject", "");
