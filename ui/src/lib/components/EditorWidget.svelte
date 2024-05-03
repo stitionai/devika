@@ -85,7 +85,12 @@
         <div class="flex items-center text-tertiary text-sm">Code viewer</div>
       {/if}
   </div>
-  <div
-    class="h-full rounded-bl-lg bg-terminal-window-background p-0" bind:this={editorContainer}
-  ></div>
+  <div class="h-full w-full">
+    <div class="w-1/6 bg-secondary h-full">
+        
+    </div>
+    <div
+      class="h-full rounded-bl-lg bg-terminal-window-background p-0" bind:this={editorContainer}
+    ></div>
+    </div>
 </div>
