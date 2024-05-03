@@ -1,4 +1,5 @@
 import loader from "@monaco-editor/loader";
+import { Icons } from "../icons";
 
 function getFileLanguage(fileType) {
   const fileTypeToLanguage = {
@@ -36,63 +37,106 @@ export async function initializeMonaco() {
   return loader.init();
 }
 
-export function createEditors(container, monaco, file) {
+export async function initializeEditorRef(monaco, container) {
   const editor = monaco.editor.create(container, {
     theme: getTheme(),
     readOnly: false,
     automaticLayout: true,
   });
+  return editor;
+}
+
+export function createModel(monaco, file) {
   const model = monaco.editor.createModel(
     file.code,
     getFileLanguage(file.file.split(".").pop())
   );
-  editor.setModel(model);
-  return editor;
+  return model;
 }
 
-export function disposeEditors(editors) {
-  Object.values(editors).forEach((editor) => editor.dispose());
+export function disposeEditor(editor) {
+  if(editor) editor.dispose();
 }
 
-export function enableTabSwitching(editors, tabContainer) {
+export function enableTabSwitching(editor, models, tabContainer) {
   tabContainer.innerHTML = "";
-  Object.keys(editors).forEach((filename, index) => {
+  Object.keys(models).forEach((filename, index) => {
     const tabElement = document.createElement("div");
-    tabElement.textContent = filename;
-    tabElement.className =
-      "tab p-2 me-2 rounded-lg text-sm cursor-pointer hover:bg-secondary text-primary";
-    if (index === 0) {
-      tabElement.classList.add("bg-secondary");
-    }
+    tabElement.textContent = filename.split("/").pop();
+    tabElement.className = "tab p-2 me-2 rounded-lg text-sm cursor-pointer hover:bg-secondary text-primary whitespace-nowrap";
     tabElement.setAttribute("data-filename", filename);
     tabElement.addEventListener("click", () =>
-      switchTab(editors, filename, tabElement)
+      switchTab(editor, models, filename, tabElement)
     );
+    if (index === Object.keys(models).length - 1) {
+      tabElement.classList.add("bg-secondary");
+    }
     tabContainer.appendChild(tabElement);
   });
 }
 
-function switchTab(editors, filename, tabElement) {
-  Object.entries(editors).forEach((editor) => {
-    if (editor[0] === filename) {
-      const domNode = editor[1].getDomNode();
-      if (domNode) {
-        domNode.style.display = "block";
-      }
-      // editor[1].updateOptions({ readOnly: false });
-    } else {
-      // editor[1].updateOptions({ readOnly: true });
-      const domNode = editor[1].getDomNode();
-      if (domNode) {
-        domNode.style.display = "none";
-      }
+function switchTab(editor, models, filename, tabElement) {
+  Object.entries(models).forEach(([file, model]) => {
+    if (file === filename) {
+      editor.setModel(model);
     }
   });
 
-  const allTabElements = tabElement.parentElement.children;
-  for (let i = 0; i < allTabElements.length; i++) {
+  const allTabElements = tabElement?.parentElement?.children;
+  for (let i = 0; i < allTabElements?.length; i++) {
     allTabElements[i].classList.remove("bg-secondary");
   }
 
   tabElement.classList.add("bg-secondary");
+}
+
+export function sidebar(editor, models, sidebarContainer) {
+  sidebarContainer.innerHTML = "";
+  const createSidebarElement = (filename, isFolder) => {
+    const sidebarElement = document.createElement("div");
+    sidebarElement.classList.add("mx-3", "p-1", "px-2", "cursor-pointer");
+    if (isFolder) {
+      sidebarElement.innerHTML = `<p class="flex items-center gap-2">${Icons.Folder}${" "}${filename}</p>`;
+      // TODO implement folder collapse/expand to the element sidebarElement
+    } else {
+      sidebarElement.innerHTML = `<p class="flex items-center gap-2">${Icons.File}${" "}${filename}</p>`;
+    }
+    return sidebarElement;
+  };
+
+  const changeTabColor = (index) => {
+    const allTabElements = document.querySelectorAll("#tabContainer")[0].children;
+    for (let i = 0; i < allTabElements?.length; i++) {
+      allTabElements[i].classList.remove("bg-secondary");
+    }
+    allTabElements[index].classList.add("bg-secondary");
+  }
+
+  const folders = {};
+
+  Object.entries(models).forEach(([filename, model], modelIndex) => {
+    const parts = filename.split('/');
+    let currentFolder = sidebarContainer;
+
+    parts.forEach((part, index) => {
+      if (index === parts.length - 1) {
+        const fileElement = createSidebarElement(part, false);
+        fileElement.addEventListener("click", () => {
+          editor.setModel(model);
+          changeTabColor(modelIndex);
+        });
+        currentFolder.appendChild(fileElement);
+      } else {
+        const folderName = part;
+        if (!folders[folderName]) {
+          const folderElement = createSidebarElement(part, true);
+          currentFolder.appendChild(folderElement);
+          folders[folderName] = folderElement;
+          currentFolder = folderElement;
+        } else {
+          currentFolder = folders[folderName];
+        }
+      }
+    });
+  });
 }
