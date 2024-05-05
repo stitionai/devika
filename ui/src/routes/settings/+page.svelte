@@ -244,7 +244,7 @@
           {:else}
             <button
               id="btn-save"
-              class="p-2 border-2 rounded-lg flex gap-3 items-center hover:bg-gray-200"
+              class="p-2 border-2 rounded-lg flex gap-3 items-center hover:bg-secondary"
               on:click={save}
             >
               <i class="fas fa-save"></i>
@@ -253,7 +253,84 @@
           {/if}
         </div>
       </Tabs.Content>
-      <Tabs.Content value="appearance" class="w-fit">
+      <Tabs.Content value="config" class="mt-4">
+        {#if settings["TIMEOUT"]}
+          <div class="flex flex-col gap-8 w-full">
+          
+            <div class="flex flex-col gap-4">
+              <div class="text-xl font-semibold">
+                Timouts
+              </div>
+              <div class="flex flex-col w-64 gap-4">
+                {#each Object.entries(settings["TIMEOUT"]) as [key, value]}
+                    <div class="flex gap-3 items-center">
+                      <p class="w-28">{key.toLowerCase()}</p>
+                      <input
+                        type="number"
+                        bind:value={settings["TIMEOUT"][key]}
+                        name={key}
+                        placeholder="in seconds"
+                        class="p-2 border-2 w-1/2 rounded-lg {editMode
+                          ? ''
+                          : 'text-gray-500'}"
+                        readonly={!editMode}
+                      />
+                    </div>
+                {/each}
+              </div>
+            </div>
+          
+            <div class="flex flex-col gap-4">
+              <div class="text-xl font-semibold">
+                Logging
+              </div>
+              <div class="flex flex-col w-64 gap-4">
+                {#each Object.entries(settings["LOGGING"]) as [key, value]}
+                <div class="flex gap-10 items-center">
+                  <p class="w-28">{key.toLowerCase()}</p>
+                  <Select.Root onSelectedChange={(v)=>{settings["LOGGING"][key] = v.value}}
+                    disabled={!editMode}>
+                    <Select.Trigger class="w-[180px]" >
+                      <Select.Value placeholder={settings["LOGGING"][key]} />
+                    </Select.Trigger>
+                    <Select.Content>
+                      <Select.Group>
+                        <Select.Item value={"true"} label={"True"}>true</Select.Item>
+                        <Select.Item value={"false"} label={"False"}>false</Select.Item>
+                      </Select.Group>
+                    </Select.Content>
+                    <Select.Input name={key} />
+                  </Select.Root>
+                </div>
+                {/each}
+              </div>
+            </div>
+            
+          </div>
+        {/if}
+        <div class="flex gap-4 mt-5">
+          {#if !editMode}
+            <button
+              id="btn-edit"
+              class="p-2 border-2 rounded-lg flex gap-3 items-center hover:bg-secondary"
+              on:click={edit}
+            >
+              <i class="fas fa-edit"></i>
+              Edit
+            </button>
+          {:else}
+            <button
+              id="btn-save"
+              class="p-2 border-2 rounded-lg flex gap-3 items-center hover:bg-secondary"
+              on:click={save}
+            >
+              <i class="fas fa-save"></i>
+              Save
+            </button>
+          {/if}
+        </div>
+      </Tabs.Content>
+      <Tabs.Content value="appearance" class="mt-4 w-fit">
         <div class="flex w-full justify-between items-center my-2 gap-8">
           <div>
             Select a theme
