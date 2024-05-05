@@ -30,3 +30,5 @@ duckduckgo-search
 orjson
 gevent
 gevent-websocket
+g4f[all]
+nodriver

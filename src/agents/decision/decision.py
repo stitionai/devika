@@ -2,7 +2,7 @@ import json
 
 from jinja2 import Environment, BaseLoader
 
-from src.services.utils import retry_wrapper
+from src.services.utils import retry_wrapper, validate_responses
 from src.llm import LLM
 
 PROMPT = open("src/agents/decision/prompt.jinja2").read().strip()
@@ -16,17 +16,8 @@ class Decision:
         template = env.from_string(PROMPT)
         return template.render(prompt=prompt)
 
+    @validate_responses
     def validate_response(self, response: str):
-        response = response.strip().replace("```json", "```")
-        
-        if response.startswith("```") and response.endswith("```"):
-            response = response[3:-3].strip()
-
-        try:
-            response = json.loads(response)
-        except Exception as _:
-            return False
-        
         for item in response:
             if "function" not in item or "args" not in item or "reply" not in item:
                 return False

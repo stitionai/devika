@@ -1,13 +1,14 @@
 <script>
   import { onMount } from "svelte";
   import { projectList, modelList, internet, tokenUsage, agentState, messages, searchEngineList, serverStatus, isSending, selectedProject, selectedModel, selectedSearchEngine} from "$lib/store";
-  import { createProject, fetchMessages, fetchInitialData, deleteProject, fetchAgentState} from "$lib/api";
+  import { createProject, fetchMessages, fetchInitialData, deleteProject,fetchProjectFiles, fetchAgentState} from "$lib/api";
   import Seperator from "./ui/Seperator.svelte";
 
   function selectProject(project) {
     $selectedProject = project;
     fetchMessages();
-    // fetchAgentState();
+    fetchAgentState();
+    fetchProjectFiles();
     document.getElementById("project-dropdown").classList.add("hidden");
   }
   function selectModel(model) {
@@ -25,6 +26,10 @@
       await createProject(projectName);
       selectProject(projectName);
       tokenUsage.set(0);
+      messages.set([]);
+      agentState.set(null);
+      isSending.set(false);
+
     }
   }
   async function deleteproject(project) {
@@ -34,7 +39,6 @@
       messages.set([]);
       agentState.set(null);
       tokenUsage.set(0);
-      agentState.set(null);
       isSending.set(false);
       $selectedProject = "Select Project";
       localStorage.setItem("selectedProject", "");

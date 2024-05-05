@@ -5,12 +5,17 @@
   import { onMount } from "svelte";
   import { Icons } from "../icons";
 
-  let isAgentActive = false;
   let inference_time = 0;
-  if ($agentState !== null) {
-    isAgentActive = $agentState.agent_is_active;
 
-  }  
+  agentState.subscribe((value) => {
+    if (value !== null && value.agent_is_active == false) {
+      isSending.set(false);
+    }
+    if (value == null){
+      inference_time = 0;
+    }
+  });
+
   let messageInput = "";
   async function handleSendMessage() {
     const projectName = localStorage.getItem("selectedProject");
@@ -29,12 +34,6 @@
     if (messageInput.trim() !== "" && isSending) {
       $isSending = true;
       emitMessage("user-message", { 
-        message: messageInput,
-        base_model: selectedModel,
-        project_name: projectName,
-        search_engine: serachEngine,
-      });
-      console.log({ 
         message: messageInput,
         base_model: selectedModel,
         project_name: projectName,

@@ -10,7 +10,7 @@ from src.agents.patcher import Patcher
 from src.llm import LLM
 from src.state import AgentState
 from src.project import ProjectManager
-from src.services.utils import retry_wrapper
+from src.services.utils import retry_wrapper, validate_responses
 
 PROMPT = open("src/agents/runner/prompt.jinja2", "r").read().strip()
 RERUNNER_PROMPT = open("src/agents/runner/rerunner.jinja2", "r").read().strip()
@@ -52,37 +52,15 @@ class Runner:
             error=error
         )
 
+    @validate_responses
     def validate_response(self, response: str):
-        response = response.strip().replace("```json", "```")
-        
-        if response.startswith("```") and response.endswith("```"):
-            response = response[3:-3].strip()
- 
-        try:
-            response = json.loads(response)
-        except Exception as _:
-            return False
-
         if "commands" not in response:
             return False
         else:
             return response["commands"]
-        
+    
+    @validate_responses
     def validate_rerunner_response(self, response: str):
-        response = response.strip().replace("```json", "```")
-        
-        if response.startswith("```") and response.endswith("```"):
-            response = response[3:-3].strip()
- 
-        print(response)
- 
-        try:
-            response = json.loads(response)
-        except Exception as _:
-            return False
-        
-        print(response)
-
         if "action" not in response and "response" not in response:
             return False
         else:
