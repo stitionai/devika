@@ -110,9 +110,6 @@ class Config:
 
     def get_logging_prompts(self):
         return self.config["LOGGING"]["LOG_PROMPTS"] == "true"
-    
-    def get_timeout_inference(self):
-        return self.config["TIMEOUT"]["INFERENCE"]
 
     def set_bing_api_key(self, key):
         self.config["API_KEYS"]["BING"] = key
