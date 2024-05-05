@@ -206,7 +206,7 @@ def get_settings():
 @app.route("/api/status", methods=["GET"])
 @route_logger(logger)
 def status():
-    return jsonify({"status": "server is running!"}), 200
+    return jsonify({"status": "server is running!"})
 
 if __name__ == "__main__":
     logger.info("Devika is up and running!")
