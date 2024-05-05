@@ -39,8 +39,8 @@
 <div class="flex h-full flex-col flex-1 gap-4 p-4 overflow-hidden">
   <ControlPanel />
 
-  <div class="flex h-full overflow-x-scroll snap-x">
-    <div class="flex flex-1 min-w-[calc(100vw-120px)] h-full gap-2 snap-start">
+  <div class="flex h-full overflow-x-scroll">
+    <div class="flex flex-1 min-w-[calc(100vw-120px)] h-full gap-2">
       <div class="flex flex-col gap-2 w-full h-full pr-4">
         <MessageContainer />
         <MessageInput />
@@ -50,7 +50,7 @@
         <TerminalWidget />
       </div>
     </div>
-    <div class="flex flex-col gap-2 min-w-[calc(100vw-120px)] h-full pr-4 p-2 snap-start">
+    <div class="flex flex-col gap-2 min-w-[calc(100vw-120px)] h-full pr-4 p-2">
       <EditorWidget />
     </div>
   </div>
