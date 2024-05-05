@@ -7,7 +7,7 @@
 
 <main>
   <div class="h-dvh w-full flex">
-      <Toaster />
+      <Toaster richColors/>
       <ModeWatcher />
       <Sidebar />
       <slot />

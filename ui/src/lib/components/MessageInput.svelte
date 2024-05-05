@@ -39,12 +39,6 @@
         project_name: projectName,
         search_engine: serachEngine,
       });
-      console.log({ 
-        message: messageInput,
-        base_model: selectedModel,
-        project_name: projectName,
-        search_engine: serachEngine,
-      });
       messageInput = "";
       
     }

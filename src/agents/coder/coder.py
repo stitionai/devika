@@ -9,6 +9,7 @@ from src.llm import LLM
 from src.state import AgentState
 from src.logger import Logger
 from src.services.utils import retry_wrapper
+from src.socket_instance import emit_agent
 
 PROMPT = open("src/agents/coder/prompt.jinja2", "r").read().strip()
 
@@ -87,6 +88,7 @@ class Coder:
         return f"~~~\n{response}\n~~~"
 
     def emulate_code_writing(self, code_set: list, project_name: str):
+        files = []
         for current_file in code_set:
             file = current_file["file"]
             code = current_file["code"]
@@ -98,8 +100,16 @@ class Coder:
             new_state["terminal_session"]["title"] = f"Editing {file}"
             new_state["terminal_session"]["command"] = f"vim {file}"
             new_state["terminal_session"]["output"] = code
+            files.append({
+                "file": file,
+                "code": code
+            })
             AgentState().add_to_current_state(project_name, new_state)
             time.sleep(2)
+        emit_agent("code", {
+            "files": files,
+            "from": "coder"
+        })
 
     @retry_wrapper
     def execute(
