@@ -2,7 +2,7 @@ import json
 
 from jinja2 import Environment, BaseLoader
 
-from src.services.utils import retry_wrapper
+from src.services.utils import retry_wrapper, validate_responses
 from src.config import Config
 from src.llm import LLM
 
@@ -24,17 +24,8 @@ class Action:
             conversation=conversation
         )
 
+    @validate_responses
     def validate_response(self, response: str):
-        response = response.strip().replace("```json", "```")
-        
-        if response.startswith("```") and response.endswith("```"):
-            response = response[3:-3].strip()
- 
-        try:
-            response = json.loads(response)
-        except Exception as _:
-            return False
-
         if "response" not in response and "action" not in response:
             return False
         else:
