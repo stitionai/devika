@@ -10,7 +10,8 @@ class Gemini:
         genai.configure(api_key=api_key)
 
     def inference(self, model_id: str, prompt: str) -> str:
-        model = genai.GenerativeModel(model_id)
+        config = genai.GenerationConfig(temperature=0)
+        model = genai.GenerativeModel(model_id, generation_config=config)
         # Set safety settings for the request
         safety_settings = {
             HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE,

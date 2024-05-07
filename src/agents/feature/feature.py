@@ -7,6 +7,8 @@ from typing import List, Dict, Union
 from src.config import Config
 from src.llm import LLM
 from src.state import AgentState
+from src.services.utils import retry_wrapper
+from src.socket_instance import emit_agent
 
 PROMPT = open("src/agents/feature/prompt.jinja2", "r").read().strip()
 
@@ -84,6 +86,7 @@ class Feature:
         return f"~~~\n{response}\n~~~"
 
     def emulate_code_writing(self, code_set: list, project_name: str):
+        files = []
         for file in code_set:
             filename = file["file"]
             code = file["code"]
@@ -93,9 +96,18 @@ class Feature:
             new_state["terminal_session"]["title"] = f"Editing {filename}"
             new_state["terminal_session"]["command"] = f"vim {filename}"
             new_state["terminal_session"]["output"] = code
+            files.append({
+                "file": filename,
+                "code": code,
+            })
             AgentState().add_to_current_state(project_name, new_state)
             time.sleep(1)
+        emit_agent("code", {
+            "files": files,
+            "from": "feature"
+        })
 
+    @retry_wrapper
     def execute(
         self,
         conversation: list,
@@ -108,9 +120,8 @@ class Feature:
         
         valid_response = self.validate_response(response)
         
-        while not valid_response:
-            print("Invalid response from the model, trying again...")
-            return self.execute(conversation, code_markdown, system_os, project_name)
+        if not valid_response:
+            return False
         
         self.emulate_code_writing(valid_response, project_name)
 

@@ -3,10 +3,12 @@ import time
 
 from jinja2 import Environment, BaseLoader
 from typing import List, Dict, Union
+from src.socket_instance import emit_agent
 
 from src.config import Config
 from src.llm import LLM
 from src.state import AgentState
+from src.services.utils import retry_wrapper
 
 PROMPT = open("src/agents/patcher/prompt.jinja2", "r").read().strip()
 
@@ -86,6 +88,7 @@ class Patcher:
         return f"~~~\n{response}\n~~~"
 
     def emulate_code_writing(self, code_set: list, project_name: str):
+        files = []
         for current_file in code_set:
             file = current_file["file"]
             code = current_file["code"]
@@ -95,9 +98,18 @@ class Patcher:
             new_state["terminal_session"]["title"] = f"Editing {file}"
             new_state["terminal_session"]["command"] = f"vim {file}"
             new_state["terminal_session"]["output"] = code
+            files.append({
+                "file": file,
+                "code": code
+            })
             AgentState().add_to_current_state(project_name, new_state)
             time.sleep(1)
+        emit_agent("code", {
+            "files": files,
+            "from": "patcher"
+        })
 
+    @retry_wrapper
     def execute(
         self,
         conversation: str,
@@ -118,16 +130,8 @@ class Patcher:
         
         valid_response = self.validate_response(response)
         
-        while not valid_response:
-            print("Invalid response from the model, trying again...")
-            return self.execute(
-                conversation,
-                code_markdown,
-                commands,
-                error,
-                system_os,
-                project_name
-            )
+        if not valid_response:
+            return False
         
         self.emulate_code_writing(valid_response, project_name)
 
