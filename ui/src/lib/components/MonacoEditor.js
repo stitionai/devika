@@ -2,28 +2,19 @@ import loader from "@monaco-editor/loader";
 import { Icons } from "../icons";
 import { updateSettings, fetchSettings } from "$lib/api";
 
-let settings = {};
-let original = {};
+let setting = "";
 
 const getSettings = async () => {
-  settings = await fetchSettings();
-  original = JSON.parse(JSON.stringify(settings));
+  const settings = await fetchSettings();
+  setting = settings["CUSTOM"]["BLACKLIST_FOLDER"]
 }
 
 await getSettings();
 
-const save = async () => {
+const saveBCKST = async () => {
   let updated = {};
-  for (let key in settings) {
-    for (let subkey in settings[key]) {
-      if (settings[key][subkey] !== original[key][subkey]) {
-        if (!updated[key]) {
-          updated[key] = {};
-        }
-        updated[key][subkey] = settings[key][subkey];
-      }
-    }
-  }
+  updated["CUSTOM"] = {};
+  updated["CUSTOM"]["BLACKLIST_FOLDER"] = setting;
 
   await updateSettings(updated);
 };
@@ -126,11 +117,11 @@ export function sidebar(editor, models, sidebarContainer) {
     const state = isAIContext ? "inactive" : "active";
 
     if (isFolder) {
-      sidebarElement.classList.add("mx-3", "p-1", "px-2", "cursor-pointer");
+      sidebarElement.classList.add("mx-3", "p-1", "px-2", "cursor-pointer", "smooth-anim");
       sidebarElement.innerHTML = `<div class="align-container"><p class="flex items-center gap-2">${Icons.FolderEditor}${" "}${filename}</p><p data-state="${state}" title="Activate/Deactivate as context for AI">${icon}</p></div>`;
       // TODO implement folder collapse/expand to the element sidebarElement
     } else {
-      sidebarElement.classList.add("mx-3", "p-1", "px-2", "cursor-pointer", "align-container");
+      sidebarElement.classList.add("mx-3", "p-1", "px-2", "cursor-pointer", "smooth-anim", "align-container");
       sidebarElement.innerHTML = `<p class="flex items-center gap-2">${Icons.File}${" "}${filename}</p><p data-state="${state}" title="Activate/Deactivate as context for AI">${icon}</p>`;
     }
 
@@ -152,30 +143,54 @@ export function sidebar(editor, models, sidebarContainer) {
       elementParagraph.setAttribute('data-state', 'active');
       elementParagraph.innerHTML = `${Icons.ContextOn}`;
 
-      const nameIndex = settings["CUSTOM"]["BLACKLIST_FOLDER"].indexOf(name);
+      const nameIndex = setting.indexOf(name);
       if (nameIndex !== -1) {
-          settings["CUSTOM"]["BLACKLIST_FOLDER"] = settings["CUSTOM"]["BLACKLIST_FOLDER"].split(', ').filter(item => item !== name).join(', ');
+          setting = setting.split(', ').filter(item => item !== name).join(', ');
       }
     } else {
       elementParagraph.setAttribute('data-state', 'inactive');
       elementParagraph.innerHTML = `${Icons.ContextOff}`;
 
-      settings["CUSTOM"]["BLACKLIST_FOLDER"] += `, ${name}`;
+      setting += `, ${name}`;
     }
 
-    console.log(settings["CUSTOM"]["BLACKLIST_FOLDER"]);
-    save();
+    saveBCKST();
   }
 
-  const expandFolder = (folder, expand) => {
+  // I have put a lot of Timeout and all just for some fancy animation
+  const expandFolder = (folder) => {
     const elements = document.querySelectorAll(`[id="${folder}"]`);
-    elements.forEach(element => {
-      element.style.display = (element.style.display === "none") ? "" : "none";
+    const lengths = elements.length;
+
+    elements.forEach((element, key) => {
+        if (element.style.display === "none") {
+          setTimeout(() => {
+
+            element.style.display = "";
+
+            setTimeout(() => {
+                element.style.opacity = "1";
+                element.style.transform = "translateY(0px)";
+            }, 5);
+
+          }, 20 * key);
+        } else {
+          setTimeout(() => {
+
+            element.style.opacity = "0";
+            element.style.transform = "translateY(-15px)";
+
+            setTimeout(() => {
+                element.style.display = "none";
+            }, 250);
+
+          }, lengths * 20 - (20 * key));
+        }
     });
   }
 
   const folders = {};
-  const blacklistDir = settings["CUSTOM"]["BLACKLIST_FOLDER"];
+  const blacklistDir = setting;
   const blacklistDirs = blacklistDir.split(', ').map(dir => dir.trim());
 
   Object.entries(models).forEach(([filename, model], modelIndex) => {
@@ -185,9 +200,12 @@ export function sidebar(editor, models, sidebarContainer) {
 
     parts.forEach((part, index) => {
       const contextEnable = blacklistDirs.some(dir => part.includes(dir));
+
+      // Get the entire parent folder and actual path of the file/folder
       const parentFolder = index !== 0 ? `FOLDER::${parts.slice(0, index).join("/")}` : ""
       const actualFile = `FOLDER::${parts.slice(0, index + 1).join("/")}`
 
+      // If it's the last index, then it's a file, otherwise it's a folder
       if (index === parts.length - 1) {
         const fileElement = createSidebarElement(part, false, contextEnable);
         const fileElementParagraphs = fileElement.querySelectorAll('p');
@@ -195,9 +213,11 @@ export function sidebar(editor, models, sidebarContainer) {
         // What folder is the parent of this file
         fileElement.setAttribute("id", parentFolder);
 
-        // Collapse every folder/file
+        // Collapse every folder/file by default
           if (index !== 0) {
             fileElement.style.display = "none"
+            fileElement.style.opacity = "0";
+            fileElement.style.transform = "translateY(-15px)";
           }
 
         fileElementParagraphs[0].addEventListener("click", () => {
@@ -220,9 +240,11 @@ export function sidebar(editor, models, sidebarContainer) {
           // If it's a sub-directory (Not the first index), we set the id to the previous folder name
           folderElement.setAttribute("id", parentFolder);
 
-          // Collapse every folder/file
+          // Collapse every folder/file by default
           if (index !== 0) {
-            folderElement.style.display = "none"
+            folderElement.style.display = "none";
+            folderElement.style.opacity = "0";
+            folderElement.style.transform = "translateY(-15px)";
           }
 
           folderElementParagraphs[0].addEventListener("click", () => {

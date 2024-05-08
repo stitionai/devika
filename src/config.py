@@ -186,10 +186,6 @@ class Config:
     def update_config(self, data):
         for key, value in data.items():
             if key in self.config:
-                with open("config.toml", "r+") as f:
-                    config = toml.load(f)
-                    for sub_key, sub_value in value.items():
-                        self.config[key][sub_key] = sub_value
-                        config[key][sub_key] = sub_value
-                    f.seek(0)
-                    toml.dump(config, f)
+                for sub_key, sub_value in value.items():
+                    self.config[key][sub_key] = sub_value
+        self.save_config()
