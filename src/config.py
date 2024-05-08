@@ -171,8 +171,8 @@ class Config:
         self.config["LOGGING"]["LOG_PROMPTS"] = "true" if value else "false"
         self.save_config()
 
-    def set_blacklist_folder(self, dir):
-        self.config["CUSTOM"]["BLACKLIST_FOLDER"] = dir
+    def set_blacklist_folder(self, value):
+        self.config["CUSTOM"]["BLACKLIST_FOLDER"] = value
         self.save_config()
 
     def set_timeout_inference(self, value):
