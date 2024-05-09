@@ -30,7 +30,7 @@ import platform
 import tiktoken
 import asyncio
 
-from src.socket_instance import emit_agent
+from src.socket_instance import EmitAgent
 
 
 class Agent:
@@ -39,6 +39,7 @@ class Agent:
             raise ValueError("base_model is required")
 
         self.logger = Logger()
+        self.emit_agent = EmitAgent()
 
         """
         Accumulate contextual keywords from chained prompts of all preparation agents
@@ -108,7 +109,7 @@ class Agent:
             if not link:
                 continue
             browser, raw, data = loop.run_until_complete(self.open_page(project_name, link))
-            emit_agent("screenshot", {"data": raw, "project_name": project_name}, False)
+            self.emit_agent.emit_content("screenshot", {"data": raw, "project_name": project_name}, False)
             results[query] = self.formatter.execute(data, project_name)
 
             self.logger.info(f"got the search results for : {query}")

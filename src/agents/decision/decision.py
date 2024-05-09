@@ -1,19 +1,20 @@
-import json
-
 from jinja2 import Environment, BaseLoader
+from pathlib import Path
 
 from src.services.utils import retry_wrapper, validate_responses
 from src.llm import LLM
 
-PROMPT = open("src/agents/decision/prompt.jinja2").read().strip()
 
 class Decision:
     def __init__(self, base_model: str):
         self.llm = LLM(model_id=base_model)
+        parent = Path(__file__).resolve().parent
+        with open(parent.joinpath("prompt.jinja2"), 'r') as file:
+            self.prompt_template = file.read().strip()
 
     def render(self, prompt: str) -> str:
         env = Environment(loader=BaseLoader())
-        template = env.from_string(PROMPT)
+        template = env.from_string(self.prompt_template)
         return template.render(prompt=prompt)
 
     @validate_responses

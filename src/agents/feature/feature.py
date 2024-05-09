@@ -2,23 +2,26 @@ import os
 import time
 
 from jinja2 import Environment, BaseLoader
+from pathlib import Path
 from typing import List, Dict, Union
 
 from src.config import Config
 from src.llm import LLM
 from src.state import AgentState
 from src.services.utils import retry_wrapper
-from src.socket_instance import emit_agent
-
-PROMPT = open("src/agents/feature/prompt.jinja2", "r").read().strip()
+from src.socket_instance import EmitAgent
 
 
 class Feature:
     def __init__(self, base_model: str):
         config = Config()
         self.project_dir = config.get_projects_dir()
+        self.emit_agent = EmitAgent()
         
         self.llm = LLM(model_id=base_model)
+        parent = Path(__file__).resolve().parent
+        with open(parent.joinpath("prompt.jinja2"), 'r') as file:
+            self.prompt_template = file.read().strip()
 
     def render(
         self,
@@ -27,7 +30,7 @@ class Feature:
         system_os: str
     ) -> str:
         env = Environment(loader=BaseLoader())
-        template = env.from_string(PROMPT)
+        template = env.from_string(self.prompt_template)
         return template.render(
             conversation=conversation,
             code_markdown=code_markdown,
@@ -102,7 +105,7 @@ class Feature:
             })
             AgentState().add_to_current_state(project_name, new_state)
             time.sleep(1)
-        emit_agent("code", {
+        self.emit_agent.emit_content("code", {
             "files": files,
             "from": "feature"
         })
