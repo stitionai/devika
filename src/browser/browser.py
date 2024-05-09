@@ -1,12 +1,10 @@
-import asyncio
 import base64
 import os
 
-from playwright.sync_api import sync_playwright, TimeoutError, Page
+from playwright.sync_api import TimeoutError
 from playwright.async_api import async_playwright, TimeoutError
 from markdownify import markdownify as md
 from pdfminer.high_level import extract_text
-from src.socket_instance import emit_agent
 from src.config import Config
 from src.state import AgentState
 

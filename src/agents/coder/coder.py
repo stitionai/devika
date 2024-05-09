@@ -10,7 +10,7 @@ from src.llm import LLM
 from src.state import AgentState
 from src.logger import Logger
 from src.services.utils import retry_wrapper
-from src.socket_instance import emit_agent
+from src.socket_instance import EmitAgent
 
 
 class Coder:
@@ -18,6 +18,7 @@ class Coder:
         config = Config()
         self.project_dir = config.get_projects_dir()
         self.logger = Logger()
+        self.emit_agent = EmitAgent()
         self.llm = LLM(model_id=base_model)
         parent = Path(__file__).resolve().parent
         with open(parent.joinpath("prompt.jinja2"), 'r') as file:
@@ -109,7 +110,7 @@ class Coder:
             })
             AgentState().add_to_current_state(project_name, new_state)
             time.sleep(2)
-        emit_agent("code", {
+        self.emit_agent.emit_content("code", {
             "files": files,
             "from": "coder"
         })

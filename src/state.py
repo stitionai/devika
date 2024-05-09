@@ -3,7 +3,7 @@ import os
 from datetime import datetime
 from typing import Optional
 from sqlmodel import Field, Session, SQLModel, create_engine
-from src.socket_instance import emit_agent
+from src.socket_instance import EmitAgent
 from src.config import Config
 
 
@@ -21,6 +21,7 @@ class AgentState:
         sqlite_path = config.get_sqlite_db()
         self.engine = create_engine(f"sqlite:///{sqlite_path}")
         SQLModel.metadata.create_all(self.engine)
+        self.emit_agent = EmitAgent()
 
     def new_state(self):
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -52,7 +53,7 @@ class AgentState:
             agent_state = AgentStateModel(project=project, state_stack_json=json.dumps([new_state]))
             session.add(agent_state)
             session.commit()
-            emit_agent("agent-state", [new_state])
+            self.emit_agent.emit_content("agent-state", [new_state])
 
     def delete_state(self, project: str):
         with Session(self.engine) as session:
@@ -75,7 +76,7 @@ class AgentState:
                 agent_state = AgentStateModel(project=project, state_stack_json=json.dumps(state_stack))
                 session.add(agent_state)
                 session.commit()
-            emit_agent("agent-state", state_stack)
+            self.emit_agent.emit_content("agent-state", state_stack)
 
     def get_current_state(self, project: str):
         with Session(self.engine) as session:
@@ -97,7 +98,7 @@ class AgentState:
                 agent_state = AgentStateModel(project=project, state_stack_json=json.dumps(state_stack))
                 session.add(agent_state)
                 session.commit()
-            emit_agent("agent-state", state_stack)
+            self.emit_agent.emit_content("agent-state", state_stack)
 
     def get_latest_state(self, project: str):
         with Session(self.engine) as session:
@@ -120,7 +121,7 @@ class AgentState:
                 agent_state = AgentStateModel(project=project, state_stack_json=json.dumps(state_stack))
                 session.add(agent_state)
                 session.commit()
-            emit_agent("agent-state", state_stack)
+            self.emit_agent.emit_content("agent-state", state_stack)
 
     def is_agent_active(self, project: str):
         with Session(self.engine) as session:
@@ -144,7 +145,7 @@ class AgentState:
                 agent_state = AgentStateModel(project=project, state_stack_json=json.dumps(state_stack))
                 session.add(agent_state)
                 session.commit()
-            emit_agent("agent-state", state_stack)
+            self.emit_agent.emit_content("agent-state", state_stack)
 
     def is_agent_completed(self, project: str):
         with Session(self.engine) as session:

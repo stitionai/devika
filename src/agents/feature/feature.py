@@ -9,13 +9,14 @@ from src.config import Config
 from src.llm import LLM
 from src.state import AgentState
 from src.services.utils import retry_wrapper
-from src.socket_instance import emit_agent
+from src.socket_instance import EmitAgent
 
 
 class Feature:
     def __init__(self, base_model: str):
         config = Config()
         self.project_dir = config.get_projects_dir()
+        self.emit_agent = EmitAgent()
         
         self.llm = LLM(model_id=base_model)
         parent = Path(__file__).resolve().parent
@@ -104,7 +105,7 @@ class Feature:
             })
             AgentState().add_to_current_state(project_name, new_state)
             time.sleep(1)
-        emit_agent("code", {
+        self.emit_agent.emit_content("code", {
             "files": files,
             "from": "feature"
         })

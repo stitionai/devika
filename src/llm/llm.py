@@ -3,7 +3,7 @@ import sys
 import tiktoken
 from typing import Tuple
 
-from src.socket_instance import emit_agent
+from src.socket_instance import EmitAgent
 from .ollama_client import Ollama
 from .claude_client import Claude
 from .openai_client import OpenAi
@@ -27,6 +27,9 @@ class LLM:
         self.log_prompts = config.get_logging_prompts()
         self.timeout_inference = config.get_timeout_inference()
 
+        self.emit_agent = EmitAgent()
+
+        self.ollama = Ollama()
         self.logger = Logger()
         self.agent_state = AgentState()
 
@@ -79,7 +82,7 @@ class LLM:
         self.agent_state.update_token_usage(project_name, token_usage)
 
         total = self.agent_state.get_latest_token_usage(project_name) + token_usage
-        emit_agent("tokens", {"token_usage": total})
+        self.emit_agent.emit_content("tokens", {"token_usage": total})
 
     def inference(self, prompt: str, project_name: str) -> str:
         self.update_global_token_usage(prompt, project_name)
@@ -112,9 +115,9 @@ class LLM:
                     while True:
                         elapsed_time = time.time() - start_time
                         elapsed_seconds = format(elapsed_time, ".2f")
-                        emit_agent("inference", {"type": "time", "elapsed_time": elapsed_seconds})
+                        self.emit_agent.emit_content("inference", {"type": "time", "elapsed_time": elapsed_seconds})
                         if int(elapsed_time) == 5:
-                            emit_agent("inference", {
+                            self.emit_agent.emit_content("inference", {
                                 "type": "warning", "message": "Inference is taking longer than expected"
                             })
                         if elapsed_time > self.timeout_inference:
@@ -129,14 +132,14 @@ class LLM:
                     self.logger.error(
                         f"Inference failed. took too long. Model: {model_enum}, Model ID: {self.model_id}"
                     )
-                    emit_agent("inference", {
+                    self.emit_agent.emit_content("inference", {
                         "type": "error", "message": "Inference took too long. Please try again."
                     })
                     sys.exit()
                 
                 except Exception as e:
                     self.logger.error(str(e))
-                    emit_agent("inference", {"type": "error", "message": str(e)})
+                    self.emit_agent.emit_content("inference", {"type": "error", "message": str(e)})
                     sys.exit()
 
         except KeyError:

@@ -10,7 +10,7 @@ init_devika()
 
 from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
-from src.socket_instance import socketio, emit_agent
+from src.socket_instance import EmitAgent
 import os
 import logging
 from threading import Thread
@@ -28,6 +28,9 @@ from src.llm import LLM
 app = Flask(__name__)
 CORS(app)
 app.register_blueprint(project_bp)
+
+emit_agent = EmitAgent()
+socketio = emit_agent.get_socketio()
 socketio.init_app(app)
 
 
@@ -43,13 +46,14 @@ manager = ProjectManager()
 AgentState = AgentState()
 config = Config()
 logger = Logger()
+emit_agent = EmitAgent()
 
 
 # initial socket
 @socketio.on('socket_connect')
 def test_connect(data):
     print("Socket connected :: ", data)
-    emit_agent("socket_response", {"data": "Server Connected"})
+    emit_agent.emit_content("socket_response", {"data": "Server Connected"})
 
 
 @app.route("/api/data", methods=["GET"])
@@ -89,7 +93,7 @@ def handle_message(data):
             thread = Thread(target=lambda: agent.subsequent_execute(message, project_name))
             thread.start()
         else:
-            emit_agent("info", {"type": "warning", "message": "previous agent doesn't completed it's task."})
+            emit_agent.emit_content("info", {"type": "warning", "message": "previous agent doesn't completed it's task."})
             last_state = AgentState.get_latest_state(project_name)
             if last_state["agent_is_active"] or not last_state["completed"]:
                 thread = Thread(target=lambda: agent.execute(message, project_name))

@@ -4,10 +4,13 @@ import time
 from functools import wraps
 import json
 
-from src.socket_instance import emit_agent
+from src.socket_instance import EmitAgent
+
 
 def retry_wrapper(func):
     def wrapper(*args, **kwargs):
+        emit_agent = EmitAgent()
+
         max_tries = 5
         tries = 0
         while tries < max_tries:
@@ -15,11 +18,11 @@ def retry_wrapper(func):
             if result:
                 return result
             print("Invalid response from the model, I'm trying again...")
-            emit_agent("info", {"type": "warning", "message": "Invalid response from the model, trying again..."})
+            emit_agent.emit_content("info", {"type": "warning", "message": "Invalid response from the model, trying again..."})
             tries += 1
             time.sleep(2)
         print("Maximum 5 attempts reached. try other models")
-        emit_agent("info", {"type": "error", "message": "Maximum attempts reached. model keeps failing."})
+        emit_agent.emit_content("info", {"type": "error", "message": "Maximum attempts reached. model keeps failing."})
         sys.exit(1)
 
         return False
@@ -28,6 +31,7 @@ def retry_wrapper(func):
         
 class InvalidResponseError(Exception):
     pass
+
 
 def validate_responses(func):
     @wraps(func)
@@ -83,7 +87,7 @@ def validate_responses(func):
                 pass
 
         # If all else fails, raise an exception
-        emit_agent("info", {"type": "error", "message": "Failed to parse response as JSON"})
+        EmitAgent().emit_agent("info", {"type": "error", "message": "Failed to parse response as JSON"})
         # raise InvalidResponseError("Failed to parse response as JSON")
         return False
 
