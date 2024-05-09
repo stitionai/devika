@@ -1,7 +1,7 @@
 import sys
 
 import tiktoken
-from typing import List, Tuple
+from typing import Tuple
 
 from src.socket_instance import emit_agent
 from .ollama_client import Ollama
@@ -18,17 +18,19 @@ from src.logger import Logger
 
 TIKTOKEN_ENC = tiktoken.get_encoding("cl100k_base")
 
-ollama = Ollama()
-logger = Logger()
-agentState = AgentState()
-config = Config()
-
 
 class LLM:
     def __init__(self, model_id: str = None):
         self.model_id = model_id
+
+        config = Config()
         self.log_prompts = config.get_logging_prompts()
         self.timeout_inference = config.get_timeout_inference()
+
+        self.logger = Logger()
+        self.agent_state = AgentState()
+
+        self.ollama = Ollama()
         self.models = {
             "CLAUDE": [
                 ("Claude 3 Opus", "claude-3-opus-20240229"),
@@ -58,8 +60,8 @@ class LLM:
             ],
             "OLLAMA": []
         }
-        if ollama.client:
-            self.models["OLLAMA"] = [(model["name"].split(":")[0], model["name"]) for model in ollama.models]
+        if self.ollama.client:
+            self.models["OLLAMA"] = [(model["name"].split(":")[0], model["name"]) for model in self.ollama.models]
 
     def list_models(self) -> dict:
         return self.models
@@ -72,12 +74,11 @@ class LLM:
         }
         return model_dict.get(model_name, (None, None))
 
-    @staticmethod
-    def update_global_token_usage(string: str, project_name: str):
+    def update_global_token_usage(self, string: str, project_name: str):
         token_usage = len(TIKTOKEN_ENC.encode(string))
-        agentState.update_token_usage(project_name, token_usage)
+        self.agent_state.update_token_usage(project_name, token_usage)
 
-        total = agentState.get_latest_token_usage(project_name) + token_usage
+        total = self.agent_state.get_latest_token_usage(project_name) + token_usage
         emit_agent("tokens", {"token_usage": total})
 
     def inference(self, prompt: str, project_name: str) -> str:
@@ -90,7 +91,7 @@ class LLM:
             raise ValueError(f"Model {self.model_id} not supported")
 
         model_mapping = {
-            "OLLAMA": ollama,
+            "OLLAMA": self.ollama,
             "CLAUDE": Claude(),
             "OPENAI": OpenAi(),
             "GOOGLE": Gemini(),
@@ -113,7 +114,9 @@ class LLM:
                         elapsed_seconds = format(elapsed_time, ".2f")
                         emit_agent("inference", {"type": "time", "elapsed_time": elapsed_seconds})
                         if int(elapsed_time) == 5:
-                            emit_agent("inference", {"type": "warning", "message": "Inference is taking longer than expected"})
+                            emit_agent("inference", {
+                                "type": "warning", "message": "Inference is taking longer than expected"
+                            })
                         if elapsed_time > self.timeout_inference:
                             raise concurrent.futures.TimeoutError
                         if future.done():
@@ -123,23 +126,24 @@ class LLM:
                     response = future.result(timeout=self.timeout_inference).strip()
 
                 except concurrent.futures.TimeoutError:
-                    logger.error(f"Inference failed. took too long. Model: {model_enum}, Model ID: {self.model_id}")
-                    emit_agent("inference", {"type": "error", "message": "Inference took too long. Please try again."})
-                    response = False
+                    self.logger.error(
+                        f"Inference failed. took too long. Model: {model_enum}, Model ID: {self.model_id}"
+                    )
+                    emit_agent("inference", {
+                        "type": "error", "message": "Inference took too long. Please try again."
+                    })
                     sys.exit()
                 
                 except Exception as e:
-                    logger.error(str(e))
-                    response = False
+                    self.logger.error(str(e))
                     emit_agent("inference", {"type": "error", "message": str(e)})
                     sys.exit()
-
 
         except KeyError:
             raise ValueError(f"Model {model_enum} not supported")
 
         if self.log_prompts:
-            logger.debug(f"Response ({model}): --> {response}")
+            self.logger.debug(f"Response ({model}): --> {response}")
 
         self.update_global_token_usage(response, project_name)
 

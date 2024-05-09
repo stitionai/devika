@@ -2,6 +2,7 @@ import os
 import time
 
 from jinja2 import Environment, BaseLoader
+from pathlib import Path
 from typing import List, Dict, Union
 from src.socket_instance import emit_agent
 
@@ -10,7 +11,6 @@ from src.llm import LLM
 from src.state import AgentState
 from src.services.utils import retry_wrapper
 
-PROMPT = open("src/agents/patcher/prompt.jinja2", "r").read().strip()
 
 class Patcher:
     def __init__(self, base_model: str):
@@ -18,17 +18,20 @@ class Patcher:
         self.project_dir = config.get_projects_dir()
         
         self.llm = LLM(model_id=base_model)
+        parent = Path(__file__).resolve().parent
+        with open(parent.joinpath("prompt.jinja2"), 'r') as file:
+            self.prompt_template = file.read().strip()
 
     def render(
         self,
         conversation: list,
         code_markdown: str,
         commands: list,
-        error :str,
+        error: str,
         system_os: str
     ) -> str:
         env = Environment(loader=BaseLoader())
-        template = env.from_string(PROMPT)
+        template = env.from_string(self.prompt_template)
         return template.render(
             conversation=conversation,
             code_markdown=code_markdown,
@@ -79,6 +82,7 @@ class Patcher:
                 f.write(file["code"])
     
         return file_path_dir
+
     def get_project_path(self, project_name: str):
         project_name = project_name.lower().replace(" ", "-")
         return f"{self.project_dir}/{project_name}"

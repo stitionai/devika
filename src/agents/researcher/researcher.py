@@ -1,23 +1,24 @@
-import json
 from typing import List
 
 from jinja2 import Environment, BaseLoader
+from pathlib import Path
 
 from src.llm import LLM
 from src.services.utils import retry_wrapper, validate_responses
 from src.browser.search import BingSearch
-
-PROMPT = open("src/agents/researcher/prompt.jinja2").read().strip()
 
 
 class Researcher:
     def __init__(self, base_model: str):
         self.bing_search = BingSearch()
         self.llm = LLM(model_id=base_model)
+        parent = Path(__file__).resolve().parent
+        with open(parent.joinpath("prompt.jinja2"), 'r') as file:
+            self.prompt_template = file.read().strip()
 
     def render(self, step_by_step_plan: str, contextual_keywords: str) -> str:
         env = Environment(loader=BaseLoader())
-        template = env.from_string(PROMPT)
+        template = env.from_string(self.prompt_template)
         return template.render(
             step_by_step_plan=step_by_step_plan,
             contextual_keywords=contextual_keywords

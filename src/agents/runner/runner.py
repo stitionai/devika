@@ -1,9 +1,9 @@
 import time
-import json
 import os
 import subprocess
 
 from jinja2 import Environment, BaseLoader
+from pathlib import Path
 
 from src.agents.patcher import Patcher
 
@@ -12,13 +12,16 @@ from src.state import AgentState
 from src.project import ProjectManager
 from src.services.utils import retry_wrapper, validate_responses
 
-PROMPT = open("src/agents/runner/prompt.jinja2", "r").read().strip()
-RERUNNER_PROMPT = open("src/agents/runner/rerunner.jinja2", "r").read().strip()
 
 class Runner:
     def __init__(self, base_model: str):
         self.base_model = base_model
         self.llm = LLM(model_id=base_model)
+        parent = Path(__file__).resolve().parent
+        with open(parent.joinpath("prompt.jinja2"), 'r') as file:
+            self.prompt_template = file.read().strip()
+        with open(parent.joinpath("rerunner.jinja2"), 'r') as file:
+            self.rerunner_prompt_template = file.read().strip()
 
     def render(
         self,
@@ -27,7 +30,7 @@ class Runner:
         system_os: str
     ) -> str:
         env = Environment(loader=BaseLoader())
-        template = env.from_string(PROMPT)
+        template = env.from_string(self.prompt_template)
         return template.render(
             conversation=conversation,
             code_markdown=code_markdown,
@@ -43,7 +46,7 @@ class Runner:
         error: str
     ):
         env = Environment(loader=BaseLoader())
-        template = env.from_string(RERUNNER_PROMPT)
+        template = env.from_string(self.rerunner_prompt_template)
         return template.render(
             conversation=conversation,
             code_markdown=code_markdown,
@@ -81,7 +84,7 @@ class Runner:
         for command in commands:
             command_set = command.split(" ")
             command_failed = False
-            
+
             process = subprocess.run(
                 command_set,
                 stdout=subprocess.PIPE,
@@ -133,7 +136,7 @@ class Runner:
                     
                     command_set = command.split(" ")
                     command_failed = False
-                    
+
                     process = subprocess.run(
                         command_set,
                         stdout=subprocess.PIPE,
@@ -173,7 +176,7 @@ class Runner:
                     
                     command_set = command.split(" ")
                     command_failed = False
-                    
+
                     process = subprocess.run(
                         command_set,
                         stdout=subprocess.PIPE,

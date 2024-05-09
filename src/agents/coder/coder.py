@@ -3,6 +3,7 @@ import time
 
 from jinja2 import Environment, BaseLoader
 from typing import List, Dict, Union
+from pathlib import Path
 
 from src.config import Config
 from src.llm import LLM
@@ -11,7 +12,6 @@ from src.logger import Logger
 from src.services.utils import retry_wrapper
 from src.socket_instance import emit_agent
 
-PROMPT = open("src/agents/coder/prompt.jinja2", "r").read().strip()
 
 class Coder:
     def __init__(self, base_model: str):
@@ -19,12 +19,15 @@ class Coder:
         self.project_dir = config.get_projects_dir()
         self.logger = Logger()
         self.llm = LLM(model_id=base_model)
+        parent = Path(__file__).resolve().parent
+        with open(parent.joinpath("prompt.jinja2"), 'r') as file:
+            self.prompt_template = file.read().strip()
 
     def render(
         self, step_by_step_plan: str, user_context: str, search_results: dict
     ) -> str:
         env = Environment(loader=BaseLoader())
-        template = env.from_string(PROMPT)
+        template = env.from_string(self.prompt_template)
         return template.render(
             step_by_step_plan=step_by_step_plan,
             user_context=user_context,
@@ -95,7 +98,7 @@ class Coder:
 
             current_state = AgentState().get_latest_state(project_name)
             new_state = AgentState().new_state()
-            new_state["browser_session"] = current_state["browser_session"] # keep the browser session
+            new_state["browser_session"] = current_state["browser_session"]  # keep the browser session
             new_state["internal_monologue"] = "Writing code..."
             new_state["terminal_session"]["title"] = f"Editing {file}"
             new_state["terminal_session"]["command"] = f"vim {file}"
