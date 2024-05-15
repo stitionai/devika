@@ -10,6 +10,7 @@ from .openai_client import OpenAi
 from .gemini_client import Gemini
 from .mistral_client import MistralAi
 from .groq_client import Groq
+from .litellm_client import LiteLLM
 
 from src.state import AgentState
 
@@ -42,6 +43,8 @@ class LLM:
             ],
             "GOOGLE": [
                 ("Gemini 1.0 Pro", "gemini-pro"),
+                ("Gemini 1.5 Flash", "gemini-1.5-flash"),
+                ("Gemini 1.5 Pro", "gemini-1.5-pro-latest"),
             ],
             "MISTRAL": [
                 ("Mistral 7b", "open-mistral-7b"),
@@ -57,6 +60,20 @@ class LLM:
                 ("Mixtral", "mixtral-8x7b-32768"),
                 ("GEMMA 7B", "gemma-7b-it"),
             ],
+           "LITELLM": [
+                ("OpenRouter: Llama 3 8B Instruct", "openrouter/meta-llama/llama-3-8b-instruct:extended"),
+                ("OpenRouter: Claude 3 Haiku", "openrouter/anthropic/claude-3-haiku"),
+                ("OpenRouter: Claude 3 Sonnet", "openrouter/anthropic/claude-3-sonnet"),
+                ("OpenRouter: Claude 3 Sonnet 20240229", "openrouter/anthropic/claude-3-sonnet-20240229"),
+                ("DeepInfra: Mixtral 8x7B Instruct", "deepinfra/mistralai/Mixtral-8x7B-Instruct-v0.1"),
+                ("DeepInfra: Dolphin 2.6 Mixtral", "deepinfra/cognitivecomputations/dolphin-2.6-mixtral-8x7b"),
+                ("OpenRouter: Gemini Pro 1.5", "openrouter/google/gemini-pro-1.5"), 
+                ("OpenRouter: Gemini Flash 1.5", "openrouter/google/gemini-flash-1.5"),
+                ("OpenRouter: Gemma 7B", "openrouter/google/gemma-7b-it"),
+                ("OpenRouter: DeepSeek Coder", "openrouter/deepseek/deepseek-coder"),
+                ("OpenRouter: Palm 2 CodeChat Bison 32k", "openrouter/google/palm-2-codechat-bison-32k"),
+                ("OpenRouter: CodeLLama 34B Instruct", "openrouter/meta-llama/codellama-34b-instruct"),
+           ],
             "OLLAMA": []
         }
         if ollama.client:
@@ -96,7 +113,8 @@ class LLM:
             "OPENAI": OpenAi(),
             "GOOGLE": Gemini(),
             "MISTRAL": MistralAi(),
-            "GROQ": Groq()
+            "GROQ": Groq(),
+            "LITELLM": LiteLLM(),
         }
 
         try:
