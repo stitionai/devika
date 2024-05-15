@@ -60,7 +60,7 @@ class LLM:
             "OLLAMA": []
         }
         if ollama.client:
-            self.models["OLLAMA"] = [(model["name"].split(":")[0], model["name"]) for model in ollama.models]
+            self.models["OLLAMA"] = [(model["name"], model["name"]) for model in ollama.models]
 
     def list_models(self) -> dict:
         return self.models
