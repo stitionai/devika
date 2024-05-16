@@ -1,42 +1,48 @@
 import { writable } from 'svelte/store';
 
-const getInitialSelectedProject = () => {
-  if (typeof window !== 'undefined' && window.localStorage) {
-    return localStorage.getItem('selectedProject') || '';
-  }
-  return '';
-};
+// Helper function to get item from localStorage
+function getItemFromLocalStorage(key, defaultValue) {
+    const storedValue = localStorage.getItem(key);
+    if (storedValue) {
+        return storedValue;
+    }
+    localStorage.setItem(key, defaultValue);
+    return defaultValue;
+}
 
-const getInitialSelectedModel = () => {
-  if (typeof window !== 'undefined' && window.localStorage) {
-    return localStorage.getItem('selectedModel') || '';
-  }
-  return '';
-};
+// Helper function to handle subscription and local storage setting
+function subscribeAndStore(store, key, defaultValue) {
+    store.set(getItemFromLocalStorage(key, defaultValue));
+    store.subscribe(value => {
+        localStorage.setItem(key, value);
+    });
+}
 
+// Server related stores
+export const serverStatus = writable(false);
+export const internet = writable(true);
+
+// Message related stores
 export const messages = writable([]);
+export const projectFiles = writable(null);
 
-export const selectedProject = writable(getInitialSelectedProject());
-export const selectedModel = writable(getInitialSelectedModel());
+// Selection related stores
+export const selectedProject = writable('');
+export const selectedModel = writable('');
+export const selectedSearchEngine = writable('');
 
+subscribeAndStore(selectedProject, 'selectedProject', 'select project');
+subscribeAndStore(selectedModel, 'selectedModel', 'select model');
+subscribeAndStore(selectedSearchEngine, 'selectedSearchEngine', 'select search engine');
+
+// List related stores
 export const projectList = writable([]);
 export const modelList = writable({});
 export const searchEngineList = writable([]);
 
+// Agent related stores
 export const agentState = writable(null);
+export const isSending = writable(false);
 
-export const internet = writable(true);
+// Token usage store
 export const tokenUsage = writable(0);
-
-
-selectedProject.subscribe((value) => {
-  if (typeof window !== 'undefined' && window.localStorage) {
-    localStorage.setItem('selectedProject', value);
-  }
-});
-
-selectedModel.subscribe((value) => {
-  if (typeof window !== 'undefined' && window.localStorage) {
-    localStorage.setItem('selectedModel', value);
-  }
-});

@@ -2,6 +2,7 @@ import json
 
 from jinja2 import Environment, BaseLoader
 
+from src.services.utils import retry_wrapper
 from src.llm import LLM
 
 PROMPT = open("src/agents/reporter/prompt.jinja2").read().strip()
@@ -26,6 +27,7 @@ class Reporter:
  
         return response
 
+    @retry_wrapper
     def execute(self,
         conversation: list,
         code_markdown: str,
@@ -36,9 +38,5 @@ class Reporter:
         
         valid_response = self.validate_response(response)
         
-        while not valid_response:
-            print("Invalid response from the model, trying again...")
-            return self.execute(conversation, code_markdown, project_name)
-
         return valid_response
 

@@ -66,10 +66,10 @@ class Agent:
         self.engine = search_engine
         self.tokenizer = tiktoken.get_encoding("cl100k_base")
 
-    async def open_page(self, project_name, pdf_download_url):
+    async def open_page(self, project_name, url):
         browser = await Browser().start()
 
-        await browser.go_to(pdf_download_url)
+        await browser.go_to(url)
         _, raw = await browser.screenshot(project_name)
         data = await browser.extract_text()
         await browser.close()
@@ -79,9 +79,7 @@ class Agent:
     def search_queries(self, queries: list, project_name: str) -> dict:
         results = {}
 
-
         knowledge_base = KnowledgeBase()
-        web_search = None
 
         if self.engine == "bing":
             web_search = BingSearch()
@@ -107,7 +105,8 @@ class Agent:
 
             link = web_search.get_first_link()
             print("\nLink :: ", link, '\n')
-
+            if not link:
+                continue
             browser, raw, data = loop.run_until_complete(self.open_page(project_name, link))
             emit_agent("screenshot", {"data": raw, "project_name": project_name}, False)
             results[query] = self.formatter.execute(data, project_name)
@@ -181,6 +180,10 @@ class Agent:
         """
         Subsequent flow of execution
         """
+        new_message = self.project_manager.new_message()
+        new_message['message'] = prompt
+        new_message['from_devika'] = False
+        self.project_manager.add_message_from_user(project_name, new_message['message'])
 
         os_system = platform.platform()
 
@@ -218,7 +221,7 @@ class Agent:
             deploy_url = deploy_metadata["deploy_url"]
 
             response = {
-                "message": "Done! I deployed your project on Netflify.",
+                "message": "Done! I deployed your project on Netlify.",
                 "deploy_url": deploy_url
             }
             response = json.dumps(response, indent=4)
@@ -264,31 +267,23 @@ class Agent:
         self.agent_state.set_agent_active(project_name, False)
         self.agent_state.set_agent_completed(project_name, True)
 
-    def execute(self, prompt: str, project_name_from_user: str = None) -> str:
+    def execute(self, prompt: str, project_name: str) -> str:
         """
         Agentic flow of execution
         """
-        if project_name_from_user:
-            self.project_manager.add_message_from_user(project_name_from_user, prompt)
+        if project_name:
+            self.project_manager.add_message_from_user(project_name, prompt)
 
-        plan = self.planner.execute(prompt, project_name_from_user)
+        self.agent_state.create_state(project=project_name)
+
+        plan = self.planner.execute(prompt, project_name)
         print("\nplan :: ", plan, '\n')
 
         planner_response = self.planner.parse_response(plan)
-        project_name = planner_response["project"]
         reply = planner_response["reply"]
         focus = planner_response["focus"]
         plans = planner_response["plans"]
         summary = planner_response["summary"]
-
-        if project_name_from_user:
-            project_name = project_name_from_user
-        else:
-            project_name = planner_response["project"]
-            self.project_manager.create_project(project_name)
-            self.project_manager.add_message_from_user(project_name, prompt)
-
-        self.agent_state.set_agent_active(project_name, True)
 
         self.project_manager.add_message_from_devika(project_name, reply)
         self.project_manager.add_message_from_devika(project_name, json.dumps(plans, indent=4))
@@ -318,8 +313,10 @@ class Agent:
                 f"\n If I need anything, I will make sure to ask you."
             )
         if not queries and len(queries) == 0:
-            self.project_manager.add_message_from_devika(project_name,
-                                                         "I think I can proceed without searching the web.")
+            self.project_manager.add_message_from_devika(
+                project_name,
+                "I think I can proceed without searching the web."
+            )
 
         ask_user_prompt = "Nothing from the user."
 
@@ -361,7 +358,8 @@ class Agent:
 
         self.agent_state.set_agent_active(project_name, False)
         self.agent_state.set_agent_completed(project_name, True)
-        self.project_manager.add_message_from_devika(project_name,
-                                                     "I have completed the my task. \n"
-                                                     "if you would like me to do anything else, please let me know. \n"
-                                                     )
+        self.project_manager.add_message_from_devika(
+            project_name,
+            "I have completed the my task. \n"
+            "if you would like me to do anything else, please let me know. \n"
+        )

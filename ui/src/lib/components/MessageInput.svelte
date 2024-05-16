@@ -1,13 +1,20 @@
 <script>
-  import { socket } from "$lib/api";
-  import { agentState, messages } from "$lib/store";
+  import { emitMessage, socketListener } from "$lib/sockets";
+  import { agentState, messages, isSending } from "$lib/store";
   import { calculateTokens } from "$lib/token";
+  import { onMount } from "svelte";
+  import { Icons } from "../icons";
 
-  let isAgentActive = false;
+  let inference_time = 0;
 
-  if ($agentState !== null) {
-    isAgentActive = $agentState.agent_is_active;
-  }
+  agentState.subscribe((value) => {
+    if (value !== null && value.agent_is_active == false) {
+      isSending.set(false);
+    }
+    if (value == null){
+      inference_time = 0;
+    }
+  });
 
   let messageInput = "";
   async function handleSendMessage() {
@@ -24,58 +31,83 @@
       return;
     }
 
-    if (messageInput.trim() !== "" && !isAgentActive) {
-      if ($messages.length === 0) {
-        socket.emit("user-message", { 
-          action: "execute_agent",
-          message: messageInput,
-          base_model: selectedModel,
-          project_name: projectName,
-          search_engine: serachEngine,
-        });
-      } else {
-        socket.emit("user-message", { 
-          action: "continue",
-          message: messageInput,
-          base_model: selectedModel,
-          project_name: projectName,
-          search_engine: serachEngine,
-        });
-      }
+    if (messageInput.trim() !== "" && isSending) {
+      $isSending = true;
+      emitMessage("user-message", { 
+        message: messageInput,
+        base_model: selectedModel,
+        project_name: projectName,
+        search_engine: serachEngine,
+      });
       messageInput = "";
+      
     }
   }
-
+  onMount(() => {
+    socketListener("inference", function (data) {
+      if(data['type'] == 'time') {
+        inference_time = data["elapsed_time"];
+      }
+    });
+  });
+       
   function setTokenSize(event) {
     const prompt = event.target.value;
     let tokens = calculateTokens(prompt);
-    document.querySelector(".token-count").textContent = `${tokens} tokens`;
+    document.querySelector(".token-count").textContent = `${tokens}`;
   }
 </script>
+
+<div class="flex flex-col gap-2">
+  <div class="flex gap-4 justify-between">
+    <div class="px-1 rounded-md text-xs">
+      Agent status:
+      {#if $agentState !== null}
+        {#if $agentState.agent_is_active}
+          <span class="text-green-500">Active</span>
+        {:else}
+          <span class="text-orange-600">Inactive</span>
+        {/if}
+      {:else}
+        Deactive
+      {/if}
+    </div>
+    <!-- {#if $agentState !== null} -->
+      <div class="px-1 rounded-md text-xs">
+        Model Inference: <span class="text-orange-600">{inference_time} sec</span>
+      </div>
+    <!-- {/if} -->
+  </div>
 
 <div class="expandable-input relative">
   <textarea
     id="message-input"
-    class="w-full p-2 border-2 rounded-lg pr-20"
+    class="w-full p-4 font-medium focus:text-foreground rounded-xl outline-none h-28 pr-20 bg-secondary
+    {$isSending ? 'cursor-not-allowed' : ''}"   
     placeholder="Type your message..."
+    disabled={$isSending}
     bind:value={messageInput}
     on:input={setTokenSize}
     on:keydown={(e) => {
       if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
         handleSendMessage();
+        document.querySelector('.token-count').textContent = 0;
       }
     }}
   ></textarea>
-  <div class="token-count text-gray-400 text-xs p-1">0 tokens</div>
-  <button
-    id="send-message-btn"
-    class={`px-4 py-3 text-white rounded-lg w-full ${isAgentActive ? "bg-slate-800" : "bg-black"}`}
+  <button 
     on:click={handleSendMessage}
-    disabled={isAgentActive}
+    disabled={$isSending}
+    class="absolute text-secondary bg-primary p-2 right-4 bottom-6 rounded-full
+    {$isSending ? 'cursor-not-allowed' : ''}"
   >
-    {@html isAgentActive ? "<i>Agent is busy...</i>" : "Send"}
+  {@html Icons.CornerDownLeft} 
   </button>
+  <p class="absolute text-tertiary p-2 right-4 top-2">
+    <span class="token-count">0</span>
+  </p>
+</div>
 </div>
 
 <style>

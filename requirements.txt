@@ -1,7 +1,7 @@
 flask
 flask-cors
 toml
-urllib3==1.26.15
+urllib3
 requests
 colorama
 fastlogging

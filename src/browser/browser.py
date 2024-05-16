@@ -46,7 +46,7 @@ class Browser:
         path_to_save = os.path.join(screenshots_save_path, filename_to_save)
 
         await self.page.emulate_media(media="screen")
-        await self.page.screenshot(path=path_to_save)
+        await self.page.screenshot(path=path_to_save, full_page=True)
         screenshot = await self.page.screenshot()
         screenshot_bytes = base64.b64encode(screenshot).decode()
         new_state = self.agent.new_state()

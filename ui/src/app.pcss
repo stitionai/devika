@@ -1,21 +1,98 @@
-/* Write your global styles here, in PostCSS syntax */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+ 
+@layer base {
+  :root {
+    --primary: #2F3337;
+    --background: #ffffff;
+    --secondary: #f1f2f5;
+    --tertiary: #919AA3;
 
-body {
-  margin: 0;
-  padding: 0;
-  font-family: "Inter", sans-serif;
-  font-size: 14px;
+    --foreground: #303438;
+    --foreground-invert: #ffffff;
+    --foreground-light: #9CA3AB;
+    --foreground-secondary: #9CA3AB;
 
+    --btn: #2F3337;
+    --btn-active: #000000;
+
+    --border: #E4E3E8;
+    --seperator: #E4E3E8;
+
+    --window-outline: #E4E3E8;
+    
+    --browser-window-dots: #E4E3E8;
+    --browser-window-search: #F7F8FA;
+    --browser-window-ribbon: #ffffff;
+    --browser-window-foreground: #303438;
+    --browser-window-background: #F7F8FA;
+    
+    --terminal-window-dots: #E4E3E8;
+    --terminal-window-ribbon: #ffffff;
+    --terminal-window-background: #F7F8FA;
+    --terminal-window-foreground: #313336;
+
+    --slider-empty: #9CA3AB;
+    --slider-filled: #2F3337;
+    --slider-thumb: #303438;
+
+    --monologue-background: #F1F3F5;
+    --monologue-outline: #B2BAC2;
+  }
+  .dark{
+      --primary: #ECECEC;
+      --background: #1D1F21;
+      --secondary: #2F3337;
+      --tertiary: #81878C;
+  
+      --foreground: #dcdcdc;
+      --foreground-invert: #1D1F21;
+      --foreground-light: #E6E9EB;
+      --foreground-secondary: #9CA3AB;
+
+      --btn: #ECECEC;
+      --btn-active: #ffffff;
+  
+      --border: #2B2F34;
+      --seperator: #495058;
+  
+      --window-outline: #4E555D;
+      
+      --browser-window-dots: #191C1E;
+      --browser-window-search: #1D2124;
+      --browser-window-ribbon: #292E32;
+      --browser-window-foreground: #DDDFE1;
+      --browser-window-background: #111315;
+
+      --terminal-window-dots: #191C1E;
+      --terminal-window-ribbon: #292E32;
+      --terminal-window-background: #111315;
+      --terminal-window-foreground: #9CA3AB;
+
+      --slider-empty: #2F3337;
+      --slider-filled: #81878C;
+      --slider-thumb: #ffffff;
+  
+      --monologue-background: #242729;
+      --monologue-outline: #464C51;
+  }
 }
-
-/* Styling for scrollbar */
+ 
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  
+  /* Styling for scrollbar */
 
   /* WebKit (Chrome, Safari) */
   *::-webkit-scrollbar {
     width: 5px;
+    height: 2px
   }
   *::-webkit-scrollbar-thumb {
     background: #999797;
@@ -57,3 +134,4 @@ body {
   :global(*::-ms-scrollbar-thumb:hover) {
     background: #6b7280;
   }
+}
