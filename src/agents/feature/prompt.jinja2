@@ -13,6 +13,15 @@ Full Code:
 
 User wants the following feature to be implemented: {{ conversation[-1] }}
 
+We browsed over the internet and found these details which might help you in implementing the feature:
+```
+{{ search_results }}
+```
+Also the user provided the following details for the feature:
+```
+{{ user_context }}
+```
+
 System Operating System: {{ system_os }}
 
 Read the user's feature request carefully. Think step-by-step.
@@ -55,3 +64,7 @@ This is an example.
 Any response other than this format will be rejected. You should not refuse to complete the task, you should try your absolute best and if there's any implementation detail that's impossible to complete, you should write a comment in the code explaining why it's impossible to complete. The refusal is only a last resort, it should never happen.
 
 Your response should start with "~~~" and end with "~~~" just like the example format provided. Never provide any explanation or context inside the response, only the filenames and the code in the format provided. Do not leave any "Note".
+
+Whenever providing the file paths, always make it relative to the base project folder. If the file is in the base project folder, just provide the filename. If the file is in a subfolder, provide the path to the file from the base project folder, i.e relative to the base project folder.
+The base project folder of a project is the folder on which all the files start. 
+For example - main.py is in the base project folder. src/main.py is in a subfolder named src. src/nested/main.py is in a subfolder named src and then a subfolder named nested.

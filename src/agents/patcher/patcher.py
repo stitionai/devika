@@ -8,16 +8,17 @@ from src.socket_instance import emit_agent
 from src.config import Config
 from src.llm import LLM
 from src.state import AgentState
+from src.agents.error_analyzer import ErrorAnalyzer
 from src.services.utils import retry_wrapper
 
 PROMPT = open("src/agents/patcher/prompt.jinja2", "r").read().strip()
 
 class Patcher:
-    def __init__(self, base_model: str):
+    def __init__(self, base_model: str, search_engine: str):
         config = Config()
         self.project_dir = config.get_projects_dir()
-        
         self.llm = LLM(model_id=base_model)
+        self.error_analyzer = ErrorAnalyzer(base_model, search_engine)
 
     def render(
         self,
@@ -25,6 +26,7 @@ class Patcher:
         code_markdown: str,
         commands: list,
         error :str,
+        error_context: str,
         system_os: str
     ) -> str:
         env = Environment(loader=BaseLoader())
@@ -34,6 +36,7 @@ class Patcher:
             code_markdown=code_markdown,
             commands=commands,
             error=error,
+            error_context=error_context,
             system_os=system_os
         )
 
@@ -116,20 +119,37 @@ class Patcher:
         code_markdown: str,
         commands: list,
         error: str,
+        error_context: str,
         system_os: dict,
         project_name: str
     ) -> str:
+
+        if error_context is None:
+            error_context = self.error_analyzer.execute(conversation, code_markdown, commands, error, 
+                                                                   system_os, project_name)
+
         prompt = self.render(
             conversation,
             code_markdown,
             commands,
             error,
+            error_context,
             system_os
         )
         response = self.llm.inference(prompt, project_name)
         
-        valid_response = self.validate_response(response)
-        
+        valid_response = self.validate_response(response)        
+        while not valid_response:
+            print("Invalid response from the model, trying again...")
+            return self.execute(
+                conversation,
+                code_markdown,
+                commands,
+                error,
+                error_context,
+                system_os,
+                project_name
+            )
         if not valid_response:
             return False
         
