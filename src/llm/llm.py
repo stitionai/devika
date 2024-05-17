@@ -36,6 +36,7 @@ class LLM:
                 ("Claude 3 Haiku", "claude-3-haiku-20240307"),
             ],
             "OPENAI": [
+                ("GPT-4o", "gpt-4o"),
                 ("GPT-4 Turbo", "gpt-4-turbo"),
                 ("GPT-3.5 Turbo", "gpt-3.5-turbo-0125"),
             ],
@@ -59,7 +60,7 @@ class LLM:
             "OLLAMA": []
         }
         if ollama.client:
-            self.models["OLLAMA"] = [(model["name"].split(":")[0], model["name"]) for model in ollama.models]
+            self.models["OLLAMA"] = [(model["name"], model["name"]) for model in ollama.models]
 
     def list_models(self) -> dict:
         return self.models

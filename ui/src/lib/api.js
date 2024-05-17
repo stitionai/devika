@@ -4,6 +4,7 @@ import {
   modelList,
   projectList,
   messages,
+  projectFiles,
   searchEngineList,
 } from "./store";
 import { io } from "socket.io-client";
@@ -123,6 +124,14 @@ export async function getBrowserSnapshot(snapshotPath) {
   });
   const data = await response.json();
   return data.snapshot;
+}
+
+export async function fetchProjectFiles() {
+  const projectName = localStorage.getItem("selectedProject");
+  const response = await fetch(`${API_BASE_URL}/api/get-project-files?project_name=${projectName}`)
+  const data = await response.json();
+  projectFiles.set(data.files);
+  return data.files;
 }
 
 export async function checkInternetStatus() {

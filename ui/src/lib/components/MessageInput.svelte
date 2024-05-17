@@ -39,12 +39,6 @@
         project_name: projectName,
         search_engine: searchEngine,
       });
-      console.log({ 
-        message: messageInput,
-        base_model: selectedModel,
-        project_name: projectName,
-        search_engine: searchEngine,
-      });
       messageInput = "";
       
     }
