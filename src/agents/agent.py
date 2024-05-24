@@ -21,7 +21,7 @@ from src.browser.search import BingSearch, GoogleSearch, DuckDuckGoSearch
 from src.browser import Browser
 from src.browser import start_interaction
 from src.filesystem import ReadCode
-from src.services import Netlify
+from src.services import Netlify, Git
 from src.documenter.pdf import PDF
 
 import json
@@ -35,6 +35,8 @@ from src.socket_instance import emit_agent
 
 class Agent:
     def __init__(self, base_model: str, search_engine: str, browser: Browser = None):
+        print("New Agent Created\n")
+
         if not base_model:
             raise ValueError("base_model is required")
 
@@ -48,6 +50,7 @@ class Agent:
         """
         Agents
         """
+        self.base_model = base_model
         self.planner = Planner(base_model=base_model)
         self.researcher = Researcher(base_model=base_model)
         self.formatter = Formatter(base_model=base_model)
@@ -60,6 +63,7 @@ class Agent:
         self.patcher = Patcher(base_model=base_model)
         self.reporter = Reporter(base_model=base_model)
         self.decision = Decision(base_model=base_model)
+        self.git = None
 
         self.project_manager = ProjectManager()
         self.agent_state = AgentState()
@@ -264,7 +268,42 @@ class Agent:
 
             self.project_manager.add_message_from_devika(project_name, response)
 
+        elif action == "repo_init":
+            project_path = self.project_manager.get_project_path(project_name)
+            if self.git == None:
+                self.git = Git(project_path, self.base_model)
+
+        elif action == "repo_commit":
+            project_path = self.project_manager.get_project_path(project_name)
+            if self.git == None:
+                self.git = Git(project_path, self.base_model)
+
+            commit_message = self.git.generate_commit_message(project_name, conversation,code_markdown)
+            self.git.commit(commit_message)
+
+        elif action == "reset_code":
+            project_path = self.project_manager.get_project_path(project_name)
+            if self.git == None:
+                self.git = Git(project_path, self.base_model)
+                
+            self.git.reset_to_previous_commit()
+
+        elif action == "start_auto_commit":
+            self.project_manager.start_auto_commit(project_name)
+
+        elif action == "stop_auto_commit":
+            self.project_manager.stop_auto_commit(project_name)
+
         self.agent_state.set_agent_active(project_name, False)
+        # print("Auto Commit :: ", self.project_manager.get_auto_commit(project_name))
+        if self.project_manager.get_auto_commit(project_name):
+            print("\n Committing the code\n")
+            project_path = self.project_manager.get_project_path(project_name)
+            if self.git == None:
+                self.git = Git(project_path, self.base_model)
+
+            commit_message = self.git.generate_commit_message(project_name, conversation,code_markdown)
+            self.git.commit(commit_message)
         self.agent_state.set_agent_completed(project_name, True)
 
     def execute(self, prompt: str, project_name: str) -> str:
@@ -357,6 +396,14 @@ class Agent:
         self.coder.save_code_to_project(code, project_name)
 
         self.agent_state.set_agent_active(project_name, False)
+        if self.project_manager.get_auto_commit(project_name):
+            project_path = self.project_manager.get_project_path(project_name)
+            if self.git == None:
+                self.git = Git(project_path, self.base_model)
+
+            commit_message = self.git.generate_commit_message(project_name, conversation,code_markdown)
+            self.git.commit(commit_message)
+
         self.agent_state.set_agent_completed(project_name, True)
         self.project_manager.add_message_from_devika(
             project_name,
