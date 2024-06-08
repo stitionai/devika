@@ -141,6 +141,8 @@ when you first time run Devika, it will create a `config.toml` file for you in t
    - `CLAUDE`: Your Anthropic API key for accessing Claude models.
    - `MISTRAL`: Your Mistral API key for accessing Mistral models.
    - `GROQ`: Your Groq API key for accessing Groq models.
+   - `OPENROUTER`: Your OpenRouter API key for accessing OpenRouter models.
+   - `DEEPINFRA`: Your DeepInfra API key for accessing DeepInfra models.
    - `NETLIFY`: Your Netlify API key for deploying and managing web projects.
 
 - API_ENDPOINTS
