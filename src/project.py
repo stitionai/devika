@@ -144,3 +144,32 @@ class ProjectManager:
 
     def get_zip_path(self, project: str):
         return f"{self.get_project_path(project)}.zip"
+    
+    def get_project_files(self, project_name: str):
+        if not project_name:
+            return []
+
+        project_directory = "-".join(project_name.split(" "))
+        base_path = os.path.abspath(os.path.join(os.getcwd(), 'data', 'projects'))
+        directory = os.path.join(base_path, project_directory)
+
+        # Ensure the directory is within the allowed base path
+        if not os.path.exists(directory) or not os.path.commonprefix([directory, base_path]) == base_path:
+            return []
+
+        files = []
+        for root, _, filenames in os.walk(directory):
+            for filename in filenames:
+                file_relative_path = os.path.relpath(root, directory)
+                if file_relative_path == '.':
+                    file_relative_path = ''
+                file_path = os.path.join(file_relative_path, filename)
+                try:
+                    with open(os.path.join(root, filename), 'r') as file:
+                        files.append({
+                            "file": file_path,
+                            "code": file.read()
+                        })
+                except Exception as e:
+                    print(f"Error reading file {filename}: {e}")
+        return files
