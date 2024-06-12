@@ -95,7 +95,7 @@ To install Devika, follow these steps:
    ```
 4. Install the playwright for browsering capabilities:
    ```bash
-   playwright install --with-deps # installs browsers in playwright (and their deps) if required
+   npx playwright install --with-deps # installs browsers in playwright (and their deps) if required
    ```
 5. Start the Devika server:
    ```bash
