@@ -22,9 +22,7 @@ class Groq:
                 temperature=0, 
             )
             return chat_completion.choices[0].message.content
-        except Exception as e:
-            print(prompt)
-            print(e.response.headers)
+        except Exception as e:  
             if e.response.status_code == 429:
                 if retries <= 10:
                     retry_after = e.response.headers['retry-after'] 
