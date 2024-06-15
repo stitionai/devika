@@ -74,10 +74,11 @@ class Coder:
 
         for file in response:
             file_path = os.path.join(self.project_dir, project_name, file['file'])
-            file_path_dir = os.path.dirname(file_path)
+            file_norm_path = os.path.normpath(file_path)
+            file_path_dir = os.path.dirname(file_norm_path)
             os.makedirs(file_path_dir, exist_ok=True)
     
-            with open(file_path, "w", encoding="utf-8") as f:
+            with open(file_norm_path, "w+", encoding="utf-8") as f:
                 f.write(file["code"])
         
         return file_path_dir
