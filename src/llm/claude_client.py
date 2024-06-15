@@ -20,7 +20,7 @@ class Claude:
                 }
             ],
             model=model_id,
-            temperature=0
+            temperature=1
         )
 
         return message.content[0].text
