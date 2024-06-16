@@ -26,7 +26,13 @@ from src.llm import LLM
 
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": ["https://localhost:3000"]}}) # Change the origin to your frontend URL
+CORS(app, resources={r"/*": {"origins": # Change the origin to your frontend URL
+                             [
+                                 "https://localhost:3000",
+                                 "http://localhost:3000",
+                                 "https://localhost:3001",
+                                 "http://localhost:3001",
+                                 ]}})
 app.register_blueprint(project_bp)
 socketio.init_app(app)
 
