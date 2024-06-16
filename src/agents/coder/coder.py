@@ -49,11 +49,13 @@ class Coder:
         code_block = False
 
         for line in response.split("\n"):
-            if line.startswith("File: "):
+            if line.startswith("File:"):
                 if current_file and current_code:
                     result.append({"file": current_file, "code": "\n".join(current_code)})
                 if "`" in line:
                     current_file = line.split("`")[1].strip()
+                elif line.startswith("File:") and line.endswith(":") and "`" not in line:
+                    current_file = line.split(":")[1].strip()
                 else:
                     return False
                 current_code = []
