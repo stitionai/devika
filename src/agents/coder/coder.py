@@ -34,7 +34,7 @@ class Coder:
     def validate_response(self, response: str) -> Union[List[Dict[str, str]], bool]:
         response = response.strip()
 
-        self.logger.debug(f"Response from the model: {response}")
+        # self.logger.debug(f"Response from the model: {response}")
 
         if "~~~" not in response:
             return False
