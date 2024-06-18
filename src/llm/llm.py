@@ -42,6 +42,8 @@ class LLM:
             ],
             "GOOGLE": [
                 ("Gemini 1.0 Pro", "gemini-pro"),
+                ("Gemini 1.5 Flash", "gemini-1.5-flash"),
+                ("Gemini 1.5 Pro", "gemini-1.5-pro"),
             ],
             "MISTRAL": [
                 ("Mistral 7b", "open-mistral-7b"),
