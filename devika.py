@@ -30,7 +30,7 @@ CORS(app, resources={r"/*": {"origins": # Change the origin to your frontend URL
                              [
                                  "https://localhost:3000",
                                  "http://localhost:3000",
-                                 ]}})
+                                 ]}}) 
 app.register_blueprint(project_bp)
 socketio.init_app(app)
 
