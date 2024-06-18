@@ -20,6 +20,6 @@ class Ollama:
         response = self.client.generate(
             model=model_id,
             prompt=prompt.strip(),
-            options={"temperature": 1}
+            options={"temperature": 0}
         )
         return response['response']
