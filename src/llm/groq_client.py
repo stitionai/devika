@@ -1,7 +1,7 @@
 from groq import Groq as _Groq
 import time
 from src.config import Config
-
+import requests.exceptions
 
 class Groq:
     def __init__(self):
@@ -22,7 +22,7 @@ class Groq:
                 temperature=0, 
             )
             return chat_completion.choices[0].message.content
-        except Exception as e:  
+        except requests.exceptions.HTTPError as e:
             if e.response.status_code == 429:
                 if retries <= 10:
                     retry_after = e.response.headers['retry-after'] 
