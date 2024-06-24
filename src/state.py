@@ -174,28 +174,4 @@ class AgentState:
             if agent_state:
                 return json.loads(agent_state.state_stack_json)[-1]["token_usage"]
             return 0
-
-    def get_project_files(self, project_name: str):
-        if not project_name:
-            return []
-        project_directory = "-".join(project_name.split(" "))
-        directory = os.path.join(os.getcwd(), 'data', 'projects', project_directory) 
-        if(not os.path.exists(directory)):
-            return []
-        files = []
-        for root, _, filenames in os.walk(directory):
-            for filename in filenames:
-                file_relative_path = os.path.relpath(root, directory)
-                if file_relative_path == '.': file_relative_path = ''
-                file_path = os.path.join(file_relative_path, filename)
-                print("file_path",file_path)
-                try:
-                    with open(os.path.join(root, filename), 'r') as file:
-                        print("File:", filename)
-                        files.append({
-                            "file": file_path,
-                            "code": file.read()
-                        })
-                except Exception as e:
-                    print(f"Error reading file {filename}: {e}")
-        return files
+        

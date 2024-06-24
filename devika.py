@@ -26,7 +26,11 @@ from src.llm import LLM
 
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": # Change the origin to your frontend URL
+                             [
+                                 "https://localhost:3000",
+                                 "http://localhost:3000",
+                                 ]}}) 
 app.register_blueprint(project_bp)
 socketio.init_app(app)
 
@@ -114,14 +118,6 @@ def get_agent_state():
     project_name = data.get("project_name")
     agent_state = AgentState.get_latest_state(project_name)
     return jsonify({"state": agent_state})
-
-
-@app.route("/api/get-project-files/", methods=["GET"])
-@route_logger(logger)
-def project_files():
-    project_name = request.args.get("project_name")
-    files = AgentState.get_project_files(project_name)  
-    return jsonify({"files": files})
 
 
 @app.route("/api/get-browser-snapshot", methods=["GET"])
