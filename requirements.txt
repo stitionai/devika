@@ -1,6 +1,10 @@
 flask
 flask-cors
 toml
+torch=2.3.1
+numpy=1.26.4
+transformers=4.41.2
+sentence-transformers=2.7.0
 urllib3
 requests
 colorama
@@ -17,7 +21,7 @@ openai
 anthropic
 google-generativeai
 sqlmodel
-keybert
+keybert=0.8.4
 GitPython
 netlify-py
 Markdown
@@ -30,6 +34,5 @@ duckduckgo-search
 orjson
 gevent
 gevent-websocket
-numpy
 g4f[all]
 nodriver
