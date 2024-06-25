@@ -30,5 +30,6 @@ duckduckgo-search
 orjson
 gevent
 gevent-websocket
+numpy
 g4f[all]
 nodriver
