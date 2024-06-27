@@ -27,5 +27,6 @@ OPENAI = "https://api.openai.com/v1"
 LOG_REST_API = "true"
 LOG_PROMPTS = "false"
 
-[TIMEOUT]
-INFERENCE = 60
+[CUSTOM]
+BLACKLIST_FOLDER = "node_modules, libs, package-lock.json, bun.lockb"
+TIMEOUT_INFERENCE = 60

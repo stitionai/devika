@@ -99,14 +99,17 @@ class Config:
     def get_repos_dir(self):
         return self.config["STORAGE"]["REPOS_DIR"]
 
+    def get_blacklist_dir(self):
+        return self.config["CUSTOM"]["BLACKLIST_FOLDER"]
+
+    def get_timeout_inference(self):
+        return self.config["CUSTOM"]["TIMEOUT_INFERENCE"]
+
     def get_logging_rest_api(self):
         return self.config["LOGGING"]["LOG_REST_API"] == "true"
 
     def get_logging_prompts(self):
         return self.config["LOGGING"]["LOG_PROMPTS"] == "true"
-    
-    def get_timeout_inference(self):
-        return self.config["TIMEOUT"]["INFERENCE"]
 
     def set_bing_api_key(self, key):
         self.config["API_KEYS"]["BING"] = key
@@ -168,8 +171,12 @@ class Config:
         self.config["LOGGING"]["LOG_PROMPTS"] = "true" if value else "false"
         self.save_config()
 
+    def set_blacklist_folder(self, value):
+        self.config["CUSTOM"]["BLACKLIST_FOLDER"] = value
+        self.save_config()
+
     def set_timeout_inference(self, value):
-        self.config["TIMEOUT"]["INFERENCE"] = value
+        self.config["CUSTOM"]["TIMEOUT_INFERENCE"] = value
         self.save_config()
 
     def save_config(self):
@@ -179,10 +186,6 @@ class Config:
     def update_config(self, data):
         for key, value in data.items():
             if key in self.config:
-                with open("config.toml", "r+") as f:
-                    config = toml.load(f)
-                    for sub_key, sub_value in value.items():
-                        self.config[key][sub_key] = sub_value
-                        config[key][sub_key] = sub_value
-                    f.seek(0)
-                    toml.dump(config, f)
+                for sub_key, sub_value in value.items():
+                    self.config[key][sub_key] = sub_value
+        self.save_config()

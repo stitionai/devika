@@ -1,5 +1,23 @@
 import loader from "@monaco-editor/loader";
 import { Icons } from "../icons";
+import { updateSettings, fetchSettings } from "$lib/api";
+
+let setting = "";
+
+const getSettings = async () => {
+  const settings = await fetchSettings();
+  setting = settings["CUSTOM"]["BLACKLIST_FOLDER"]
+}
+
+await getSettings();
+
+const saveBCKST = async () => {
+  let updated = {};
+  updated["CUSTOM"] = {};
+  updated["CUSTOM"]["BLACKLIST_FOLDER"] = setting;
+
+  await updateSettings(updated);
+};
 
 function getFileLanguage(fileType) {
   const fileTypeToLanguage = {
@@ -92,15 +110,21 @@ function switchTab(editor, models, filename, tabElement) {
 
 export function sidebar(editor, models, sidebarContainer) {
   sidebarContainer.innerHTML = "";
-  const createSidebarElement = (filename, isFolder) => {
+
+  const createSidebarElement = (filename, isFolder, isAIContext) => {
     const sidebarElement = document.createElement("div");
-    sidebarElement.classList.add("mx-3", "p-1", "px-2", "cursor-pointer");
+    const icon = isAIContext ? Icons.ContextOff : Icons.ContextOn;
+    const state = isAIContext ? "inactive" : "active";
+
     if (isFolder) {
-      sidebarElement.innerHTML = `<p class="flex items-center gap-2">${Icons.Folder}${" "}${filename}</p>`;
+      sidebarElement.classList.add("mx-3", "p-1", "px-2", "cursor-pointer", "smooth-anim");
+      sidebarElement.innerHTML = `<div class="align-container"><p class="flex items-center gap-2">${Icons.FolderEditor}${" "}${filename}</p><p data-state="${state}" title="Activate/Deactivate as context for AI">${icon}</p></div>`;
       // TODO implement folder collapse/expand to the element sidebarElement
     } else {
-      sidebarElement.innerHTML = `<p class="flex items-center gap-2">${Icons.File}${" "}${filename}</p>`;
+      sidebarElement.classList.add("mx-3", "p-1", "px-2", "cursor-pointer", "smooth-anim", "align-container");
+      sidebarElement.innerHTML = `<p class="flex items-center gap-2">${Icons.File}${" "}${filename}</p><p data-state="${state}" title="Activate/Deactivate as context for AI">${icon}</p>`;
     }
+
     return sidebarElement;
   };
 
@@ -112,24 +136,125 @@ export function sidebar(editor, models, sidebarContainer) {
     allTabElements[index].classList.add("bg-secondary");
   }
 
+  const contextToggle = (elementParagraph, name) => {
+    const state = elementParagraph.getAttribute('data-state');
+
+    if (state === "inactive") {
+      elementParagraph.setAttribute('data-state', 'active');
+      elementParagraph.innerHTML = `${Icons.ContextOn}`;
+
+      const nameIndex = setting.indexOf(name);
+      if (nameIndex !== -1) {
+          setting = setting.split(', ').filter(item => item !== name).join(', ');
+      }
+    } else {
+      elementParagraph.setAttribute('data-state', 'inactive');
+      elementParagraph.innerHTML = `${Icons.ContextOff}`;
+
+      setting += `, ${name}`;
+    }
+
+    saveBCKST();
+  }
+
+  // I have put a lot of Timeout and all just for some fancy animation
+  const expandFolder = (folder) => {
+    const elements = document.querySelectorAll(`[id="${folder}"]`);
+    const lengths = elements.length;
+
+    elements.forEach((element, key) => {
+        if (element.style.display === "none") {
+          setTimeout(() => {
+
+            element.style.display = "";
+
+            setTimeout(() => {
+                element.style.opacity = "1";
+                element.style.transform = "translateY(0px)";
+            }, 5);
+
+          }, 20 * key);
+        } else {
+          setTimeout(() => {
+
+            element.style.opacity = "0";
+            element.style.transform = "translateY(-15px)";
+
+            setTimeout(() => {
+                element.style.display = "none";
+            }, 250);
+
+          }, lengths * 20 - (20 * key));
+        }
+    });
+  }
+
   const folders = {};
+  const blacklistDir = setting;
+  const blacklistDirs = blacklistDir.split(', ').map(dir => dir.trim());
 
   Object.entries(models).forEach(([filename, model], modelIndex) => {
-    const parts = filename.split('/');
+    const parts = filename.split(/[\/\\]/);
     let currentFolder = sidebarContainer;
+    let folderID = ""
 
     parts.forEach((part, index) => {
+      const contextEnable = blacklistDirs.some(dir => part.includes(dir));
+
+      // Get the entire parent folder and actual path of the file/folder
+      const parentFolder = index !== 0 ? `FOLDER::${parts.slice(0, index).join("/")}` : ""
+      const actualFile = `FOLDER::${parts.slice(0, index + 1).join("/")}`
+
+      // If it's the last index, then it's a file, otherwise it's a folder
       if (index === parts.length - 1) {
-        const fileElement = createSidebarElement(part, false);
-        fileElement.addEventListener("click", () => {
+        const fileElement = createSidebarElement(part, false, contextEnable);
+        const fileElementParagraphs = fileElement.querySelectorAll('p');
+
+        // What folder is the parent of this file
+        fileElement.setAttribute("id", parentFolder);
+
+        // Collapse every folder/file by default
+          if (index !== 0) {
+            fileElement.style.display = "none"
+            fileElement.style.opacity = "0";
+            fileElement.style.transform = "translateY(-15px)";
+          }
+
+        fileElementParagraphs[0].addEventListener("click", () => {
           editor.setModel(model);
           changeTabColor(modelIndex);
         });
+
+        fileElementParagraphs[1].addEventListener("click", () => {
+          contextToggle(fileElementParagraphs[1], part);
+        });
         currentFolder.appendChild(fileElement);
       } else {
-        const folderName = part;
+        // We get the path of the actual folder with the parent directory, otherwise duplicate folder name will glitch out
+        const folderName = actualFile;
+
         if (!folders[folderName]) {
-          const folderElement = createSidebarElement(part, true);
+          const folderElement = createSidebarElement(part, true, contextEnable);
+          const folderElementParagraphs = folderElement.querySelectorAll('p');
+
+          // If it's a sub-directory (Not the first index), we set the id to the previous folder name
+          folderElement.setAttribute("id", parentFolder);
+
+          // Collapse every folder/file by default
+          if (index !== 0) {
+            folderElement.style.display = "none";
+            folderElement.style.opacity = "0";
+            folderElement.style.transform = "translateY(-15px)";
+          }
+
+          folderElementParagraphs[0].addEventListener("click", () => {
+            expandFolder(actualFile);
+          });
+
+          folderElementParagraphs[1].addEventListener("click", () => {
+            contextToggle(folderElementParagraphs[1], part);
+          });
+
           currentFolder.appendChild(folderElement);
           folders[folderName] = folderElement;
           currentFolder = folderElement;

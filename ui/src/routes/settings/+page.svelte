@@ -5,7 +5,7 @@
   import { setMode } from "mode-watcher";
   import * as Select from "$lib/components/ui/select/index.js";
   import Seperator from "../../lib/components/ui/Seperator.svelte";
-    import { toast } from "svelte-sonner";
+  import { toast } from "svelte-sonner";
 
   let settings = {};
   let editMode = false;
@@ -56,6 +56,7 @@
     };
     // make a copy of the original settings
     original = JSON.parse(JSON.stringify(settings));
+
   });
 
   const save = async () => {
@@ -96,6 +97,10 @@
       </Tabs.List>
       
       <Seperator direction="vertical"/>
+
+      {#if !settings["API_KEYS"] && !settings["API_ENDPOINTS"] && !settings["CUSTOM"]}
+        An error occured, Devika couldn't fetch the config from server, please make sure you are running Devika Server!
+      {/if}
       
       <Tabs.Content value="apikeys" class="mt-4">
         {#if settings["API_KEYS"]}
@@ -187,83 +192,6 @@
           {/if}
         </div>
       </Tabs.Content>
-      <Tabs.Content value="config" class="mt-4">
-        {#if settings["TIMEOUT"]}
-          <div class="flex flex-col gap-8 w-full">
-          
-            <div class="flex flex-col gap-4">
-              <div class="text-xl font-semibold">
-                Timouts
-              </div>
-              <div class="flex flex-col w-64 gap-4">
-                {#each Object.entries(settings["TIMEOUT"]) as [key, value]}
-                    <div class="flex gap-3 items-center">
-                      <p class="w-28">{key.toLowerCase()}</p>
-                      <input
-                        type="number"
-                        bind:value={settings["TIMEOUT"][key]}
-                        name={key}
-                        placeholder="in seconds"
-                        class="p-2 border-2 w-1/2 rounded-lg {editMode
-                          ? ''
-                          : 'text-gray-500'}"
-                        readonly={!editMode}
-                      />
-                    </div>
-                {/each}
-              </div>
-            </div>
-          
-            <div class="flex flex-col gap-4">
-              <div class="text-xl font-semibold">
-                Logging
-              </div>
-              <div class="flex flex-col w-64 gap-4">
-                {#each Object.entries(settings["LOGGING"]) as [key, value]}
-                <div class="flex gap-10 items-center">
-                  <p class="w-28">{key.toLowerCase()}</p>
-                  <Select.Root onSelectedChange={(v)=>{settings["LOGGING"][key] = v.value}}
-                    disabled={!editMode}>
-                    <Select.Trigger class="w-[180px]" >
-                      <Select.Value placeholder={settings["LOGGING"][key]} />
-                    </Select.Trigger>
-                    <Select.Content>
-                      <Select.Group>
-                        <Select.Item value={"true"} label={"True"}>true</Select.Item>
-                        <Select.Item value={"false"} label={"False"}>false</Select.Item>
-                      </Select.Group>
-                    </Select.Content>
-                    <Select.Input name={key} />
-                  </Select.Root>
-                </div>
-                {/each}
-              </div>
-            </div>
-            
-          </div>
-        {/if}
-        <div class="flex gap-4 mt-5">
-          {#if !editMode}
-            <button
-              id="btn-edit"
-              class="p-2 border-2 rounded-lg flex gap-3 items-center hover:bg-secondary"
-              on:click={edit}
-            >
-              <i class="fas fa-edit"></i>
-              Edit
-            </button>
-          {:else}
-            <button
-              id="btn-save"
-              class="p-2 border-2 rounded-lg flex gap-3 items-center hover:bg-secondary"
-              on:click={save}
-            >
-              <i class="fas fa-save"></i>
-              Save
-            </button>
-          {/if}
-        </div>
-      </Tabs.Content>
       <Tabs.Content value="appearance" class="mt-4 w-fit">
         <div class="flex w-full justify-between items-center my-2 gap-8">
           <div>
@@ -322,6 +250,68 @@
           </div>
         </div>
       </Tabs.Content>
+      <Tabs.Content value="config" class="mt-4">
+        {#if settings["CUSTOM"]}
+          <div role="tabpanel" aria-labelledby="custom" tabindex="0" data-melt-tabs-content="" data-tabs-content="" class="ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ms-4 mt-4">
+            <div class="flex gap-4 w-full">
+              <div class="flex flex-col w-full gap-4">
+                <div class="flex gap-3 items-center">
+                  <p class="w-28">
+                    Blacklist files and folders context
+                  </p>
+                  <input
+                      type="text"
+                      bind:value={settings["CUSTOM"]["BLACKLIST_FOLDER"]}
+                      name={"BLACKLIST_FOLDER"}
+                      placeholder="Use ', ' to seperate dirs (Ex: node_modules, libs, folder)"
+                      class="p-2 border-2 w-1/2 rounded-lg {editMode
+                        ? ''
+                        : 'text-gray-500'}"
+                      readonly={!editMode}
+                    />
+                </div>
+                <div class="flex gap-3 items-center">
+                  <p class="w-28">
+                    Timeout Inference
+                  </p>
+                  <input
+                      type="number"
+                      bind:value={settings["CUSTOM"]["TIMEOUT_INFERENCE"]}
+                      name={"TIMEOUT_INFERENCE"}
+                      placeholder="in seconds"
+                      class="p-2 border-2 w-1/2 rounded-lg {editMode
+                        ? ''
+                        : 'text-gray-500'}"
+                      readonly={!editMode}
+                    />
+                </div>
+              </div>
+            </div>
+          </div>
+        {/if}
+        <div class="flex gap-4 mt-5">
+          {#if !editMode}
+            <button
+              id="btn-edit"
+              class="p-2 border-2 rounded-lg flex gap-3 items-center hover:bg-gray-200"
+              on:click={edit}
+            >
+              <i class="fas fa-edit"></i>
+              Edit
+            </button>
+          {:else}
+            <button
+              id="btn-save"
+              class="p-2 border-2 rounded-lg flex gap-3 items-center hover:bg-gray-200"
+              on:click={save}
+            >
+              <i class="fas fa-save"></i>
+              Save
+            </button>
+          {/if}
+        </div>
+      </Tabs.Content>
+      
     </Tabs.Root>
   </div>
 </div>
