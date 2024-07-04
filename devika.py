@@ -120,11 +120,17 @@ def get_agent_state():
     return jsonify({"state": agent_state})
 
 
+# Security Update!!
 @app.route("/api/get-browser-snapshot", methods=["GET"])
 @route_logger(logger)
 def browser_snapshot():
+    # TO-DO: Update allowed paths
+    allowed_paths = ["/path/to/snapshots/file1.png", "/path/to/snapshots/file2.jpg"]
     snapshot_path = request.args.get("snapshot_path")
-    return send_file(snapshot_path, as_attachment=True)
+    if snapshot_path in allowed_paths:
+        return send_file(snapshot_path, as_attachment=True)
+    else:
+        return jsonify({"code":403,"reason": "Forbidden Path"}), 403
 
 
 @app.route("/api/get-browser-session", methods=["GET"])
