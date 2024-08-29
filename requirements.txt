@@ -30,3 +30,4 @@ duckduckgo-search
 orjson
 gevent
 gevent-websocket
+curl_cffi
