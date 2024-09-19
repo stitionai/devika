@@ -59,6 +59,9 @@ class Config:
 
     def get_ollama_api_endpoint(self):
         return self.config["API_ENDPOINTS"]["OLLAMA"]
+    
+    def get_lmstudio_api_endpoint(self):
+        return self.config["API_ENDPOINTS"]["LM_STUDIO"]
 
     def get_claude_api_key(self):
         return self.config["API_KEYS"]["CLAUDE"]
@@ -130,6 +133,10 @@ class Config:
 
     def set_ollama_api_endpoint(self, endpoint):
         self.config["API_ENDPOINTS"]["OLLAMA"] = endpoint
+        self.save_config()
+    
+    def set_lmstudio_api_endpoint(self, endpoint):
+        self.config["API_ENDPOINTS"]["LM_STUDIO"] = endpoint
         self.save_config()
 
     def set_claude_api_key(self, key):
