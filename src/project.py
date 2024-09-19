@@ -36,13 +36,30 @@ class ProjectManager:
             project_state = Projects(project=project, message_stack_json=json.dumps([]))
             session.add(project_state)
             session.commit()
+            # Create project directory
+            project_dir = os.path.join(self.project_path, project)
+            os.makedirs(project_dir, exist_ok=True)
 
     def delete_project(self, project: str):
         with Session(self.engine) as session:
-            project_state = session.query(Projects).filter(Projects.project == project).first()
+            project_state = session.query(Projects).filter_by(project=project).first()
             if project_state:
                 session.delete(project_state)
                 session.commit()
+                # Delete project directory
+                project_dir = os.path.join(self.project_path, project)
+                if os.path.exists(project_dir):
+                    # Empty the directory
+                    for root, dirs, files in os.walk(project_dir, topdown=False):
+                        for file in files:
+                            file_path = os.path.join(root, file)
+                            os.remove(file_path)
+                        for dir1 in dirs:
+                            dir_path = os.path.join(root, dir1)
+                            os.rmdir(dir_path)
+
+                    # Remove the empty directory
+                    os.rmdir(project_dir)
 
     def add_message_to_project(self, project: str, message: dict):
         with Session(self.engine) as session:

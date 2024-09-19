@@ -100,6 +100,9 @@ class AgentState:
             emit_agent("agent-state", state_stack)
 
     def get_latest_state(self, project: str):
+        if not project:
+            # If no project is selected, return None immediately
+            return None
         with Session(self.engine) as session:
             agent_state = session.query(AgentStateModel).filter(AgentStateModel.project == project).first()
             if agent_state:

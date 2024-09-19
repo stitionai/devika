@@ -34,7 +34,7 @@ class Coder:
     def validate_response(self, response: str) -> Union[List[Dict[str, str]], bool]:
         response = response.strip()
 
-        self.logger.debug(f"Response from the model: {response}")
+        # self.logger.debug(f"Response from the model: {response}")
 
         if "~~~" not in response:
             return False
@@ -49,10 +49,15 @@ class Coder:
         code_block = False
 
         for line in response.split("\n"):
-            if line.startswith("File: "):
+            if line.startswith("File:"):
                 if current_file and current_code:
                     result.append({"file": current_file, "code": "\n".join(current_code)})
-                current_file = line.split(":")[1].strip()
+                if "`" in line:
+                    current_file = line.split("`")[1].strip()
+                elif line.startswith("File:") and line.endswith(":") and "`" not in line:
+                    current_file = line.split(":")[1].strip()
+                else:
+                    return False
                 current_code = []
                 code_block = False
             elif line.startswith("```"):
@@ -71,10 +76,11 @@ class Coder:
 
         for file in response:
             file_path = os.path.join(self.project_dir, project_name, file['file'])
-            file_path_dir = os.path.dirname(file_path)
+            file_norm_path = os.path.normpath(file_path)
+            file_path_dir = os.path.dirname(file_norm_path)
             os.makedirs(file_path_dir, exist_ok=True)
     
-            with open(file_path, "w", encoding="utf-8") as f:
+            with open(file_norm_path, "w+", encoding="utf-8") as f:
                 f.write(file["code"])
         
         return file_path_dir
