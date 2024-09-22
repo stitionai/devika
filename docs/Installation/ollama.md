@@ -1,6 +1,6 @@
 # Ollama Installation Guide
 
-This guide will help you set up Ollama for Devika. Ollama is a tool that allows you to run open-source large language models (LLMs) locally on your machine. It supports varity of models like Llama-2, mistral, code-llama and many more.
+This guide will help you set up Ollama for Devika. Ollama is a tool that allows you to run open-source large language models (LLMs) locally on your machine. It supports a variety of models like Llama-2, mistral, code-llama and many more.
 
 ## Installation
 
@@ -17,4 +17,4 @@ This guide will help you set up Ollama for Devika. Ollama is a tool that allows 
 ## Devika Configuration
 
 - if you serve the Ollama on a different address, you can change the port in the `config.toml` file or you can change it via UI.
-- if you are using the default address, devika will automatically detect the server and and fetch the models list.
+- if you are using the default address, devika will automatically detect the server and fetch the models list.
