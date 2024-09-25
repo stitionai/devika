@@ -30,8 +30,8 @@ class Researcher:
             return False
         else:
             return {
-                "queries": response["queries"],
-                "ask_user": response["ask_user"]
+                "queries": response.get("queries", []),
+                "ask_user": response.get("ask_user", None)
             }
         
     @retry_wrapper
