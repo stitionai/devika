@@ -70,6 +70,8 @@ Read [**README.md**](docs/architecture) for the detailed documentation.
 - Pip Installation
 
   python3 -m pip config set global.break-system-packages true
+
+  als Alternative im uv pip installieren ???
   
   sudo apt install python3-pip
   
