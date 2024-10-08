@@ -32,7 +32,7 @@ socketio.init_app(app)
 
 
 log = logging.getLogger("werkzeug")
-log.disabled = True
+log.disabled = False
 
 
 TIKTOKEN_ENC = tiktoken.get_encoding("cl100k_base")
