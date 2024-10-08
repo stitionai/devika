@@ -55,14 +55,18 @@ Read [**README.md**](docs/architecture) for the detailed documentation.
 
 ## Getting Started
 
-### Requirements
-```
-Version's requirements
-  - Python >= 3.10 and < 3.12
-  - NodeJs >= 18
-  - bun
-```
+- Python >= 3.10 and < 3.12
 
+  sudo apt update && sudo apt upgrade
+  
+  sudo apt install python3 python-is-python3
+  
+- NodeJs >= 18 Installation
+
+  sudo apt install nodejs
+  node -v
+  
+- bun Installation [bun installation](https://bun.sh/docs/installation#:~:text=Installing%20a%20specific%20version%20of%20Bun%20on%20Linux/Mac.%20To)
 - Install uv - Python Package manager [download](https://github.com/astral-sh/uv)
 - Install bun - JavaScript runtime [download](https://bun.sh/docs/installation)
 - For ollama [ollama setup guide](docs/Installation/ollama.md) (optinal: if you don't want to use the local models then you can skip this step)
