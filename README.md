@@ -67,6 +67,10 @@ Read [**README.md**](docs/architecture) for the detailed documentation.
   
   node -v
   
+- Pip Installation
+  
+  sudo apt install python3-pip
+  
 - Install uv - Python Package manager [download](https://github.com/astral-sh/uv)
 - Install bun - JavaScript runtime [download](https://bun.sh/docs/installation)
 - For ollama [ollama setup guide](docs/Installation/ollama.md) (optinal: if you don't want to use the local models then you can skip this step)
