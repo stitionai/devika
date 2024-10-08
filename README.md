@@ -64,6 +64,7 @@ Read [**README.md**](docs/architecture) for the detailed documentation.
 - NodeJs >= 18 Installation
 
   sudo apt install nodejs
+  
   node -v
   
 - Install uv - Python Package manager [download](https://github.com/astral-sh/uv)
