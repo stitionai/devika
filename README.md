@@ -142,9 +142,15 @@ To install Devika, follow these steps:
 
 10. Windows run Xming Server from http://www.straightrunning.com/XmingNotes/#head-16
 
-    xterm
+11. Change Fontsize in xterm
+   
+    vi ~./Xresources
+    
+    xterm*font:     *-fixed-*-*-*-18-*
 
-11. Install Code
+    run xrdb -merge ~/.Xresources
+
+14. Install Code
     
     sudo snap install --classic code
 
