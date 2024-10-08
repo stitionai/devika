@@ -136,6 +136,19 @@ To install Devika, follow these steps:
    ```
 8. Access the Devika web interface by opening a browser and navigating to `http://127.0.0.1:3001`
 
+9. Install xterm in wsl
+
+    sudo apt install xterm
+
+10. Windows run Xming Server from http://www.straightrunning.com/XmingNotes/#head-16
+
+    xterm
+
+11. Install Code
+    
+    sudo snap install --classic code
+
+    
 ### how to use
 
 To start using Devika, follow these steps:
