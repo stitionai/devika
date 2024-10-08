@@ -68,6 +68,8 @@ Read [**README.md**](docs/architecture) for the detailed documentation.
   node -v
   
 - Pip Installation
+
+  python3 -m pip config set global.break-system-packages true
   
   sudo apt install python3-pip
   
