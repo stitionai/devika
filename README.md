@@ -94,31 +94,7 @@ Read [**README.md**](docs/architecture) for the detailed documentation.
 
   curl -fsSL https://ollama.com/install.sh | sh
   
-  ollama pull llama3.2
-  
-  ollama pull llama3
-
-  ollama pull gemma
-
-  ollama pull qwen
-
-  ollama pull qwen2
-
-  ollama pull mistral
-
-  ollama pull phi3:14b
-
-  ollama pull phi3:3.8b
-
-  ollama pull codellama
-
-  ollama pull qwen2.5
-
-  ollama pull llama2
-
-  ollama pull gemma2
-
-  ollama pull llama3.1:70b
+  ./get-ollama-models.sh
 
 
   
