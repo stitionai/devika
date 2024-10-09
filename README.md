@@ -94,7 +94,21 @@ Read [**README.md**](docs/architecture) for the detailed documentation.
 
   curl -fsSL https://ollama.com/install.sh | sh
   
-  ollama run llama3.2 llama3 gemma qwen qwen2 mistral phi3:14b phi3:3.8b  codellama qwen2.5 llama2 gemma2 llama3.1:70b
+  ollama pull llama3.2
+  ollama pull llama3
+  ollama pull gemma
+  ollama pull qwen
+  ollama run qwen2
+  ollama run mistral
+  ollama run phi3:14b
+  ollama run phi3:3.8b
+  ollama run codellama
+  ollama run qwen2.5
+  ollama run llama2
+  ollama run gemma2
+  ollama run llama3.1:70b
+
+
   
 - For API models, configure the API keys via setting page in UI.
 
