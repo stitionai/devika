@@ -88,9 +88,9 @@ Read [**README.md**](docs/architecture) for the detailed documentation.
 - For ollama [ollama setup guide](docs/Installation/ollama.md) (optinal: if you don't want to use the local models then you can skip this step)
 
   sudo apt install snapd
-  
-  sudo snap install ollama
 
+  curl -fsSL https://ollama.com/install.sh | sh
+  
   ollama run llama3.2
   
 - For API models, configure the API keys via setting page in UI.
