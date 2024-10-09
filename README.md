@@ -64,6 +64,8 @@ Read [**README.md**](docs/architecture) for the detailed documentation.
 - NodeJs >= 18 Installation
 
   sudo apt install nodejs
+
+  sudo apt install npm
   
   node -v
   
