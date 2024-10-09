@@ -62,6 +62,7 @@ Read [**README.md**](docs/architecture) for the detailed documentation.
   sudo apt install python3 python-is-python3
   
 - NodeJs >= 18 Installation
+  [NodeJs >= 18 Installation](https://linuxconfig.org/how-to-install-node-js-on-ubuntu-24-04)
 
   sudo apt install nodejs
 
