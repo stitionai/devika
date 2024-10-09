@@ -134,6 +134,7 @@ To install Devika, follow these steps:
    ```
 5. Start the Devika server:
    ```bash
+   npm install @sveltejs/adapter-node
    python devika.py
    ```
 6. if everything is working fine, you see the following output:
