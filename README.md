@@ -54,7 +54,12 @@ Read [**README.md**](docs/architecture) for the detailed documentation.
 
 
 ## Getting Started
+- Nvidia Driver installation
+  
+  https://linuxconfig.org/how-to-install-nvidia-drivers-on-ubuntu-24-04
 
+  nvtop to see installed Nvidia Cards
+  
 - Python >= 3.10 and < 3.12
 
   sudo apt update && sudo apt upgrade
