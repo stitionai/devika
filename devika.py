@@ -86,17 +86,17 @@ def handle_message(data):
 
     agent = Agent(base_model=base_model, search_engine=search_engine)
 
-    state = AgentState.get_latest_state(project_name)
+    state = agent_state.get_latest_state(project_name)
     if not state:
         thread = Thread(target=lambda: agent.execute(message, project_name))
         thread.start()
     else:
-        if AgentState.is_agent_completed(project_name):
+        if AgentState.is_agent_completed(agent_state, project_name):
             thread = Thread(target=lambda: agent.subsequent_execute(message, project_name))
             thread.start()
         else:
             emit_agent("info", {"type": "warning", "message": "previous agent doesn't completed it's task."})
-            last_state = AgentState.get_latest_state(project_name)
+            last_state = agent_state.get_latest_state(project_name)
             if last_state["agent_is_active"] or not last_state["completed"]:
                 thread = Thread(target=lambda: agent.execute(message, project_name))
                 thread.start()

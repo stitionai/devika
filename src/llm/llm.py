@@ -21,7 +21,7 @@ TIKTOKEN_ENC = tiktoken.get_encoding("cl100k_base")
 
 ollama = Ollama()
 logger = Logger()
-agentState = AgentState()
+agent_state = AgentState()
 config = Config()
 
 
