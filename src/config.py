@@ -182,6 +182,20 @@ class Config:
     def save_config(self):
         with open("config.toml", "w") as f:
             toml.dump(self.config, f)
+            
+    def get_newai_api_key(self):
+        return self.config["API_KEYS"]["NEWAI"]
+
+    def get_newai_api_endpoint(self):
+        return self.config["API_ENDPOINTS"]["NEWAI"]
+
+    def set_newai_api_key(self, key):
+        self.config["API_KEYS"]["NEWAI"] = key
+        self.save_config()
+
+    def set_newai_api_endpoint(self, endpoint):
+        self.config["API_ENDPOINTS"]["NEWAI"] = endpoint
+        self.save_config()
 
     def update_config(self, data):
         for key, value in data.items():

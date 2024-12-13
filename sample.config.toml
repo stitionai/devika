@@ -16,11 +16,13 @@ GEMINI = "<YOUR_GEMINI_API_KEY>"
 MISTRAL = "<YOUR_MISTRAL_API_KEY>"
 GROQ = "<YOUR_GROQ_API_KEY>"
 NETLIFY = "<YOUR_NETLIFY_API_KEY>"
+NEWAI = "<YOUR_NEWA_API_KEY>"
 
 [API_ENDPOINTS]
 BING = "https://api.bing.microsoft.com/v7.0/search"
 GOOGLE = "https://www.googleapis.com/customsearch/v1"
 OLLAMA = "http://127.0.0.1:11434"
+NEWAI = "https://api.newai.com/v1"
 
 LM_STUDIO = "http://localhost:1234/v1"
 OPENAI = "https://api.openai.com/v1"

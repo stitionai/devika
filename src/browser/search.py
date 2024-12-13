@@ -87,8 +87,6 @@ class DuckDuckGoSearch:
     """DuckDuckGo search engine class.
     methods are inherited from the duckduckgo_search package.
     do not change the methods.
-
-    currently, the package is not working with our current setup.
     """
     def __init__(self):
         from curl_cffi import requests as curl_requests
@@ -99,44 +97,83 @@ class DuckDuckGoSearch:
     def _get_url(self, method, url, data):
         try:
             resp = self.asession.request(method, url, data=data)
-            if resp.status_code == 200:
+            if resp.status_code == 200 and resp.content:
                 return resp.content
-            if resp.status_code == (202, 301, 403):
-                raise Exception(f"Error: {resp.status_code} rate limit error")
-            if not resp:
-                return None
+            elif resp.status_code in (202, 301, 403):
+                raise Exception(f"Error: {resp.status_code} - Rate limit error")
+            else:
+                raise ValueError("Received an invalid or empty response from DuckDuckGo")
         except Exception as error:
             if "timeout" in str(error).lower():
-                raise TimeoutError("Duckduckgo timed out error")
+                raise TimeoutError("DuckDuckGo request timed out")
+            raise ValueError(f"Error fetching DuckDuckGo response: {error}")
 
     def duck(self, query):
-        resp = self._get_url("POST", "https://duckduckgo.com/", data={"q": query})
-        vqd = self.extract_vqd(resp)
+        try:
+            resp = self._get_url("POST", "https://duckduckgo.com/", data={"q": query})
+            if not resp:
+                raise ValueError("Failed to fetch initial DuckDuckGo response")
+            
+            if resp is None:
+                raise ValueError("Invalid response received from DuckDuckGo")
+            
+            if resp.status_code != 200:
+                raise ValueError("Invalid response received from DuckDuckGo (status code: {resp.status_code})")
 
-        params = {"q": query, "kl": 'en-us', "p": "1", "s": "0", "df": "", "vqd": vqd, "ex": ""}
-        resp = self._get_url("GET", "https://links.duckduckgo.com/d.js", params)
-        page_data = self.text_extract_json(resp)
+            vqd = self.extract_vqd(resp)
+            if not vqd:
+                raise ValueError("Failed to extract 'vqd' from the response")
 
-        results = []
-        for row in page_data:
-            href = row.get("u")
-            if href and href != f"http://www.google.com/search?q={query}":
-                body = self.normalize(row["a"])
-                if body:
-                    result = {
-                        "title": self.normalize(row["t"]),
-                        "href": self.normalize_url(href),
-                        "body": self.normalize(row["a"]),
-                    }
-                    results.append(result)
+            params = {"q": query, "kl": 'en-us', "p": "1", "s": "0", "df": "", "vqd": vqd, "ex": ""}
+            resp = self._get_url("GET", "https://links.duckduckgo.com/d.js", params)
+            if not resp:
+                raise ValueError("Failed to fetch results from DuckDuckGo")
+            
+            page_data = self.text_extract_json(resp)
+            results = []
+            for row in page_data:
+                href = row.get("u")
+                if href and href != f"http://www.google.com/search?q={query}":
+                    body = self.normalize(row["a"])
+                    if body:
+                        result = {
+                            "title": self.normalize(row["t"]),
+                            "href": self.normalize_url(href),
+                            "body": self.normalize(row["a"]),
+                        }
+                        results.append(result)
+            if not self.query_result:
+                raise ValueError("No results available from search")
 
-        self.query_result = results
+            self.query_result = results
+
+        except Exception as e:
+            print(f"Error during DuckDuckGo search: {e}")
 
     def search(self, query):
         self.duck(query)
 
     def get_first_link(self):
+        if not self.query_result:
+            raise ValueError("No results available from search")
         return self.query_result[0]["href"]
+
+    @staticmethod
+    def extract_vqd(html_bytes: bytes) -> str:
+        if not html_bytes:
+            raise ValueError("HTML content is empty or None.")
+
+        patterns = [(b'vqd="', 5, b'"'), (b"vqd=", 4, b"&"), (b"vqd='", 5, b"'")]
+        for start_pattern, offset, end_pattern in patterns:
+            try:
+                start = html_bytes.index(start_pattern) + offset
+                end = html_bytes.index(end_pattern, start)
+                return html_bytes[start:end].decode()
+            except (ValueError, AttributeError):
+                continue
+
+        # Se nenhum padrão foi encontrado, levante uma exceção
+        raise ValueError("Unable to extract vqd; no matching pattern found.")
 
     @staticmethod
     def extract_vqd(html_bytes: bytes) -> str:

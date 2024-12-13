@@ -29,14 +29,16 @@ app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": # Change the origin to your frontend URL
                              [
                                  "https://localhost:3000",
+                                 "https://localhost:3001",
                                  "http://localhost:3000",
+                                 "http://localhost:3001"
                                  ]}}) 
 app.register_blueprint(project_bp)
 socketio.init_app(app)
 
 
 log = logging.getLogger("werkzeug")
-log.disabled = True
+log.disabled = False
 
 
 TIKTOKEN_ENC = tiktoken.get_encoding("cl100k_base")
@@ -44,7 +46,7 @@ TIKTOKEN_ENC = tiktoken.get_encoding("cl100k_base")
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 manager = ProjectManager()
-AgentState = AgentState()
+agent_state = AgentState()
 config = Config()
 logger = Logger()
 
@@ -84,17 +86,17 @@ def handle_message(data):
 
     agent = Agent(base_model=base_model, search_engine=search_engine)
 
-    state = AgentState.get_latest_state(project_name)
+    state = agent_state.get_latest_state(project_name)
     if not state:
         thread = Thread(target=lambda: agent.execute(message, project_name))
         thread.start()
     else:
-        if AgentState.is_agent_completed(project_name):
+        if AgentState.is_agent_completed(agent_state, project_name):
             thread = Thread(target=lambda: agent.subsequent_execute(message, project_name))
             thread.start()
         else:
             emit_agent("info", {"type": "warning", "message": "previous agent doesn't completed it's task."})
-            last_state = AgentState.get_latest_state(project_name)
+            last_state = agent_state.get_latest_state(project_name)
             if last_state["agent_is_active"] or not last_state["completed"]:
                 thread = Thread(target=lambda: agent.execute(message, project_name))
                 thread.start()
@@ -107,7 +109,7 @@ def handle_message(data):
 def is_agent_active():
     data = request.json
     project_name = data.get("project_name")
-    is_active = AgentState.is_agent_active(project_name)
+    is_active = agent_state.is_agent_active(project_name)
     return jsonify({"is_active": is_active})
 
 
@@ -116,8 +118,8 @@ def is_agent_active():
 def get_agent_state():
     data = request.json
     project_name = data.get("project_name")
-    agent_state = AgentState.get_latest_state(project_name)
-    return jsonify({"state": agent_state})
+    latest_state = agent_state.get_latest_state(project_name)
+    return jsonify({"state": latest_state})
 
 
 @app.route("/api/get-browser-snapshot", methods=["GET"])
@@ -131,11 +133,11 @@ def browser_snapshot():
 @route_logger(logger)
 def get_browser_session():
     project_name = request.args.get("project_name")
-    agent_state = AgentState.get_latest_state(project_name)
-    if not agent_state:
+    latest_state = agent_state.get_latest_state(project_name)
+    if not latest_state:
         return jsonify({"session": None})
     else:
-        browser_session = agent_state["browser_session"]
+        browser_session = latest_state["browser_session"]
         return jsonify({"session": browser_session})
 
 
@@ -143,11 +145,11 @@ def get_browser_session():
 @route_logger(logger)
 def get_terminal_session():
     project_name = request.args.get("project_name")
-    agent_state = AgentState.get_latest_state(project_name)
-    if not agent_state:
+    latest_state = agent_state.get_latest_state(project_name)
+    if not latest_state:
         return jsonify({"terminal_state": None})
     else:
-        terminal_state = agent_state["terminal_session"]
+        terminal_state = latest_state["terminal_session"]
         return jsonify({"terminal_state": terminal_state})
 
 
@@ -174,7 +176,7 @@ def calculate_tokens():
 @route_logger(logger)
 def token_usage():
     project_name = request.args.get("project_name")
-    token_count = AgentState.get_latest_token_usage(project_name)
+    token_count = agent_state.get_latest_token_usage(project_name)
     return jsonify({"token_usage": token_count})
 
 
