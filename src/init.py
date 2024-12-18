@@ -1,4 +1,16 @@
 import os
+import importlib.util
+
+# Validate numpy dependency first
+try:
+    import numpy
+    print(f"numpy version {numpy.__version__} found")
+except ImportError:
+    raise ImportError(
+        "numpy is required but not installed. Please install it using:\n"
+        "pip install numpy>=1.24.0"
+    )
+
 from src.config import Config
 from src.logger import Logger
 
@@ -8,7 +20,7 @@ def init_devika():
 
     logger.info("Initializing Devika...")
     logger.info("checking configurations...")
-    
+
     config = Config()
 
     sqlite_db = config.get_sqlite_db()
