@@ -31,3 +31,5 @@ orjson
 gevent
 gevent-websocket
 curl_cffi
+chromadb>=0.4.22
+sentence-transformers>=2.2.2
