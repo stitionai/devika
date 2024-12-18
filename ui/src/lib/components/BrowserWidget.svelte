@@ -10,7 +10,7 @@
 
 </script>
 
-<div class="w-full h-full flex flex-col border-[3px] rounded-xl overflow-y-auto bg-browser-window-background border-window-outline">
+<div class="w-full h-full flex flex-col border-[3px] rounded-xl overflow-hidden bg-browser-window-background border-window-outline">
   <div class="p-2 flex items-center border-b border-border bg-browser-window-ribbon h-12">
     <div class="flex space-x-2 ml-2 mr-4">
       <div class="w-3 h-3 bg-browser-window-dots rounded-full"></div>
@@ -27,24 +27,28 @@
   </div>
   <div id="browser-content" class="flex-grow overflow-y-auto">
     {#if $agentState?.browser_session.screenshot}
-      <img
-        class="browser-img"
-        src={API_BASE_URL + "/api/get-browser-snapshot?snapshot_path=" + $agentState?.browser_session.screenshot}
-        alt="Browser snapshot"
-      />
+      <div class="relative w-full h-full">
+        <img
+          class="browser-img w-full h-full object-contain"
+          src={API_BASE_URL + "/api/get-browser-snapshot?snapshot_path=" + $agentState?.browser_session.screenshot}
+          alt="Browser snapshot"
+        />
+      </div>
     {:else}
-      <div class="text-gray-400 text-sm text-center mt-5"><strong>💡 TIP:</strong> You can include a Git URL in your prompt to clone a repo!</div>
+      <div class="text-gray-400 text-sm text-center mt-5 p-4"><strong>💡 TIP:</strong> You can include a Git URL in your prompt to clone a repo!</div>
     {/if}
   </div>
 </div>
 
 <style>
   #browser-url {
-    pointer-events: none
+    pointer-events: none;
   }
 
   .browser-img {
     display: block;
     object-fit: contain;
+    max-width: 100%;
+    height: auto;
   }
 </style>

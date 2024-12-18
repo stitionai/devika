@@ -6,7 +6,7 @@
 
 ![devika screenshot](.assets/devika-screenshot.png)
 
-> [!IMPORTANT]  
+> [!IMPORTANT]
 > This project is currently in a very early development/experimental stage. There are a lot of unimplemented/broken features at the moment. Contributions are welcome to help out with the progress!
 
 ## Table of Contents
@@ -16,7 +16,7 @@
 - [System Architecture](#system-architecture)
 - [Getting Started](#getting-started)
   - [Requirements](#requirements)
-  - [Installation](#installation)
+  - [Quick Installation](#quick-installation)
   - [How to use](#how-to-use)
 - [Configuration](#configuration)
 - [Contributing](#contributing)
@@ -52,66 +52,52 @@ https://github.com/stitionai/devika/assets/26198477/cfed6945-d53b-4189-9fbe-6696
 
 Read [**README.md**](docs/architecture) for the detailed documentation.
 
-
 ## Getting Started
 
 ### Requirements
 ```
 Version's requirements
-  - Python >= 3.10 and < 3.12
-  - NodeJs >= 18
-  - bun
+  - Python >= 3.10 and < 3.12 (Python 3.11 recommended)
+  - NodeJs >= 18 (18.x or 20.x LTS recommended)
+  - bun (latest version)
 ```
 
-- Install uv - Python Package manager [download](https://github.com/astral-sh/uv)
-- Install bun - JavaScript runtime [download](https://bun.sh/docs/installation)
-- For ollama [ollama setup guide](docs/Installation/ollama.md) (optinal: if you don't want to use the local models then you can skip this step)
-- For API models, configure the API keys via setting page in UI.
+For detailed version compatibility information and requirements, see our [Comprehensive Installation Guide](docs/Installation/INSTALLATION.md).
 
+### Quick Installation
 
-### Installation
-
-To install Devika, follow these steps:
-
-1. Clone the Devika repository:
+1. Clone the repository:
    ```bash
    git clone https://github.com/stitionai/devika.git
-   ```
-2. Navigate to the project directory:
-   ```bash
    cd devika
    ```
-3. Create a virtual environment and install the required dependencies (you can use any virtual environment manager):
+
+2. Install dependencies and start Devika:
    ```bash
+   # Install Python dependencies
    uv venv
-   
-   # On macOS and Linux.
-   source .venv/bin/activate
-
-   # On Windows.
-   .venv\Scripts\activate
-
+   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
    uv pip install -r requirements.txt
-   ```
-4. Install the playwright for browsering capabilities:
-   ```bash
-   playwright install --with-deps # installs browsers in playwright (and their deps) if required
-   ```
-5. Start the Devika server:
-   ```bash
+
+   # Install browser dependencies
+   playwright install --with-deps
+
+   # Start backend
    python devika.py
-   ```
-6. if everything is working fine, you see the following output:
-   ```bash
-   root: INFO   : Devika is up and running!
-   ```
-7. Now, for frontend, open a new terminal and navigate to the `ui` directory:
-   ```bash
+
+   # In a new terminal, start frontend
    cd ui/
    bun install
    bun run start
    ```
-8. Access the Devika web interface by opening a browser and navigating to `http://127.0.0.1:3001`
+
+3. Access Devika at `http://127.0.0.1:3001`
+
+For detailed installation instructions, troubleshooting, and common issues, see:
+- [Comprehensive Installation Guide](docs/Installation/INSTALLATION.md)
+- [Docker Installation](docs/Installation/INSTALLATION.md#docker-installation)
+- [Ollama Setup](docs/Installation/ollama.md)
+- [Search Engine Setup](docs/Installation/search_engine.md)
 
 ### how to use
 
@@ -150,7 +136,6 @@ when you first time run Devika, it will create a `config.toml` file for you in t
    - `OPENAI`: The OpenAI API endpoint for accessing OpenAI models.
 
 Make sure to keep your API keys secure and do not share them publicly. For setting up the Bing and Google search API keys, follow the instructions in the [search engine setup](docs/Installation/search_engine.md)
-
 
 ## Contributing
 
