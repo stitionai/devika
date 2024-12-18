@@ -90,10 +90,11 @@ Devika's cognitive abilities are powered by a collection of specialized sub-agen
 - Provides a human-like confirmation of the action to the user
 
 ### Runner
-- Executes the written code in a sandboxed environment 
+- Executes code in a secure sandboxed environment using firejail
+- Validates code for security concerns before execution
+- Restricts dangerous imports and function calls
+- Prevents network access and filesystem access outside sandbox
 - Handles different OS environments (Mac, Linux, Windows)
-- Streams command output to user in real-time
-- Gracefully handles errors and exceptions
 
 ### Feature
 - Implements a new feature based on user's specification

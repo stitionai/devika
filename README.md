@@ -6,7 +6,7 @@
 
 ![devika screenshot](.assets/devika-screenshot.png)
 
-> [!IMPORTANT]  
+> [!IMPORTANT]
 > This project is currently in a very early development/experimental stage. There are a lot of unimplemented/broken features at the moment. Contributions are welcome to help out with the progress!
 
 ## Table of Contents
@@ -61,10 +61,12 @@ Version's requirements
   - Python >= 3.10 and < 3.12
   - NodeJs >= 18
   - bun
+  - firejail (for secure code execution)
 ```
 
 - Install uv - Python Package manager [download](https://github.com/astral-sh/uv)
 - Install bun - JavaScript runtime [download](https://bun.sh/docs/installation)
+- Install firejail - Security sandbox [install with `sudo apt-get install firejail`]
 - For ollama [ollama setup guide](docs/Installation/ollama.md) (optinal: if you don't want to use the local models then you can skip this step)
 - For API models, configure the API keys via setting page in UI.
 
@@ -84,7 +86,7 @@ To install Devika, follow these steps:
 3. Create a virtual environment and install the required dependencies (you can use any virtual environment manager):
    ```bash
    uv venv
-   
+
    # On macOS and Linux.
    source .venv/bin/activate
 
