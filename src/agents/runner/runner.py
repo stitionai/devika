@@ -11,6 +11,7 @@ from src.llm import LLM
 from src.state import AgentState
 from src.project import ProjectManager
 from src.services.utils import retry_wrapper, validate_responses
+from src.sandbox.code_runner import CodeRunner
 
 PROMPT = open("src/agents/runner/prompt.jinja2", "r").read().strip()
 RERUNNER_PROMPT = open("src/agents/runner/rerunner.jinja2", "r").read().strip()
@@ -58,7 +59,7 @@ class Runner:
             return False
         else:
             return response["commands"]
-    
+
     @validate_responses
     def validate_rerunner_response(self, response: str):
         if "action" not in response and "response" not in response:
@@ -75,22 +76,19 @@ class Runner:
         conversation: list,
         code_markdown: str,
         system_os: str
-    ):  
+    ):
         retries = 0
-        
+        runner = CodeRunner()
+
         for command in commands:
             command_set = command.split(" ")
             command_failed = False
-            
-            process = subprocess.run(
-                command_set,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                cwd=project_path
-            )
-            command_output = process.stdout.decode('utf-8')
-            command_failed = process.returncode != 0
-            
+
+            # Run command in sandbox
+            result = runner.run(command)
+            command_output = result["output"]
+            command_failed = not result["success"]
+
             new_state = AgentState().new_state()
             new_state["internal_monologue"] = "Running code..."
             new_state["terminal_session"]["title"] = "Terminal"
@@ -98,7 +96,7 @@ class Runner:
             new_state["terminal_session"]["output"] = command_output
             AgentState().add_to_current_state(project_name, new_state)
             time.sleep(1)
-            
+
             while command_failed and retries < 2:
                 new_state = AgentState().new_state()
                 new_state["internal_monologue"] = "Oh seems like there is some error... :("
@@ -107,7 +105,7 @@ class Runner:
                 new_state["terminal_session"]["output"] = command_output
                 AgentState().add_to_current_state(project_name, new_state)
                 time.sleep(1)
-                
+
                 prompt = self.render_rerunner(
                     conversation=conversation,
                     code_markdown=code_markdown,
@@ -115,34 +113,30 @@ class Runner:
                     commands=commands,
                     error=command_output
                 )
-                
+
                 response = self.llm.inference(prompt, project_name)
-                
+
                 valid_response = self.validate_rerunner_response(response)
-                
+
                 if not valid_response:
                     return False
-                
+
                 action = valid_response["action"]
-                
+
                 if action == "command":
                     command = valid_response["command"]
                     response = valid_response["response"]
-                    
+
                     ProjectManager().add_message_from_devika(project_name, response)
-                    
+
                     command_set = command.split(" ")
                     command_failed = False
-                    
-                    process = subprocess.run(
-                        command_set,
-                        stdout=subprocess.PIPE,
-                        stderr=subprocess.PIPE,
-                        cwd=project_path
-                    )
-                    command_output = process.stdout.decode('utf-8')
-                    command_failed = process.returncode != 0
-                    
+
+                    # Run command in sandbox
+                    result = runner.run(command)
+                    command_output = result["output"]
+                    command_failed = not result["success"]
+
                     new_state = AgentState().new_state()
                     new_state["internal_monologue"] = "Running code..."
                     new_state["terminal_session"]["title"] = "Terminal"
@@ -150,16 +144,16 @@ class Runner:
                     new_state["terminal_session"]["output"] = command_output
                     AgentState().add_to_current_state(project_name, new_state)
                     time.sleep(1)
-                    
+
                     if command_failed:
                         retries += 1
                     else:
                         break
                 elif action == "patch":
                     response = valid_response["response"]
-                    
+
                     ProjectManager().add_message_from_devika(project_name, response)
-                    
+
                     code = Patcher(base_model=self.base_model).execute(
                         conversation=conversation,
                         code_markdown=code_markdown,
@@ -168,21 +162,17 @@ class Runner:
                         system_os=system_os,
                         project_name=project_name
                     )
-                    
+
                     Patcher(base_model=self.base_model).save_code_to_project(code, project_name)
-                    
+
                     command_set = command.split(" ")
                     command_failed = False
-                    
-                    process = subprocess.run(
-                        command_set,
-                        stdout=subprocess.PIPE,
-                        stderr=subprocess.PIPE,
-                        cwd=project_path
-                    )
-                    command_output = process.stdout.decode('utf-8')
-                    command_failed = process.returncode != 0
-                    
+
+                    # Run command in sandbox
+                    result = runner.run(command)
+                    command_output = result["output"]
+                    command_failed = not result["success"]
+
                     new_state = AgentState().new_state()
                     new_state["internal_monologue"] = "Running code..."
                     new_state["terminal_session"]["title"] = "Terminal"
@@ -190,7 +180,7 @@ class Runner:
                     new_state["terminal_session"]["output"] = command_output
                     AgentState().add_to_current_state(project_name, new_state)
                     time.sleep(1)
-                    
+
                     if command_failed:
                         retries += 1
                     else:
@@ -207,9 +197,9 @@ class Runner:
     ) -> str:
         prompt = self.render(conversation, code_markdown, os_system)
         response = self.llm.inference(prompt, project_name)
-        
+
         valid_response = self.validate_response(response)
-        
+
         self.run_code(
             valid_response,
             project_path,
