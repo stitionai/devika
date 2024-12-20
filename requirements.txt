@@ -14,8 +14,8 @@ pytest-playwright
 tiktoken
 ollama
 openai
-anthropic
-google-generativeai
+anthropic>=0.8.0
+google-generativeai>=0.3.0
 sqlmodel
 keybert
 GitPython
