@@ -22,23 +22,23 @@ class Config:
             # check if all the keys are present in the config file
             with open("sample.config.toml", "r") as f:
                 sample_config = toml.load(f)
-            
+
             with open("config.toml", "r+") as f:
                 config = toml.load(f)
-            
+
                 # Update the config with any missing keys and their keys of keys
                 for key, value in sample_config.items():
                     config.setdefault(key, value)
                     if isinstance(value, dict):
                         for sub_key, sub_value in value.items():
                             config[key].setdefault(sub_key, sub_value)
-            
+
                 f.seek(0)
                 toml.dump(config, f)
                 f.truncate()
-        
+
             self.config = config
-            
+
     def get_config(self):
         return self.config
 
@@ -59,7 +59,7 @@ class Config:
 
     def get_ollama_api_endpoint(self):
         return self.config["API_ENDPOINTS"]["OLLAMA"]
-    
+
     def get_lmstudio_api_endpoint(self):
         return self.config["API_ENDPOINTS"]["LM_STUDIO"]
 
@@ -107,9 +107,18 @@ class Config:
 
     def get_logging_prompts(self):
         return self.config["LOGGING"]["LOG_PROMPTS"] == "true"
-    
+
     def get_timeout_inference(self):
         return self.config["TIMEOUT"]["INFERENCE"]
+
+    def get_excluded_sites(self):
+        return self.config.get("SITE_EXCLUSIONS", {}).get("EXCLUDED_SITES", [])
+
+    def set_excluded_sites(self, sites):
+        if "SITE_EXCLUSIONS" not in self.config:
+            self.config["SITE_EXCLUSIONS"] = {}
+        self.config["SITE_EXCLUSIONS"]["EXCLUDED_SITES"] = sites
+        self.save_config()
 
     def set_bing_api_key(self, key):
         self.config["API_KEYS"]["BING"] = key
@@ -134,7 +143,7 @@ class Config:
     def set_ollama_api_endpoint(self, endpoint):
         self.config["API_ENDPOINTS"]["OLLAMA"] = endpoint
         self.save_config()
-    
+
     def set_lmstudio_api_endpoint(self, endpoint):
         self.config["API_ENDPOINTS"]["LM_STUDIO"] = endpoint
         self.save_config()

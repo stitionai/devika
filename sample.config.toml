@@ -25,10 +25,12 @@ OLLAMA = "http://127.0.0.1:11434"
 LM_STUDIO = "http://localhost:1234/v1"
 OPENAI = "https://api.openai.com/v1"
 
-
 [LOGGING]
 LOG_REST_API = "true"
 LOG_PROMPTS = "false"
 
 [TIMEOUT]
 INFERENCE = 60
+
+[SITE_EXCLUSIONS]
+EXCLUDED_SITES = []
