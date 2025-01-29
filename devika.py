@@ -3,6 +3,8 @@
     AS IT MAY CAUSE IMPORT ERRORS AND OTHER ISSUES
 """
 from gevent import monkey
+import os
+from werkzeug.exceptions import BadRequest
 monkey.patch_all()
 from src.init import init_devika
 init_devika()
@@ -124,7 +126,20 @@ def get_agent_state():
 @route_logger(logger)
 def browser_snapshot():
     snapshot_path = request.args.get("snapshot_path")
-    return send_file(snapshot_path, as_attachment=True)
+
+    if '..' in snapshot_path or '.' in snapshot_path:
+        raise BadRequest("Invalid snapshot path.")
+
+    safe_directory = "/path/to/safe/directory"  
+    full_path = os.path.abspath(os.path.join(safe_directory, snapshot_path))
+
+    if not full_path.startswith(safe_directory):
+        raise BadRequest("Invalid snapshot path.")
+
+    if os.path.isfile(full_path):
+        return send_file(full_path, as_attachment=True)
+    else:
+        raise BadRequest("Snapshot not found.")
 
 
 @app.route("/api/get-browser-session", methods=["GET"])
