@@ -1,5 +1,5 @@
-import google.generativeai as genai
-from google.generativeai.types import HarmCategory, HarmBlockThreshold
+import google.genai as genai
+from google.genai.types import HarmCategory, HarmBlockThreshold
 
 from src.config import Config
 
