@@ -47,6 +47,10 @@ class Config:
 
     def get_bing_api_key(self):
         return self.config["API_KEYS"]["BING"]
+    
+    def get_kimi_api_key(self):
+        return self.config["API_KEYS"]["KIMI"]
+
 
     def get_google_search_api_key(self):
         return self.config["API_KEYS"]["GOOGLE_SEARCH"]
