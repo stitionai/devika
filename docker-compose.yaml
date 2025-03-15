@@ -37,9 +37,11 @@ services:
       context: .
       dockerfile: app.dockerfile
       args:
-        - VITE_API_BASE_URL=http://127.0.0.1:1337
+        - VITE_API_BASE_URL=http://47.121.183.184:1337
     depends_on:
       - devika-backend-engine
+    environment:
+      - VITE_API_BASE_URL=http://47.121.183.184:1337
     expose:
       - 3000
     ports:
