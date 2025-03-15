@@ -1,18 +1,13 @@
 version: "3.9"
 
 services:
-  ollama-service:
-    image: ollama/ollama:latest
-    expose:
-      - 11434
+  nginx:
+    image: nginx:latest
+    restart: always
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     ports:
-      - 11434:11434
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:11434/ || exit 1"]
-      interval: 5s
-      timeout: 30s
-      retries: 5
-      start_period: 30s
+      - 80:80
     networks:
       - devika-subnetwork
 
