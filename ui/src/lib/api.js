@@ -13,12 +13,14 @@ import { io } from "socket.io-client";
 const getApiBaseUrl = () => {
   if (typeof window !== 'undefined') {
     const host = window.location.hostname;
+    console.log("host : " + host)
     if (host === 'localhost' || host === '127.0.0.1') {
       return 'http://127.0.0.1:1337';
     } else {
       return `http://${host}:1337`;
     }
   } else {
+    console.log("window.location.hostname : " + window.location.hostname)
     return 'http://127.0.0.1:1337';
   }
 };
