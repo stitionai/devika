@@ -26,6 +26,7 @@ def init_devika():
 
     from src.bert.sentence import SentenceBert
 
+    # using llm instead
     logger.info("Loading sentence-transformer BERT models...")
     prompt = "Light-weight keyword extraction exercise for BERT model loading.".strip()
     SentenceBert(prompt).extract_keywords()

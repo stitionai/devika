@@ -128,7 +128,9 @@ class DuckDuckGoSearch:
         self.duck(query)
 
     def get_first_link(self):
-        return self.query_result[0]["href"]
+        if len(self.query_result) > 0:
+            return self.query_result[0]["href"]
+        return ""
 
     @staticmethod
     def extract_vqd(html_bytes: bytes) -> str:

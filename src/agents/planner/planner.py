@@ -50,7 +50,7 @@ class Planner:
             elif current_section == "focus":
                 result["focus"] += " " + line
             elif current_section == "plans":
-                if line.startswith("- [ ] Step"):
+                if line.find('Step') != -1:
                     current_step = line.split(":")[0].strip().split(" ")[-1]
                     result["plans"][int(current_step)] = line.split(":", 1)[1].strip()
                 elif current_step:
