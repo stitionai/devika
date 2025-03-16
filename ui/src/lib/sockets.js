@@ -27,6 +27,7 @@ export function initializeSockets() {
     agentState.set(lastState);
     if (lastState.completed) {
       isSending.set(false);
+      window.open("http://47.121.183.184/projects/" + window.localStorage.selectedProject + "/main.html", "_blank");
     }
   });
 
