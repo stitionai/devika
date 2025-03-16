@@ -6,6 +6,7 @@ services:
     restart: always
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - /home/nonroot/devika/data:/var/www/html
     ports:
       - 80:80
     networks:
@@ -29,6 +30,7 @@ services:
       start_period: 30s
     volumes:
       - devika-backend-dbstore:/home/nonroot/devika/db
+      - /home/nonroot/devika/data:/home/nonroot/devika/data
     networks:
       - devika-subnetwork
 
