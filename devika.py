@@ -9,6 +9,7 @@ init_devika()
 
 
 from flask import Flask, request, jsonify, send_file
+from werkzeug.utils import secure_filename
 from flask_cors import CORS
 from src.socket_instance import socketio, emit_agent
 import os
@@ -123,7 +124,7 @@ def get_agent_state():
 @app.route("/api/get-browser-snapshot", methods=["GET"])
 @route_logger(logger)
 def browser_snapshot():
-    snapshot_path = request.args.get("snapshot_path")
+    snapshot_path = secure_filename(request.args.get("snapshot_path"))
     return send_file(snapshot_path, as_attachment=True)
 
 
@@ -207,5 +208,3 @@ def status():
 if __name__ == "__main__":
     logger.info("Devika is up and running!")
     socketio.run(app, debug=False, port=1337, host="0.0.0.0")
-
-123
