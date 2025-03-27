@@ -207,3 +207,5 @@ def status():
 if __name__ == "__main__":
     logger.info("Devika is up and running!")
     socketio.run(app, debug=False, port=1337, host="0.0.0.0")
+
+123
