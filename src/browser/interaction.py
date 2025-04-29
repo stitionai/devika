@@ -483,15 +483,47 @@ class Crawler:
 		return elements_of_interest
 
 def start_interaction(model_id, objective, project_name):
+	"""Starts an interaction loop with a web browser using a language model to generate commands.
+	
+	This function initializes a web crawler and enters an interactive loop where it fetches webpage content, generates
+	commands based on the current URL, previous command, and browser content using a language model, and executes these
+	commands. The loop continues until a specified number of visits is reached or interrupted by the user.
+	
+	Args:
+	    model_id (str): The identifier for the language model to be used.
+	    objective (str): The objective or goal for the interaction session.
+	    project_name (str): The name of the project, used for naming screenshots.
+	"""
 	_crawler = Crawler()
 
 	def print_help():
+		"""Print a list of available commands and their functions.
+		
+		This function displays a help message outlining the various commands that can be used, along with a brief description of
+		what each command does. The commands include options to visit URLs, scroll up and down, click on elements, type text,
+		view commands again, run suggested commands, and change objectives.
+		"""
 		print(
 			"(g) to visit url\n(u) scroll up\n(d) scroll down\n(c) to click\n(t) to type\n" +
 			"(h) to view commands again\n(r/enter) to run suggested command\n(o) change objective"
 		)
 
 	def get_gpt_command(objective, url, previous_command, browser_content):
+		"""Construct a prompt and generate an AI command using a language model.
+		
+		This function takes various pieces of information such as the objective, URL, previous command, and browser content to
+		create a detailed prompt. The prompt is then used to generate a command through an inference call to a language model
+		(LLM).
+		
+		Args:
+		    objective (str): The goal or task at hand.
+		    url (str): The current URL being processed. It is truncated to the first 100 characters for brevity.
+		    previous_command (str): The last command issued, if any.
+		    browser_content (str): The content of the current web page. It is truncated to the first 4500 characters.
+		
+		Returns:
+		    str: The generated AI command based on the provided inputs.
+		"""
 		prompt = prompt_template
 		prompt = prompt.replace("$objective", objective)
 		prompt = prompt.replace("$url", url[:100])
@@ -501,6 +533,21 @@ def start_interaction(model_id, objective, project_name):
 		return response
 
 	def run_cmd(cmd):
+		"""Execute a command to control web page interactions.
+		
+		This function processes a command string and performs corresponding actions using an internal crawler object. The
+		commands include scrolling, clicking on elements, and typing text into input fields. The function handles different
+		types of commands by splitting the input string and extracting necessary parameters such as element IDs and text to be
+		typed. After executing the command, it pauses for 2 seconds.
+		
+		Args:
+		    cmd (str): A string representing the command to be executed. Valid commands include:
+		        - "SCROLL UP": Scroll the page up.
+		        - "SCROLL DOWN": Scroll the page down.
+		        - "CLICK <element_id>": Click on an element with the specified ID.
+		        - "TYPE <element_id> <text>": Type the given text into an element with the specified ID.
+		        - "TYPESUBMIT <element_id> <text>": Type the given text and submit it by adding a newline character.
+		"""
 		cmd = cmd.split("\n")[0]
 
 		if cmd.startswith("SCROLL UP"):
