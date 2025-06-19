@@ -1,6 +1,12 @@
+"""
+MCP Tools Implementation for Devika
+Provides standardized tool interface for AI operations
+"""
+
 import asyncio
 import json
-from typing import Dict, Any, List
+import os
+from typing import Dict, Any, List, Optional
 from datetime import datetime
 
 from src.project import ProjectManager
@@ -10,6 +16,7 @@ from src.browser.search import BingSearch, GoogleSearch, DuckDuckGoSearch
 from src.browser import Browser
 from src.filesystem import ReadCode
 from src.logger import Logger
+from src.llm import LLM
 
 class MCPTools:
     """MCP Tools for Devika functionality"""
@@ -18,7 +25,130 @@ class MCPTools:
         self.project_manager = ProjectManager()
         self.agent_state = AgentState()
         self.logger = Logger()
-    
+        self.tools = self._register_tools()
+
+    def _register_tools(self) -> Dict[str, Dict[str, Any]]:
+        """Register all available tools"""
+        return {
+            "devika/project/create": {
+                "description": "Create a new project",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "name": {"type": "string", "description": "Project name"}
+                    },
+                    "required": ["name"]
+                }
+            },
+            "devika/project/list": {
+                "description": "List all projects",
+                "inputSchema": {"type": "object", "properties": {}}
+            },
+            "devika/project/files": {
+                "description": "Get files for a project",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "project_name": {"type": "string", "description": "Project name"}
+                    },
+                    "required": ["project_name"]
+                }
+            },
+            "devika/code/analyze": {
+                "description": "Analyze code in a project",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "project_name": {"type": "string", "description": "Project name"},
+                        "type": {
+                            "type": "string", 
+                            "description": "Analysis type", 
+                            "enum": ["general", "security", "performance", "review"]
+                        }
+                    },
+                    "required": ["project_name"]
+                }
+            },
+            "devika/code/generate": {
+                "description": "Generate code based on requirements",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "project_name": {"type": "string", "description": "Project name"},
+                        "requirements": {"type": "string", "description": "Code generation requirements"},
+                        "model": {"type": "string", "description": "LLM model to use"}
+                    },
+                    "required": ["project_name", "requirements"]
+                }
+            },
+            "devika/agent/execute": {
+                "description": "Execute an agent task",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "project_name": {"type": "string", "description": "Project name"},
+                        "prompt": {"type": "string", "description": "Agent prompt"},
+                        "model": {"type": "string", "description": "LLM model to use"},
+                        "search_engine": {
+                            "type": "string", 
+                            "description": "Search engine", 
+                            "enum": ["bing", "google", "duckduckgo"]
+                        }
+                    },
+                    "required": ["project_name", "prompt"]
+                }
+            },
+            "devika/search/web": {
+                "description": "Search the web",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "query": {"type": "string", "description": "Search query"},
+                        "engine": {
+                            "type": "string", 
+                            "description": "Search engine", 
+                            "enum": ["bing", "google", "duckduckgo"]
+                        }
+                    },
+                    "required": ["query"]
+                }
+            },
+            "devika/browser/navigate": {
+                "description": "Navigate browser to URL",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "url": {"type": "string", "description": "URL to navigate to"},
+                        "project_name": {"type": "string", "description": "Project name for screenshot"}
+                    },
+                    "required": ["url"]
+                }
+            },
+            "devika/file/read": {
+                "description": "Read a file",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "project_name": {"type": "string", "description": "Project name"},
+                        "file_path": {"type": "string", "description": "File path"}
+                    },
+                    "required": ["project_name", "file_path"]
+                }
+            },
+            "devika/file/write": {
+                "description": "Write to a file",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "project_name": {"type": "string", "description": "Project name"},
+                        "file_path": {"type": "string", "description": "File path"},
+                        "content": {"type": "string", "description": "File content"}
+                    },
+                    "required": ["project_name", "file_path", "content"]
+                }
+            }
+        }
+
     async def create_project(self, args: Dict[str, Any]) -> Dict[str, Any]:
         """Create a new project"""
         try:
@@ -33,6 +163,7 @@ class MCPTools:
                 "message": f"Project '{project_name}' created successfully"
             }
         except Exception as e:
+            self.logger.error(f"MCP tool error - create_project: {str(e)}")
             return {"error": str(e)}
     
     async def list_projects(self, args: Dict[str, Any]) -> Dict[str, Any]:
@@ -44,6 +175,7 @@ class MCPTools:
                 "count": len(projects)
             }
         except Exception as e:
+            self.logger.error(f"MCP tool error - list_projects: {str(e)}")
             return {"error": str(e)}
     
     async def get_project_files(self, args: Dict[str, Any]) -> Dict[str, Any]:
@@ -60,6 +192,7 @@ class MCPTools:
                 "count": len(files)
             }
         except Exception as e:
+            self.logger.error(f"MCP tool error - get_project_files: {str(e)}")
             return {"error": str(e)}
     
     async def analyze_code(self, args: Dict[str, Any]) -> Dict[str, Any]:
@@ -95,6 +228,7 @@ class MCPTools:
                 "result": result
             }
         except Exception as e:
+            self.logger.error(f"MCP tool error - analyze_code: {str(e)}")
             return {"error": str(e)}
     
     async def generate_code(self, args: Dict[str, Any]) -> Dict[str, Any]:
@@ -120,29 +254,7 @@ class MCPTools:
                 "status": "Code generation initiated"
             }
         except Exception as e:
-            return {"error": str(e)}
-    
-    async def review_code(self, args: Dict[str, Any]) -> Dict[str, Any]:
-        """Review code in a project"""
-        try:
-            project_name = args.get("project_name")
-            review_type = args.get("review_type", "comprehensive")
-            
-            if not project_name:
-                return {"error": "Project name is required"}
-            
-            from src.agents.code_reviewer import CodeReviewer
-            reviewer = CodeReviewer(base_model="gpt-4")
-            
-            code_markdown = ReadCode(project_name).code_set_to_markdown()
-            result = reviewer.execute(code_markdown, review_type, project_name)
-            
-            return {
-                "project_name": project_name,
-                "review_type": review_type,
-                "result": result
-            }
-        except Exception as e:
+            self.logger.error(f"MCP tool error - generate_code: {str(e)}")
             return {"error": str(e)}
     
     async def execute_agent(self, args: Dict[str, Any]) -> Dict[str, Any]:
@@ -169,26 +281,7 @@ class MCPTools:
                 "status": "Agent execution initiated"
             }
         except Exception as e:
-            return {"error": str(e)}
-    
-    async def get_agent_status(self, args: Dict[str, Any]) -> Dict[str, Any]:
-        """Get agent status for a project"""
-        try:
-            project_name = args.get("project_name")
-            if not project_name:
-                return {"error": "Project name is required"}
-            
-            state = self.agent_state.get_latest_state(project_name)
-            is_active = self.agent_state.is_agent_active(project_name)
-            is_completed = self.agent_state.is_agent_completed(project_name)
-            
-            return {
-                "project_name": project_name,
-                "is_active": is_active,
-                "is_completed": is_completed,
-                "state": state
-            }
-        except Exception as e:
+            self.logger.error(f"MCP tool error - execute_agent: {str(e)}")
             return {"error": str(e)}
     
     async def search_web(self, args: Dict[str, Any]) -> Dict[str, Any]:
@@ -217,6 +310,7 @@ class MCPTools:
                 "result": result
             }
         except Exception as e:
+            self.logger.error(f"MCP tool error - search_web: {str(e)}")
             return {"error": str(e)}
     
     async def navigate_browser(self, args: Dict[str, Any]) -> Dict[str, Any]:
@@ -247,24 +341,7 @@ class MCPTools:
                     "success": success
                 }
         except Exception as e:
-            return {"error": str(e)}
-    
-    async def execute_command(self, args: Dict[str, Any]) -> Dict[str, Any]:
-        """Execute terminal command"""
-        try:
-            command = args.get("command")
-            project_name = args.get("project_name")
-            
-            if not command:
-                return {"error": "Command is required"}
-            
-            # This would need to be implemented with proper security measures
-            # For now, return a placeholder
-            return {
-                "command": command,
-                "status": "Command execution not implemented for security reasons"
-            }
-        except Exception as e:
+            self.logger.error(f"MCP tool error - navigate_browser: {str(e)}")
             return {"error": str(e)}
     
     async def read_file(self, args: Dict[str, Any]) -> Dict[str, Any]:
@@ -288,6 +365,7 @@ class MCPTools:
                 "content": target_file['code']
             }
         except Exception as e:
+            self.logger.error(f"MCP tool error - read_file: {str(e)}")
             return {"error": str(e)}
     
     async def write_file(self, args: Dict[str, Any]) -> Dict[str, Any]:
@@ -300,51 +378,25 @@ class MCPTools:
             if not project_name or not file_path:
                 return {"error": "Project name and file path are required"}
             
-            # This would need to be implemented with proper file writing
-            # For now, return a placeholder
+            # Get project path
+            projects_dir = self.project_manager.project_path
+            project_dir = os.path.join(projects_dir, project_name.lower().replace(" ", "-"))
+            full_file_path = os.path.join(project_dir, file_path)
+            
+            # Ensure directory exists
+            os.makedirs(os.path.dirname(full_file_path), exist_ok=True)
+            
+            # Write file
+            with open(full_file_path, 'w', encoding='utf-8') as f:
+                f.write(content)
+            
+            self.logger.info(f"MCP tool - wrote file: {full_file_path}")
             return {
                 "project_name": project_name,
                 "file_path": file_path,
-                "status": "File writing not implemented yet"
+                "success": True,
+                "message": "File written successfully"
             }
         except Exception as e:
-            return {"error": str(e)}
-    
-    async def create_file(self, args: Dict[str, Any]) -> Dict[str, Any]:
-        """Create a new file"""
-        try:
-            project_name = args.get("project_name")
-            file_path = args.get("file_path")
-            content = args.get("content", "")
-            
-            if not project_name or not file_path:
-                return {"error": "Project name and file path are required"}
-            
-            # This would need to be implemented with proper file creation
-            # For now, return a placeholder
-            return {
-                "project_name": project_name,
-                "file_path": file_path,
-                "status": "File creation not implemented yet"
-            }
-        except Exception as e:
-            return {"error": str(e)}
-    
-    async def delete_file(self, args: Dict[str, Any]) -> Dict[str, Any]:
-        """Delete a file"""
-        try:
-            project_name = args.get("project_name")
-            file_path = args.get("file_path")
-            
-            if not project_name or not file_path:
-                return {"error": "Project name and file path are required"}
-            
-            # This would need to be implemented with proper file deletion
-            # For now, return a placeholder
-            return {
-                "project_name": project_name,
-                "file_path": file_path,
-                "status": "File deletion not implemented yet"
-            }
-        except Exception as e:
+            self.logger.error(f"MCP tool error - write_file: {str(e)}")
             return {"error": str(e)}
