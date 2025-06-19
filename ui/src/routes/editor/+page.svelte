@@ -1,7 +1,7 @@
 <script>
   import { onMount } from 'svelte';
   import { selectedProject } from '$lib/store';
-  import { EnhancedWebCodeEditor } from '$lib/components/CodeEditor';
+  import WebCodeEditor from '$lib/components/WebCodeEditor.svelte';
   import { toast } from 'svelte-sonner';
 
   let editorHeight = '100%';
@@ -29,7 +29,7 @@
 
 <div class="editor-page h-full w-full">
   {#if $selectedProject && $selectedProject !== 'select project'}
-    <EnhancedWebCodeEditor height={editorHeight} />
+    <WebCodeEditor height={editorHeight} />
   {:else}
     <div class="no-project flex items-center justify-center h-full">
       <div class="text-center text-tertiary">
@@ -37,9 +37,9 @@
         <h2 class="text-2xl mb-2 font-light">No Project Selected</h2>
         <p class="text-lg mb-4 opacity-75">Please select a project from the control panel to start coding</p>
         <div class="space-y-2 text-sm">
-          <p>✨ Enhanced with Svelte for better performance</p>
-          <p>🚀 Advanced features and smooth interactions</p>
-          <p>💡 Intelligent code completion and suggestions</p>
+          <p>✨ Create and edit HTML, CSS, and JavaScript files</p>
+          <p>🚀 Live preview your web applications</p>
+          <p>💡 Syntax highlighting and code completion</p>
         </div>
       </div>
     </div>
