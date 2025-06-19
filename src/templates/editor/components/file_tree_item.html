@@ -1,0 +1,40 @@
+{% set is_folder = file.type == 'folder' %}
+{% set indent_level = file.level * 16 %}
+
+<div class="file-tree-item" data-path="{{ file.path }}" data-type="{{ file.type }}">
+    <div class="flex items-center py-1 px-2 hover:bg-background cursor-pointer rounded text-sm group file-item"
+         style="padding-left: {{ indent_level + 8 }}px"
+         onclick="handleFileClick('{{ file.path }}', '{{ file.type }}')"
+         oncontextmenu="showContextMenu(event, '{{ file.path }}', '{{ file.type }}')">
+        
+        {% if is_folder %}
+            <i class="fas fa-chevron-{{ 'down' if file.expanded else 'right' }} text-xs text-tertiary mr-1 transition-transform"></i>
+            <i class="fas fa-folder text-yellow-600 mr-2"></i>
+        {% else %}
+            <span class="w-3 mr-1"></span>
+            <i class="{{ get_file_icon(file.name) }} mr-2"></i>
+        {% endif %}
+        
+        <span class="truncate flex-1">{{ file.name }}</span>
+        
+        {% if not is_folder %}
+            <div class="text-xs text-tertiary opacity-0 group-hover:opacity-100 transition-opacity">
+                {{ file.size|filesizeformat }}
+            </div>
+        {% endif %}
+        
+        {% if file.modified %}
+            <div class="w-2 h-2 bg-warning rounded-full ml-1"></div>
+        {% endif %}
+    </div>
+    
+    {% if is_folder and file.expanded and file.children %}
+        <div class="folder-children">
+            {% for child in file.children %}
+                {% with file=child %}
+                    {% include 'editor/components/file_tree_item.html' %}
+                {% endwith %}
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>

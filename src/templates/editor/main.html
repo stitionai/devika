@@ -1,0 +1,228 @@
+{% extends "editor/base.html" %}
+
+{% block title %}{{ current_project or 'Devika' }} - Code Editor{% endblock %}
+
+{% block content %}
+<!-- File Explorer Sidebar -->
+<div class="w-64 bg-secondary border-r border-border flex flex-col">
+    <!-- Explorer Header -->
+    <div class="p-3 border-b border-border">
+        <div class="flex items-center justify-between mb-2">
+            <h3 class="text-sm font-semibold">Explorer</h3>
+            <div class="flex space-x-1">
+                <button id="new-file-btn" class="p-1 rounded hover:bg-background transition-colors" title="New File">
+                    <i class="fas fa-file-plus text-xs"></i>
+                </button>
+                <button id="new-folder-btn" class="p-1 rounded hover:bg-background transition-colors" title="New Folder">
+                    <i class="fas fa-folder-plus text-xs"></i>
+                </button>
+                <button id="refresh-btn" class="p-1 rounded hover:bg-background transition-colors" title="Refresh">
+                    <i class="fas fa-sync text-xs"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Search -->
+        <div class="relative">
+            <input type="text" id="file-search" placeholder="Search files..." 
+                   class="w-full px-3 py-1 text-xs bg-background border border-border rounded focus:outline-none focus:border-primary">
+            <i class="fas fa-search absolute right-2 top-1/2 transform -translate-y-1/2 text-tertiary text-xs"></i>
+        </div>
+    </div>
+    
+    <!-- File Tree -->
+    <div class="flex-1 overflow-y-auto p-2 file-tree">
+        {% if project_files %}
+            {% for file in project_files %}
+                {% include 'editor/components/file_tree_item.html' %}
+            {% endfor %}
+        {% else %}
+            <div class="text-center text-tertiary py-8">
+                <i class="fas fa-folder-open text-2xl mb-2"></i>
+                <p class="text-sm">No files in project</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Editor Area -->
+<div class="flex-1 flex flex-col">
+    <!-- Tab Bar -->
+    <div class="bg-secondary border-b border-border">
+        <div class="flex items-center tab-container" id="tab-container">
+            {% if open_tabs %}
+                {% for tab in open_tabs %}
+                    {% include 'editor/components/tab.html' %}
+                {% endfor %}
+            {% else %}
+                <div class="flex items-center px-4 py-2 text-tertiary text-sm">
+                    <i class="fas fa-code mr-2"></i>
+                    No files open
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Editor Content -->
+    <div class="flex-1 relative">
+        {% if active_file %}
+            <div id="monaco-editor" class="w-full h-full"></div>
+            
+            <!-- Editor Overlay Info -->
+            <div class="absolute top-2 right-2 bg-background bg-opacity-90 rounded px-2 py-1 text-xs text-tertiary">
+                {{ active_file.language|upper }} • {{ active_file.size|filesizeformat }}
+                {% if active_file.modified %}
+                    • <span class="text-warning">Modified</span>
+                {% endif %}
+            </div>
+        {% else %}
+            <div class="flex items-center justify-center h-full bg-gradient-to-br from-background to-secondary">
+                <div class="text-center">
+                    <i class="fas fa-code text-6xl mb-4 text-tertiary opacity-50"></i>
+                    <h2 class="text-2xl mb-2 font-light">Welcome to Devika Code Editor</h2>
+                    <p class="text-lg mb-4 text-tertiary">Powered by Jinja templating for dynamic content</p>
+                    <div class="space-y-2 text-sm text-tertiary">
+                        <p><kbd class="bg-secondary px-2 py-1 rounded">Ctrl+N</kbd> New File</p>
+                        <p><kbd class="bg-secondary px-2 py-1 rounded">Ctrl+O</kbd> Open File</p>
+                        <p><kbd class="bg-secondary px-2 py-1 rounded">Ctrl+S</kbd> Save File</p>
+                        <p><kbd class="bg-secondary px-2 py-1 rounded">Ctrl+Shift+P</kbd> Command Palette</p>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    
+    <!-- Status Bar -->
+    <div class="bg-secondary border-t border-border px-3 py-1 text-xs flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+            <!-- Connection Status -->
+            <div class="flex items-center space-x-1">
+                <div class="w-2 h-2 rounded-full {{ 'bg-success' if connected else 'bg-error' }}"></div>
+                <span>{{ 'Connected' if connected else 'Disconnected' }}</span>
+            </div>
+            
+            {% if active_file %}
+                <!-- File Info -->
+                <span>{{ active_file.name }}</span>
+                <span>{{ active_file.size|filesizeformat }}</span>
+            {% endif %}
+            
+            <!-- Git Status -->
+            {% if git_status %}
+                <div class="flex items-center space-x-1">
+                    <i class="fab fa-git-alt"></i>
+                    <span>{{ git_status.branch }}</span>
+                    {% if git_status.changes %}
+                        <span class="text-warning">({{ git_status.changes }} changes)</span>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="flex items-center space-x-4">
+            {% if active_file %}
+                <!-- Cursor Position -->
+                <span id="cursor-position">Ln 1, Col 1</span>
+                
+                <!-- Language -->
+                <span class="cursor-pointer hover:bg-background px-2 py-1 rounded">
+                    {{ active_file.language|upper }}
+                </span>
+                
+                <!-- Encoding -->
+                <span class="cursor-pointer hover:bg-background px-2 py-1 rounded">UTF-8</span>
+                
+                <!-- Line Ending -->
+                <span class="cursor-pointer hover:bg-background px-2 py-1 rounded">LF</span>
+            {% endif %}
+            
+            <!-- Notifications -->
+            <button class="hover:bg-background p-1 rounded">
+                <i class="fas fa-bell"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Command Palette Modal -->
+<div id="command-palette" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-start justify-center pt-20">
+    <div class="bg-background border border-border rounded-lg shadow-2xl w-full max-w-2xl mx-4">
+        <!-- Search Input -->
+        <div class="p-4 border-b border-border">
+            <div class="relative">
+                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-tertiary"></i>
+                <input type="text" id="command-search" placeholder="Type a command or search..." 
+                       class="w-full pl-10 pr-4 py-3 bg-secondary border border-border rounded-lg focus:outline-none focus:border-primary">
+            </div>
+        </div>
+        
+        <!-- Command List -->
+        <div id="command-list" class="max-h-96 overflow-y-auto">
+            {% for command in available_commands %}
+                <div class="command-item flex items-center p-4 hover:bg-secondary cursor-pointer" data-command="{{ command.id }}">
+                    <div class="flex items-center justify-center w-8 h-8 bg-primary rounded mr-3">
+                        <i class="{{ command.icon }} text-background text-sm"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="font-medium">{{ command.title }}</div>
+                        <div class="text-sm text-tertiary">{{ command.description }}</div>
+                    </div>
+                    {% if command.shortcut %}
+                        <div class="text-xs text-tertiary bg-secondary px-2 py-1 rounded">
+                            {{ command.shortcut }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Footer -->
+        <div class="p-3 border-t border-border bg-secondary text-xs text-tertiary flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <span><kbd class="bg-background px-2 py-1 rounded">↑↓</kbd> navigate</span>
+                <span><kbd class="bg-background px-2 py-1 rounded">Enter</kbd> select</span>
+                <span><kbd class="bg-background px-2 py-1 rounded">Esc</kbd> close</span>
+            </div>
+            <div id="command-count">{{ available_commands|length }} commands</div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/editor-core.js') }}"></script>
+<script src="{{ url_for('static', filename='js/file-manager.js') }}"></script>
+<script src="{{ url_for('static', filename='js/command-palette.js') }}"></script>
+<script src="{{ url_for('static', filename='js/notifications.js') }}"></script>
+
+<script>
+    // Initialize Monaco Editor
+    require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs' } });
+    
+    require(['vs/editor/editor.main'], function() {
+        window.devikaEditor = new DevikaEditor({
+            container: document.getElementById('monaco-editor'),
+            theme: '{{ theme_class }}',
+            language: '{{ active_file.language if active_file else "plaintext" }}',
+            value: {{ active_file.content|tojson if active_file else '""' }},
+            settings: window.DEVIKA_CONFIG.settings
+        });
+    });
+    
+    // Initialize components
+    document.addEventListener('DOMContentLoaded', function() {
+        window.fileManager = new FileManager();
+        window.commandPalette = new CommandPalette();
+        window.notifications = new NotificationSystem();
+        
+        // Setup keyboard shortcuts
+        setupKeyboardShortcuts();
+        
+        // Setup theme toggle
+        setupThemeToggle();
+        
+        // Setup project selector
+        setupProjectSelector();
+    });
+</script>
+{% endblock %}
