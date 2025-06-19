@@ -17,6 +17,7 @@ from threading import Thread
 import tiktoken
 
 from src.apis.project import project_bp
+from src.apis.analysis import analysis_bp
 from src.config import Config
 from src.logger import Logger, route_logger
 from src.project import ProjectManager
@@ -32,6 +33,7 @@ CORS(app, resources={r"/*": {"origins": # Change the origin to your frontend URL
                                  "http://localhost:3000",
                                  ]}}) 
 app.register_blueprint(project_bp)
+app.register_blueprint(analysis_bp)
 socketio.init_app(app)
 
 

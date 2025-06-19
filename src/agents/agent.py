@@ -10,6 +10,12 @@ from .feature import Feature
 from .patcher import Patcher
 from .reporter import Reporter
 from .decision import Decision
+from .code_reviewer import CodeReviewer
+from .test_generator import TestGenerator
+from .performance_optimizer import PerformanceOptimizer
+from .security_auditor import SecurityAuditor
+from .documentation_generator import DocumentationGenerator
+from .dependency_manager import DependencyManager
 
 from src.project import ProjectManager
 from src.state import AgentState
@@ -60,6 +66,12 @@ class Agent:
         self.patcher = Patcher(base_model=base_model)
         self.reporter = Reporter(base_model=base_model)
         self.decision = Decision(base_model=base_model)
+        self.code_reviewer = CodeReviewer(base_model=base_model)
+        self.test_generator = TestGenerator(base_model=base_model)
+        self.performance_optimizer = PerformanceOptimizer(base_model=base_model)
+        self.security_auditor = SecurityAuditor(base_model=base_model)
+        self.documentation_generator = DocumentationGenerator(base_model=base_model)
+        self.dependency_manager = DependencyManager(base_model=base_model)
 
         self.project_manager = ProjectManager()
         self.agent_state = AgentState()
@@ -263,6 +275,133 @@ class Agent:
             #asyncio.run(self.open_page(project_name, pdf_download_url))
 
             self.project_manager.add_message_from_devika(project_name, response)
+
+        elif action == "review":
+            review_result = self.code_reviewer.execute(
+                code_markdown=code_markdown,
+                review_type="comprehensive",
+                project_name=project_name
+            )
+            
+            # Format the review result for display
+            review_summary = f"""
+            ## Code Review Results
+            
+            **Overall Score:** {review_result['review']['overall_score']}/10
+            **Summary:** {review_result['review']['summary']}
+            
+            ### Strengths:
+            {chr(10).join([f"- {strength}" for strength in review_result['review']['strengths']])}
+            
+            ### Issues Found:
+            {chr(10).join([f"- **{issue['severity'].upper()}**: {issue['description']}" for issue in review_result['review']['issues']])}
+            
+            ### Recommendations:
+            {chr(10).join([f"- {rec}" for rec in review_result['review']['recommendations']])}
+            """
+            
+            self.project_manager.add_message_from_devika(project_name, review_summary)
+
+        elif action == "test":
+            tests = self.test_generator.execute(
+                code_markdown=code_markdown,
+                test_type="unit",
+                project_name=project_name
+            )
+            self.test_generator.save_tests_to_project(tests, project_name)
+            
+            response = "I have generated comprehensive unit tests for your project. The test files have been created and are ready to run."
+            self.project_manager.add_message_from_devika(project_name, response)
+
+        elif action == "optimize":
+            optimization_result = self.performance_optimizer.execute(
+                code_markdown=code_markdown,
+                performance_metrics="",
+                project_name=project_name
+            )
+            
+            # Format the optimization result for display
+            optimization_summary = f"""
+            ## Performance Analysis Results
+            
+            **Performance Score:** {optimization_result['analysis']['overall_performance_score']}/10
+            
+            ### Bottlenecks Identified:
+            {chr(10).join([f"- **{bottleneck['impact'].upper()}**: {bottleneck['issue']} ({bottleneck['location']})" for bottleneck in optimization_result['analysis']['bottlenecks']])}
+            
+            ### Optimization Recommendations:
+            {chr(10).join([f"- **{opt['priority'].upper()}**: {opt['description']} (Expected gain: {opt['expected_gain']})" for opt in optimization_result['optimizations']])}
+            """
+            
+            self.project_manager.add_message_from_devika(project_name, optimization_summary)
+
+        elif action == "security":
+            security_result = self.security_auditor.execute(
+                code_markdown=code_markdown,
+                audit_type="comprehensive",
+                project_name=project_name
+            )
+            
+            # Format the security result for display
+            security_summary = f"""
+            ## Security Audit Results
+            
+            **Security Score:** {security_result['security_score']}/10
+            **Overall Risk:** {security_result['overall_risk'].upper()}
+            
+            ### Vulnerabilities Found:
+            {chr(10).join([f"- **{vuln['severity'].upper()}**: {vuln['title']} - {vuln['description']}" for vuln in security_result['vulnerabilities']])}
+            
+            ### Security Recommendations:
+            {chr(10).join([f"- **{rec['priority'].upper()}**: {rec['recommendation']}" for rec in security_result['security_recommendations']])}
+            """
+            
+            self.project_manager.add_message_from_devika(project_name, security_summary)
+
+        elif action == "document":
+            docs = self.documentation_generator.execute(
+                code_markdown=code_markdown,
+                doc_type="comprehensive",
+                project_name=project_name
+            )
+            self.documentation_generator.save_docs_to_project(docs, project_name)
+            
+            response = "I have generated comprehensive documentation for your project including README, API docs, and contributing guidelines."
+            self.project_manager.add_message_from_devika(project_name, response)
+
+        elif action == "dependencies":
+            # Get package files content for analysis
+            package_files = ""
+            try:
+                project_files = self.project_manager.get_project_files(project_name)
+                for file in project_files:
+                    if file['file'] in ['package.json', 'requirements.txt', 'Cargo.toml', 'go.mod', 'composer.json']:
+                        package_files += f"File: {file['file']}\n{file['code']}\n\n"
+            except:
+                pass
+            
+            dependency_result = self.dependency_manager.execute(
+                code_markdown=code_markdown,
+                package_files=package_files,
+                project_name=project_name
+            )
+            
+            # Format the dependency result for display
+            dependency_summary = f"""
+            ## Dependency Analysis Results
+            
+            **Total Dependencies:** {dependency_result['dependencies']['total_count']}
+            **Security Issues:** {dependency_result['security_summary']['total_vulnerable_packages']} packages with vulnerabilities
+            
+            ### Critical Actions Needed:
+            {chr(10).join([f"- **{rec['priority'].upper()}**: {rec['description']} (`{rec['command']}`)" for rec in dependency_result['recommendations'] if rec['priority'] in ['critical', 'high']])}
+            
+            ### License Analysis:
+            - Compatible: {', '.join(dependency_result['license_analysis']['compatible_licenses'])}
+            - Conflicts: {len(dependency_result['license_analysis']['license_conflicts'])} found
+            """
+            
+            self.project_manager.add_message_from_devika(project_name, dependency_summary)
 
         self.agent_state.set_agent_active(project_name, False)
         self.agent_state.set_agent_completed(project_name, True)
