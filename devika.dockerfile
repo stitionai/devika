@@ -32,7 +32,7 @@ RUN chown -R nonroot:nonroot /home/nonroot/devika
 
 USER nonroot
 WORKDIR /home/nonroot/devika
-ENV PATH="/home/nonroot/devika/.venv/bin:$HOME/.cargo/bin:$PATH"
+ENV PATH="/usr/bin:/home/nonroot/devika/.venv/bin:$HOME/.cargo/bin:$PATH"
 RUN mkdir /home/nonroot/devika/db
 
 ENTRYPOINT [ "python3", "-m", "devika" ]
