@@ -14,6 +14,7 @@
 - [About](#about)
 - [Key Features](#key-features)
 - [New Features](#new-features)
+- [Web Interface Coding Editor](#web-interface-coding-editor)
 - [System Architecture](#system-architecture)
 - [Getting Started](#getting-started)
   - [Requirements](#requirements)
@@ -76,6 +77,44 @@ https://github.com/stitionai/devika/assets/26198477/cfed6945-d53b-4189-9fbe-6696
 - **Enhanced Error Handling**: Better error messages and recovery mechanisms
 - **Improved Logging**: More detailed analysis and operation logs
 - **API Endpoints**: RESTful APIs for programmatic access to analysis features
+
+## Web Interface Coding Editor
+
+### 🖥️ Professional Code Editor
+- **Monaco Editor Integration**: Full-featured code editor with syntax highlighting for 50+ languages
+- **Intelligent Code Completion**: Context-aware suggestions and auto-completion
+- **Multi-tab Support**: Work on multiple files simultaneously with tab management
+- **File Explorer**: Tree view of project files with context menu operations
+- **Real-time Collaboration**: Live editing with conflict resolution
+
+### ⚡ Advanced Editor Features
+- **Syntax Highlighting**: Support for JavaScript, TypeScript, Python, HTML, CSS, and more
+- **Code Formatting**: Automatic code formatting with Prettier integration
+- **Error Detection**: Real-time syntax and semantic error highlighting
+- **Find & Replace**: Advanced search with regex support and multi-file search
+- **Code Folding**: Collapse and expand code blocks for better navigation
+- **Minimap**: Bird's eye view of the entire file for quick navigation
+
+### 🎨 Customizable Interface
+- **Theme Support**: Light and dark themes with custom color schemes
+- **Font Customization**: Adjustable font size and family preferences
+- **Layout Options**: Resizable panels and customizable workspace layout
+- **Keyboard Shortcuts**: Extensive keyboard shortcuts for power users
+- **Status Bar**: Real-time information about cursor position, file encoding, and language
+
+### 📁 File Management
+- **Create/Delete Files**: Easy file and folder creation with context menus
+- **Rename Operations**: Inline renaming with validation
+- **File Upload**: Drag and drop file upload support
+- **Auto-save**: Automatic saving with visual indicators for unsaved changes
+- **Version Control**: Git integration with diff viewing and commit history
+
+### 🔧 Developer Tools
+- **Integrated Terminal**: Built-in terminal for running commands
+- **Debugging Support**: Breakpoints and step-through debugging
+- **Extension System**: Plugin architecture for custom functionality
+- **Code Snippets**: Predefined code templates and custom snippets
+- **Emmet Support**: Fast HTML/CSS coding with Emmet abbreviations
 
 ## System Architecture
 
@@ -152,8 +191,18 @@ To start using Devika, follow these steps:
 6. Monitor Devika's progress, view generated code, and provide additional guidance or feedback as needed.
 7. Use the new Analysis Panel to run code reviews, security audits, performance analysis, and dependency checks.
 8. Generate tests and documentation using the enhanced tools.
-9. Once Devika completes the task, review the generated code and project files.
-10. Iterate and refine the project as desired by providing further instructions or modifications.
+9. **Use the Web Code Editor** to manually edit files, create new files, and manage your project structure.
+10. Once Devika completes the task, review the generated code and project files.
+11. Iterate and refine the project as desired by providing further instructions or modifications.
+
+### Web Code Editor Usage
+
+1. **Access the Editor**: Click on the "Code Editor" icon in the sidebar to open the web-based code editor.
+2. **File Management**: Use the file explorer on the left to navigate, create, delete, and rename files.
+3. **Multi-tab Editing**: Open multiple files in tabs for efficient development workflow.
+4. **Code Features**: Enjoy syntax highlighting, auto-completion, and error detection.
+5. **Save Changes**: Use Ctrl+S to save files or enable auto-save in settings.
+6. **Collaboration**: Work alongside Devika's AI-generated code with real-time updates.
 
 ## Configuration
 
