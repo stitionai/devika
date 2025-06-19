@@ -19,6 +19,7 @@ import tiktoken
 from src.apis.project import project_bp
 from src.apis.analysis import analysis_bp
 from src.apis.file_operations import file_ops_bp
+from src.apis.editor import editor_bp  # Add the new editor blueprint
 from src.config import Config
 from src.logger import Logger, route_logger
 from src.project import ProjectManager
@@ -38,6 +39,7 @@ CORS(app, resources={r"/*": {"origins": # Change the origin to your frontend URL
 app.register_blueprint(project_bp)
 app.register_blueprint(analysis_bp)
 app.register_blueprint(file_ops_bp)
+app.register_blueprint(editor_bp)  # Register the new editor blueprint
 socketio.init_app(app)
 
 
