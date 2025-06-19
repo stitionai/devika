@@ -16,28 +16,50 @@
     codeReview: false,
     securityAudit: false,
     performanceAnalysis: false,
-    dependencyAnalysis: false
+    dependencyAnalysis: false,
+    generateTests: false,
+    generateDocs: false
   };
 
-  async function runCodeReview() {
+  function validateProject() {
     if (!$selectedProject || $selectedProject === 'select project') {
       toast.error("Please select a project first");
-      return;
+      return false;
     }
+    return true;
+  }
 
-    isAnalyzing.codeReview = true;
+  async function makeApiCall(endpoint, data, analysisType) {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/code-review`, {
+      const response = await fetch(`${API_BASE_URL}${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           project_name: $selectedProject,
           base_model: localStorage.getItem("selectedModel") || "gpt-3.5-turbo",
-          review_type: "comprehensive"
+          ...data
         })
       });
 
-      const data = await response.json();
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || `HTTP ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error(`${analysisType} error:`, error);
+      throw error;
+    }
+  }
+
+  async function runCodeReview() {
+    if (!validateProject()) return;
+
+    isAnalyzing.codeReview = true;
+    try {
+      const data = await makeApiCall("/api/code-review", { review_type: "comprehensive" }, "Code review");
+      
       if (data.status === "success") {
         analysisResults.codeReview = data.review;
         toast.success("Code review completed");
@@ -45,32 +67,19 @@
         toast.error(data.message || "Code review failed");
       }
     } catch (error) {
-      toast.error("Failed to run code review");
-      console.error(error);
+      toast.error(`Code review failed: ${error.message}`);
     } finally {
       isAnalyzing.codeReview = false;
     }
   }
 
   async function runSecurityAudit() {
-    if (!$selectedProject || $selectedProject === 'select project') {
-      toast.error("Please select a project first");
-      return;
-    }
+    if (!validateProject()) return;
 
     isAnalyzing.securityAudit = true;
     try {
-      const response = await fetch(`${API_BASE_URL}/api/security-audit`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          project_name: $selectedProject,
-          base_model: localStorage.getItem("selectedModel") || "gpt-3.5-turbo",
-          audit_type: "comprehensive"
-        })
-      });
-
-      const data = await response.json();
+      const data = await makeApiCall("/api/security-audit", { audit_type: "comprehensive" }, "Security audit");
+      
       if (data.status === "success") {
         analysisResults.securityAudit = data.audit;
         toast.success("Security audit completed");
@@ -78,32 +87,19 @@
         toast.error(data.message || "Security audit failed");
       }
     } catch (error) {
-      toast.error("Failed to run security audit");
-      console.error(error);
+      toast.error(`Security audit failed: ${error.message}`);
     } finally {
       isAnalyzing.securityAudit = false;
     }
   }
 
   async function runPerformanceAnalysis() {
-    if (!$selectedProject || $selectedProject === 'select project') {
-      toast.error("Please select a project first");
-      return;
-    }
+    if (!validateProject()) return;
 
     isAnalyzing.performanceAnalysis = true;
     try {
-      const response = await fetch(`${API_BASE_URL}/api/performance-analysis`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          project_name: $selectedProject,
-          base_model: localStorage.getItem("selectedModel") || "gpt-3.5-turbo",
-          performance_metrics: ""
-        })
-      });
-
-      const data = await response.json();
+      const data = await makeApiCall("/api/performance-analysis", { performance_metrics: "" }, "Performance analysis");
+      
       if (data.status === "success") {
         analysisResults.performanceAnalysis = data.analysis;
         toast.success("Performance analysis completed");
@@ -111,31 +107,19 @@
         toast.error(data.message || "Performance analysis failed");
       }
     } catch (error) {
-      toast.error("Failed to run performance analysis");
-      console.error(error);
+      toast.error(`Performance analysis failed: ${error.message}`);
     } finally {
       isAnalyzing.performanceAnalysis = false;
     }
   }
 
   async function runDependencyAnalysis() {
-    if (!$selectedProject || $selectedProject === 'select project') {
-      toast.error("Please select a project first");
-      return;
-    }
+    if (!validateProject()) return;
 
     isAnalyzing.dependencyAnalysis = true;
     try {
-      const response = await fetch(`${API_BASE_URL}/api/dependency-analysis`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          project_name: $selectedProject,
-          base_model: localStorage.getItem("selectedModel") || "gpt-3.5-turbo"
-        })
-      });
-
-      const data = await response.json();
+      const data = await makeApiCall("/api/dependency-analysis", {}, "Dependency analysis");
+      
       if (data.status === "success") {
         analysisResults.dependencyAnalysis = data.analysis;
         toast.success("Dependency analysis completed");
@@ -143,68 +127,47 @@
         toast.error(data.message || "Dependency analysis failed");
       }
     } catch (error) {
-      toast.error("Failed to run dependency analysis");
-      console.error(error);
+      toast.error(`Dependency analysis failed: ${error.message}`);
     } finally {
       isAnalyzing.dependencyAnalysis = false;
     }
   }
 
   async function generateTests() {
-    if (!$selectedProject || $selectedProject === 'select project') {
-      toast.error("Please select a project first");
-      return;
-    }
+    if (!validateProject()) return;
 
+    isAnalyzing.generateTests = true;
     try {
-      const response = await fetch(`${API_BASE_URL}/api/generate-tests`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          project_name: $selectedProject,
-          base_model: localStorage.getItem("selectedModel") || "gpt-3.5-turbo",
-          test_type: "unit"
-        })
-      });
-
-      const data = await response.json();
+      const data = await makeApiCall("/api/generate-tests", { test_type: "unit" }, "Test generation");
+      
       if (data.status === "success") {
-        toast.success("Tests generated successfully");
+        toast.success(`Tests generated successfully (${data.test_count || 'multiple'} files)`);
       } else {
         toast.error(data.message || "Test generation failed");
       }
     } catch (error) {
-      toast.error("Failed to generate tests");
-      console.error(error);
+      toast.error(`Test generation failed: ${error.message}`);
+    } finally {
+      isAnalyzing.generateTests = false;
     }
   }
 
   async function generateDocumentation() {
-    if (!$selectedProject || $selectedProject === 'select project') {
-      toast.error("Please select a project first");
-      return;
-    }
+    if (!validateProject()) return;
 
+    isAnalyzing.generateDocs = true;
     try {
-      const response = await fetch(`${API_BASE_URL}/api/generate-documentation`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          project_name: $selectedProject,
-          base_model: localStorage.getItem("selectedModel") || "gpt-3.5-turbo",
-          doc_type: "comprehensive"
-        })
-      });
-
-      const data = await response.json();
+      const data = await makeApiCall("/api/generate-documentation", { doc_type: "comprehensive" }, "Documentation generation");
+      
       if (data.status === "success") {
-        toast.success("Documentation generated successfully");
+        toast.success(`Documentation generated successfully (${data.doc_count || 'multiple'} files)`);
       } else {
         toast.error(data.message || "Documentation generation failed");
       }
     } catch (error) {
-      toast.error("Failed to generate documentation");
-      console.error(error);
+      toast.error(`Documentation generation failed: ${error.message}`);
+    } finally {
+      isAnalyzing.generateDocs = false;
     }
   }
 
@@ -227,11 +190,33 @@
       default: return 'text-gray-500';
     }
   }
+
+  function clearResults() {
+    analysisResults = {
+      codeReview: null,
+      securityAudit: null,
+      performanceAnalysis: null,
+      dependencyAnalysis: null
+    };
+    toast.info("Analysis results cleared");
+  }
+
+  // Clear results when project changes
+  $: if ($selectedProject) {
+    clearResults();
+  }
 </script>
 
 <div class="w-full h-full flex flex-col border-[3px] rounded-xl overflow-hidden border-window-outline bg-background">
-  <div class="flex items-center p-3 border-b bg-secondary">
+  <div class="flex items-center justify-between p-3 border-b bg-secondary">
     <h2 class="text-lg font-semibold">Code Analysis & Tools</h2>
+    <button 
+      on:click={clearResults}
+      class="text-sm px-2 py-1 rounded hover:bg-background transition-colors"
+      title="Clear all results"
+    >
+      <i class="fas fa-trash"></i>
+    </button>
   </div>
 
   <div class="flex-1 overflow-y-auto p-4">
@@ -247,7 +232,7 @@
           <button
             on:click={runCodeReview}
             disabled={isAnalyzing.codeReview}
-            class="p-4 border rounded-lg hover:bg-secondary transition-colors disabled:opacity-50"
+            class="p-4 border rounded-lg hover:bg-secondary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <div class="flex items-center gap-2">
               <i class="fas fa-search text-blue-500"></i>
@@ -262,7 +247,7 @@
           <button
             on:click={runSecurityAudit}
             disabled={isAnalyzing.securityAudit}
-            class="p-4 border rounded-lg hover:bg-secondary transition-colors disabled:opacity-50"
+            class="p-4 border rounded-lg hover:bg-secondary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <div class="flex items-center gap-2">
               <i class="fas fa-shield-alt text-red-500"></i>
@@ -277,7 +262,7 @@
           <button
             on:click={runPerformanceAnalysis}
             disabled={isAnalyzing.performanceAnalysis}
-            class="p-4 border rounded-lg hover:bg-secondary transition-colors disabled:opacity-50"
+            class="p-4 border rounded-lg hover:bg-secondary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <div class="flex items-center gap-2">
               <i class="fas fa-tachometer-alt text-green-500"></i>
@@ -292,7 +277,7 @@
           <button
             on:click={runDependencyAnalysis}
             disabled={isAnalyzing.dependencyAnalysis}
-            class="p-4 border rounded-lg hover:bg-secondary transition-colors disabled:opacity-50"
+            class="p-4 border rounded-lg hover:bg-secondary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <div class="flex items-center gap-2">
               <i class="fas fa-cubes text-purple-500"></i>
@@ -310,22 +295,30 @@
         <div class="grid grid-cols-2 gap-4">
           <button
             on:click={generateTests}
-            class="p-4 border rounded-lg hover:bg-secondary transition-colors"
+            disabled={isAnalyzing.generateTests}
+            class="p-4 border rounded-lg hover:bg-secondary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <div class="flex items-center gap-2">
               <i class="fas fa-vial text-blue-500"></i>
               <span>Generate Tests</span>
+              {#if isAnalyzing.generateTests}
+                <i class="fas fa-spinner fa-spin"></i>
+              {/if}
             </div>
             <p class="text-sm text-gray-500 mt-1">Create unit and integration tests</p>
           </button>
 
           <button
             on:click={generateDocumentation}
-            class="p-4 border rounded-lg hover:bg-secondary transition-colors"
+            disabled={isAnalyzing.generateDocs}
+            class="p-4 border rounded-lg hover:bg-secondary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <div class="flex items-center gap-2">
               <i class="fas fa-book text-green-500"></i>
               <span>Generate Docs</span>
+              {#if isAnalyzing.generateDocs}
+                <i class="fas fa-spinner fa-spin"></i>
+              {/if}
             </div>
             <p class="text-sm text-gray-500 mt-1">Create comprehensive documentation</p>
           </button>
@@ -340,18 +333,21 @@
               Code Review Results
             </h3>
             <div class="space-y-2">
-              <p><strong>Score:</strong> {analysisResults.codeReview.review.overall_score}/10</p>
-              <p><strong>Summary:</strong> {analysisResults.codeReview.review.summary}</p>
+              <p><strong>Score:</strong> {analysisResults.codeReview.review?.overall_score || 'N/A'}/10</p>
+              <p><strong>Summary:</strong> {analysisResults.codeReview.review?.summary || 'No summary available'}</p>
               
-              {#if analysisResults.codeReview.review.issues?.length > 0}
+              {#if analysisResults.codeReview.review?.issues?.length > 0}
                 <div>
-                  <strong>Issues:</strong>
-                  <ul class="list-disc list-inside mt-1 space-y-1">
-                    {#each analysisResults.codeReview.review.issues as issue}
+                  <strong>Issues ({analysisResults.codeReview.review.issues.length}):</strong>
+                  <ul class="list-disc list-inside mt-1 space-y-1 max-h-32 overflow-y-auto">
+                    {#each analysisResults.codeReview.review.issues.slice(0, 5) as issue}
                       <li class={getSeverityColor(issue.severity)}>
                         <strong>{issue.severity}:</strong> {issue.description}
                       </li>
                     {/each}
+                    {#if analysisResults.codeReview.review.issues.length > 5}
+                      <li class="text-gray-500">... and {analysisResults.codeReview.review.issues.length - 5} more</li>
+                    {/if}
                   </ul>
                 </div>
               {/if}
@@ -366,22 +362,25 @@
               Security Audit Results
             </h3>
             <div class="space-y-2">
-              <p><strong>Security Score:</strong> {analysisResults.securityAudit.security_score}/10</p>
+              <p><strong>Security Score:</strong> {analysisResults.securityAudit.security_score || 'N/A'}/10</p>
               <p><strong>Risk Level:</strong> 
                 <span class={getPriorityColor(analysisResults.securityAudit.overall_risk)}>
-                  {analysisResults.securityAudit.overall_risk?.toUpperCase()}
+                  {analysisResults.securityAudit.overall_risk?.toUpperCase() || 'Unknown'}
                 </span>
               </p>
               
               {#if analysisResults.securityAudit.vulnerabilities?.length > 0}
                 <div>
-                  <strong>Vulnerabilities:</strong>
-                  <ul class="list-disc list-inside mt-1 space-y-1">
-                    {#each analysisResults.securityAudit.vulnerabilities as vuln}
+                  <strong>Vulnerabilities ({analysisResults.securityAudit.vulnerabilities.length}):</strong>
+                  <ul class="list-disc list-inside mt-1 space-y-1 max-h-32 overflow-y-auto">
+                    {#each analysisResults.securityAudit.vulnerabilities.slice(0, 5) as vuln}
                       <li class={getSeverityColor(vuln.severity)}>
                         <strong>{vuln.severity}:</strong> {vuln.title}
                       </li>
                     {/each}
+                    {#if analysisResults.securityAudit.vulnerabilities.length > 5}
+                      <li class="text-gray-500">... and {analysisResults.securityAudit.vulnerabilities.length - 5} more</li>
+                    {/if}
                   </ul>
                 </div>
               {/if}
@@ -396,17 +395,20 @@
               Performance Analysis Results
             </h3>
             <div class="space-y-2">
-              <p><strong>Performance Score:</strong> {analysisResults.performanceAnalysis.analysis.overall_performance_score}/10</p>
+              <p><strong>Performance Score:</strong> {analysisResults.performanceAnalysis.analysis?.overall_performance_score || 'N/A'}/10</p>
               
-              {#if analysisResults.performanceAnalysis.analysis.bottlenecks?.length > 0}
+              {#if analysisResults.performanceAnalysis.analysis?.bottlenecks?.length > 0}
                 <div>
-                  <strong>Bottlenecks:</strong>
-                  <ul class="list-disc list-inside mt-1 space-y-1">
-                    {#each analysisResults.performanceAnalysis.analysis.bottlenecks as bottleneck}
+                  <strong>Bottlenecks ({analysisResults.performanceAnalysis.analysis.bottlenecks.length}):</strong>
+                  <ul class="list-disc list-inside mt-1 space-y-1 max-h-32 overflow-y-auto">
+                    {#each analysisResults.performanceAnalysis.analysis.bottlenecks.slice(0, 5) as bottleneck}
                       <li class={getPriorityColor(bottleneck.impact)}>
                         <strong>{bottleneck.impact}:</strong> {bottleneck.issue}
                       </li>
                     {/each}
+                    {#if analysisResults.performanceAnalysis.analysis.bottlenecks.length > 5}
+                      <li class="text-gray-500">... and {analysisResults.performanceAnalysis.analysis.bottlenecks.length - 5} more</li>
+                    {/if}
                   </ul>
                 </div>
               {/if}
@@ -421,18 +423,18 @@
               Dependency Analysis Results
             </h3>
             <div class="space-y-2">
-              <p><strong>Total Dependencies:</strong> {analysisResults.dependencyAnalysis.dependencies.total_count}</p>
+              <p><strong>Total Dependencies:</strong> {analysisResults.dependencyAnalysis.dependencies?.total_count || 'Unknown'}</p>
               <p><strong>Vulnerable Packages:</strong> 
                 <span class="text-red-500">
-                  {analysisResults.dependencyAnalysis.security_summary.total_vulnerable_packages}
+                  {analysisResults.dependencyAnalysis.security_summary?.total_vulnerable_packages || 0}
                 </span>
               </p>
               
               {#if analysisResults.dependencyAnalysis.recommendations?.length > 0}
                 <div>
                   <strong>Critical Actions:</strong>
-                  <ul class="list-disc list-inside mt-1 space-y-1">
-                    {#each analysisResults.dependencyAnalysis.recommendations.filter(r => r.priority === 'critical' || r.priority === 'high') as rec}
+                  <ul class="list-disc list-inside mt-1 space-y-1 max-h-32 overflow-y-auto">
+                    {#each analysisResults.dependencyAnalysis.recommendations.filter(r => r.priority === 'critical' || r.priority === 'high').slice(0, 5) as rec}
                       <li class={getPriorityColor(rec.priority)}>
                         <strong>{rec.priority}:</strong> {rec.description}
                       </li>
