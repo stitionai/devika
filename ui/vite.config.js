@@ -4,6 +4,7 @@ import wasm from "vite-plugin-wasm";
 
 export default defineConfig({
   plugins: [sveltekit(), wasm()],
+  
   server: {
     port: 3000,
   },
@@ -12,5 +13,6 @@ export default defineConfig({
   },
   build: {
     target: "esnext",
+    sourceMap : true,
   },
 });

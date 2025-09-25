@@ -47,6 +47,10 @@ class Config:
 
     def get_bing_api_key(self):
         return self.config["API_KEYS"]["BING"]
+    
+    def get_kimi_api_key(self):
+        return self.config["API_KEYS"]["KIMI"]
+
 
     def get_google_search_api_key(self):
         return self.config["API_KEYS"]["GOOGLE_SEARCH"]
@@ -109,7 +113,7 @@ class Config:
         return self.config["LOGGING"]["LOG_PROMPTS"] == "true"
     
     def get_timeout_inference(self):
-        return self.config["TIMEOUT"]["INFERENCE"]
+        return 6000000000
 
     def set_bing_api_key(self, key):
         self.config["API_KEYS"]["BING"] = key

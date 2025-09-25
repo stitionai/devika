@@ -1,18 +1,14 @@
 version: "3.9"
 
 services:
-  ollama-service:
-    image: ollama/ollama:latest
-    expose:
-      - 11434
+  nginx:
+    image: nginx:latest
+    restart: always
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - /home/nonroot/devika/data:/var/www/html
     ports:
-      - 11434:11434
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:11434/ || exit 1"]
-      interval: 5s
-      timeout: 30s
-      retries: 5
-      start_period: 30s
+      - 80:80
     networks:
       - devika-subnetwork
 
@@ -20,8 +16,6 @@ services:
     build:
       context: .
       dockerfile: devika.dockerfile
-    depends_on:
-      - ollama-service
     expose:
       - 1337
     ports:
@@ -36,6 +30,7 @@ services:
       start_period: 30s
     volumes:
       - devika-backend-dbstore:/home/nonroot/devika/db
+      - /home/nonroot/devika/data:/home/nonroot/devika/data
     networks:
       - devika-subnetwork
 
@@ -44,9 +39,11 @@ services:
       context: .
       dockerfile: app.dockerfile
       args:
-        - VITE_API_BASE_URL=http://127.0.0.1:1337
+        - VITE_API_BASE_URL=http://47.121.183.184:1337
     depends_on:
       - devika-backend-engine
+    environment:
+      - VITE_API_BASE_URL=http://47.121.183.184:1337
     expose:
       - 3000
     ports:

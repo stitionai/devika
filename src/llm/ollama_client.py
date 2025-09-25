@@ -22,4 +22,6 @@ class Ollama:
             prompt=prompt.strip(),
             options={"temperature": 0}
         )
+        if "deepseek" in model_id:
+            response['response'] = response['response'][response['response'].find('</think>') + 8:]
         return response['response']

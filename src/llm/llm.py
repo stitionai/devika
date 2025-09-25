@@ -3,6 +3,7 @@ import sys
 import tiktoken
 from typing import List, Tuple
 
+from .china_client import China
 from src.socket_instance import emit_agent
 from .ollama_client import Ollama
 from .claude_client import Claude
@@ -31,44 +32,51 @@ class LLM:
         self.log_prompts = config.get_logging_prompts()
         self.timeout_inference = config.get_timeout_inference()
         self.models = {
-            "CLAUDE": [
-                ("Claude 3 Opus", "claude-3-opus-20240229"),
-                ("Claude 3 Sonnet", "claude-3-sonnet-20240229"),
-                ("Claude 3 Haiku", "claude-3-haiku-20240307"),
-            ],
-            "OPENAI": [
-                ("GPT-4o-mini", "gpt-4o-mini"),
-                ("GPT-4o", "gpt-4o"),
-                ("GPT-4 Turbo", "gpt-4-turbo"),
-                ("GPT-3.5 Turbo", "gpt-3.5-turbo-0125"),
-            ],
-            "GOOGLE": [
-                ("Gemini 1.0 Pro", "gemini-pro"),
-                ("Gemini 1.5 Flash", "gemini-1.5-flash"),
-                ("Gemini 1.5 Pro", "gemini-1.5-pro"),
-            ],
-            "MISTRAL": [
-                ("Mistral 7b", "open-mistral-7b"),
-                ("Mistral 8x7b", "open-mixtral-8x7b"),
-                ("Mistral Medium", "mistral-medium-latest"),
-                ("Mistral Small", "mistral-small-latest"),
-                ("Mistral Large", "mistral-large-latest"),
-            ],
-            "GROQ": [
-                ("LLAMA3 8B", "llama3-8b-8192"),
-                ("LLAMA3 70B", "llama3-70b-8192"),
-                ("LLAMA2 70B", "llama2-70b-4096"),
-                ("Mixtral", "mixtral-8x7b-32768"),
-                ("GEMMA 7B", "gemma-7b-it"),
-            ],
+            # "CLAUDE": [
+            #     ("Claude 3 Opus", "claude-3-opus-20240229"),
+            #     ("Claude 3 Sonnet", "claude-3-sonnet-20240229"),
+            #     ("Claude 3 Haiku", "claude-3-haiku-20240307"),
+            # ],
+            # "OPENAI": [
+            #     ("GPT-4o-mini", "gpt-4o-mini"),
+            #     ("GPT-4o", "gpt-4o"),
+            #     ("GPT-4 Turbo", "gpt-4-turbo"),
+            #     ("GPT-3.5 Turbo", "gpt-3.5-turbo-0125"),
+            # ],
+            # "GOOGLE": [
+            #     ("Gemini 1.0 Pro", "gemini-pro"),
+            #     ("Gemini 1.5 Flash", "gemini-1.5-flash"),
+            #     ("Gemini 1.5 Pro", "gemini-1.5-pro"),
+            # ],
+            # "MISTRAL": [
+            #     ("Mistral 7b", "open-mistral-7b"),
+            #     ("Mistral 8x7b", "open-mixtral-8x7b"),
+            #     ("Mistral Medium", "mistral-medium-latest"),
+            #     ("Mistral Small", "mistral-small-latest"),
+            #     ("Mistral Large", "mistral-large-latest"),
+            # ],
+            # "GROQ": [
+            #     ("LLAMA3 8B", "llama3-8b-8192"),
+            #     ("LLAMA3 70B", "llama3-70b-8192"),
+            #     ("LLAMA2 70B", "llama2-70b-4096"),
+            #     ("Mixtral", "mixtral-8x7b-32768"),
+            #     ("GEMMA 7B", "gemma-7b-it"),
+            # ],
             "OLLAMA": [],
+            "国内大模型": [
+                ("kimi moonshot-v1-8k", "moonshot-v1-8k"),
+                ("kimi moonshot-v1-32k", "moonshot-v1-32k"),
+                # ("kimi kimi-latest-8k", "kimi-latest-8k"),
+                # ("kimi kimi-latest-32k", "kimi-latest-32k"),
+                # ("kimi kimi-latest-128k", "kimi-latest-128k"),
+            ],
             "LM_STUDIO": [
                 ("LM Studio", "local-model"),    
             ],
             
         }
         if ollama.client:
-            self.models["OLLAMA"] = [(model["name"], model["name"]) for model in ollama.models]
+            self.models["OLLAMA"] = [(model["model"], model["model"]) for model in ollama.models]
 
     def list_models(self) -> dict:
         return self.models
@@ -100,6 +108,7 @@ class LLM:
 
         model_mapping = {
             "OLLAMA": ollama,
+            "国内大模型": China(),
             "CLAUDE": Claude(),
             "OPENAI": OpenAi(),
             "GOOGLE": Gemini(),
@@ -123,7 +132,7 @@ class LLM:
                         elapsed_seconds = format(elapsed_time, ".2f")
                         emit_agent("inference", {"type": "time", "elapsed_time": elapsed_seconds})
                         if int(elapsed_time) == 5:
-                            emit_agent("inference", {"type": "warning", "message": "Inference is taking longer than expected"})
+                            emit_agent("inference", {"type": "warning", "message": "Inference is taking longer than expected"}, False)
                         if elapsed_time > self.timeout_inference:
                             raise concurrent.futures.TimeoutError
                         if future.done():
