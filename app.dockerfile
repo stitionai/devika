@@ -1,29 +1,29 @@
-FROM debian:12
+# Pulling stage 1 image, keep alias as layer1
+FROM node:latest as layer1
 
-# setting up build variable
+# Setting necessary arguments
 ARG VITE_API_BASE_URL
 ENV VITE_API_BASE_URL=${VITE_API_BASE_URL}
 
-# setting up os env
-USER root
+# Copy UI source code
+copy ui /home/nonroot/client
+
+# Change Work directory
 WORKDIR /home/nonroot/client
-RUN groupadd -r nonroot && useradd -r -g nonroot -d /home/nonroot/client -s /bin/bash nonroot
 
-# install node js 
-RUN apt-get update && apt-get upgrade -y
-RUN apt-get install -y build-essential software-properties-common curl sudo wget git
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-RUN apt-get install nodejs
+RUN npm install
+# Building APP bundle
+RUN npm run build
 
-# copying devika app client only
-COPY ui /home/nonroot/client/ui
-COPY src /home/nonroot/client/src
-COPY config.toml /home/nonroot/client/
+# Pulling stage 2 image, to significantly reduce image size
+FROM gcr.io/distroless/nodejs20-debian11
 
-RUN cd ui && npm install && npm install -g npm && npm install -g bun
-RUN chown -R nonroot:nonroot /home/nonroot/client
+# Copy build files from layer 1
+COPY --from=layer1 /home/nonroot/client/build /app
+COPY --from=layer1 /home/nonroot/client/package.json /app
 
-USER nonroot
-WORKDIR /home/nonroot/client/ui
+# Change Work directory
+WORKDIR /app
 
-ENTRYPOINT [ "npx", "bun", "run", "dev", "--", "--host" ]
+# RUN APP
+CMD ["index.js"]

@@ -58,19 +58,54 @@ Read [**README.md**](docs/architecture) for the detailed documentation.
 
 
 ## Getting Started
+- Nvidia Driver installation
+  
+  https://linuxconfig.org/how-to-install-nvidia-drivers-on-ubuntu-24-04
 
-### Requirements
-```
-Version's requirements
-  - Python >= 3.10 and < 3.12
-  - NodeJs >= 18
-  - bun
-```
+  nvtop to see installed Nvidia Cards
+  
+- Python >= 3.10 and < 3.12
 
+  sudo apt update && sudo apt upgrade
+  
+  sudo apt install python3 python-is-python3
+  
+- NodeJs >= 18 Installation
+  [NodeJs >= 18 Installation](https://linuxconfig.org/how-to-install-node-js-on-ubuntu-24-04)
+
+  sudo apt install nodejs
+
+  sudo apt install npm
+  
+  node -v
+  
+- Pip Installation
+  
+  sudo apt install pip
+
+  python3 -m pip config set global.break-system-packages true
+
+  als Alternative im uv pip installieren ???
+  
+  sudo apt install python3-pip
+  
 - Install uv - Python Package manager [download](https://github.com/astral-sh/uv)
+  
+  $ pip install uv
+  
 - Install bun - JavaScript runtime [download](https://bun.sh/docs/installation)
 - For ollama [ollama setup guide](docs/Installation/ollama.md) (optinal: if you don't want to use the local models then you can skip this step)
+
+  curl -fsSL https://ollama.com/install.sh | sh
+  
+  ./get-ollama-models.sh
+
+
+  
 - For API models, configure the API keys via setting page in UI.
+
+  Keys without <> 
+
 
 
 ### Installation
@@ -103,6 +138,7 @@ To install Devika, follow these steps:
    ```
 5. Start the Devika server:
    ```bash
+   npm install @sveltejs/adapter-node
    python devika.py
    ```
 6. if everything is working fine, you see the following output:
@@ -117,6 +153,27 @@ To install Devika, follow these steps:
    ```
 8. Access the Devika web interface by opening a browser and navigating to `http://127.0.0.1:3001`
 
+9. Install xterm in wsl
+
+    sudo apt install xterm
+
+10. Windows run Xming Server from http://www.straightrunning.com/XmingNotes/#head-16
+
+11. Change Fontsize in xterm
+    
+    sudo apt install x11-xserver-utils
+   
+    vi ~./Xresources
+    
+    xterm*font:     *-fixed-*-*-*-18-*
+
+    run xrdb -merge ~/.Xresources
+
+14. Install Code
+    
+    sudo snap install --classic code
+
+    
 ### how to use
 
 To start using Devika, follow these steps:

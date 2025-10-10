@@ -31,3 +31,5 @@ orjson
 gevent
 gevent-websocket
 curl_cffi
+vite
+shutils
