@@ -2,7 +2,7 @@ flask
 flask-cors
 toml
 urllib3
-requests
+requests>=2.31.0
 colorama
 fastlogging
 Jinja2
@@ -12,7 +12,7 @@ pdfminer.six
 playwright
 pytest-playwright
 tiktoken
-ollama
+ollama>=0.1.6
 openai
 anthropic
 google-generativeai
@@ -31,3 +31,5 @@ orjson
 gevent
 gevent-websocket
 curl_cffi
+pytest>=7.4.0
+pytest-mock>=3.12.0
