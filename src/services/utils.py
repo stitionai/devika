@@ -1,6 +1,7 @@
 # create wrapper function that will has retry logic of 5 times
 import sys
 import time
+import requests
 from functools import wraps
 import json
 
@@ -11,9 +12,17 @@ def retry_wrapper(func):
         max_tries = 5
         tries = 0
         while tries < max_tries:
-            result = func(*args, **kwargs)
-            if result:
-                return result
+            try:
+                result = func(*args, **kwargs)
+                if result:
+                    return result
+            except requests.exceptions.HTTPError as e:
+                if e.response.status_code == 429:
+                    print("Rate limit reached, waiting 60 seconds...")
+                    emit_agent("info", {"type": "warning", "message": "Rate limit reached, waiting 60 seconds..."})
+                    time.sleep(60)
+                    continue
+                raise
             print("Invalid response from the model, I'm trying again...")
             emit_agent("info", {"type": "warning", "message": "Invalid response from the model, trying again..."})
             tries += 1
@@ -25,7 +34,7 @@ def retry_wrapper(func):
         return False
     return wrapper
 
-        
+
 class InvalidResponseError(Exception):
     pass
 
