@@ -1,3 +1,7 @@
+<h1 align="center">Checkout <a href="https://opcode.sh/">Opcode</a>, the second iteration of Devika. New version out soon!</h1>
+
+---
+
 <p align="center">
   <img src=".assets/devika-avatar.png" alt="Devika Logo" width="250">
 </p>
