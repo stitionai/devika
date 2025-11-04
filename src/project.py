@@ -120,12 +120,14 @@ class ProjectManager:
             if project_state:
                 message_stack = json.loads(project_state.message_stack_json)
                 for message in message_stack:
-                    if message["from_devika"]:
-                        formatted_messages.append(f"Devika: {message['message']}")
-                    else:
-                        formatted_messages.append(f"User: {message['message']}")
-
-            return formatted_messages
+                    if isinstance(message, dict): 
+                        if message["from_devika"]:
+                            formatted_messages.append(f"Devika: {message['message']}")
+                        else:
+                            formatted_messages.append(f"User: {message['message']}")    
+                    else: 
+                        print(f"Invalid message format: {message}")
+                return formatted_messages
 
     def get_project_path(self, project: str):
         return os.path.join(self.project_path, project.lower().replace(" ", "-"))
