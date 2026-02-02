@@ -6,6 +6,31 @@ from urllib.parse import unquote
 from html import unescape
 import orjson
 
+class BoChaSearch:
+    def __init__(self):
+        self.config = Config()
+        self.bocha_api_key = self.config.get_bocha_api_key()
+        self.bocha_api_endpoint = self.config.get_bocha_api_endpoint()
+        self.query_result = None
+
+    def search(self, query):
+        headers = {
+        'Authorization': f'Bearer {self.bocha_api_key}',  # 请替换为你的API密钥
+        'Content-Type': 'application/json'
+    }
+
+        params = {"query": query}
+
+        try:
+            response = requests.post(self.bocha_api_endpoint, headers=headers, json=params)
+            response.raise_for_status()
+            self.query_result = response.json()
+            return self.query_result
+        except Exception as error:
+            return error
+
+    def get_first_link(self):
+        return self.query_result["data"]["webPages"]["value"][0]["url"]
 
 class BingSearch:
     def __init__(self):
