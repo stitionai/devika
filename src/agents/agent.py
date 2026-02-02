@@ -17,7 +17,7 @@ from src.logger import Logger
 
 from src.bert.sentence import SentenceBert
 from src.memory import KnowledgeBase
-from src.browser.search import BingSearch, GoogleSearch, DuckDuckGoSearch
+from src.browser.search import BingSearch, GoogleSearch, DuckDuckGoSearch,BoChaSearch
 from src.browser import Browser
 from src.browser import start_interaction
 from src.filesystem import ReadCode
@@ -85,6 +85,8 @@ class Agent:
             web_search = BingSearch()
         elif self.engine == "google":
             web_search = GoogleSearch()
+        elif self.engine == "bocha":
+            web_search = BoChaSearch()
         else:
             web_search = DuckDuckGoSearch()
 

@@ -48,6 +48,12 @@ class Config:
     def get_bing_api_key(self):
         return self.config["API_KEYS"]["BING"]
 
+    def get_bocha_api_endpoint(self):
+        return self.config["API_ENDPOINTS"]["BoCha"]
+
+    def get_bocha_api_key(self):
+        return self.config["API_KEYS"]["BoCha"]
+
     def get_google_search_api_key(self):
         return self.config["API_KEYS"]["GOOGLE_SEARCH"]
 
@@ -117,6 +123,14 @@ class Config:
 
     def set_bing_api_endpoint(self, endpoint):
         self.config["API_ENDPOINTS"]["BING"] = endpoint
+        self.save_config()
+
+    def set_bocha_api_key(self, key):
+        self.config["API_KEYS"]["BoCha"] = key
+        self.save_config()
+
+    def set_bocha_api_endpoint(self, endpoint):
+        self.config["API_ENDPOINTS"]["BoCha"] = endpoint
         self.save_config()
 
     def set_google_search_api_key(self, key):
