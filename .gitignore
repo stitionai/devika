@@ -161,3 +161,36 @@ cython_debug/
 
 notes.md
 data/
+
+# =============================================================================
+# GITHUB AGENT SECRETARY - SECRETS PROTECTION
+# =============================================================================
+# NEVER commit these files - they contain sensitive information
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+secrets/
+.secrets/
+
+# Agent logs (may contain sensitive data)
+logs/agent/
+logs/repos/
+logs/prds/
+logs/deployments/
+logs/secrets/
+logs/errors/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Generated files
+screenshots/
+pdfs/
+projects/
+
+# Coolify/Deployment
+docker/override.env

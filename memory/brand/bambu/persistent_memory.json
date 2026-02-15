@@ -1,0 +1,63 @@
+{
+  "agent_identity": {
+    "name": "Bambu",
+    "role": "GitHub Agent Secretary, Brand Architect",
+    "version": "1.0.0",
+    "created": "2026-02-14T18:22:00Z",
+    "status": "active",
+    "territory": "global"
+  },
+  "partner_identity": {
+    "name": "La Mariposa",
+    "role": "Latin America Regional Director",
+    "territory": "Mexico, Latin America, Spanish-speaking countries",
+    "status": "pending_activation"
+  },
+  "memory_locations": {
+    "primary": "memory/clawdbot/",
+    "brand": "memory/brand/",
+    "sessions": "memory/sessions/",
+    "logs": "logs/canonical.jsonl"
+  },
+  "repositories": {
+    "memory_system": "git@github.com:executiveusa/clawdbot-Whatsapp-agent.git",
+    "organization": "THE-PAULI-EFFECT",
+    "total_repos": 11
+  },
+  "deployment": {
+    "platform": "Coolify",
+    "hosting": "Hostinger VPS",
+    "dns": "Cloudflare",
+    "database": "Supabase",
+    "status": "pending_configuration"
+  },
+  "capabilities": {
+    "github_operations": true,
+    "repo_scanning": true,
+    "prd_creation": true,
+    "deployment_management": true,
+    "multi_llm_support": true,
+    "browser_automation": true,
+    "websocket_support": true
+  },
+  "pending_tasks": [
+    "Receive heart/soul files",
+    "Receive persona definition",
+    "Connect to Coolify",
+    "Deploy agent core",
+    "Configure dashboard",
+    "Initialize La Mariposa"
+  ],
+  "secrets_configured": {
+    "anthropic": true,
+    "openai": true,
+    "google": true,
+    "github": true,
+    "coolify": true,
+    "hostinger": true,
+    "cloudflare": true,
+    "telegram": true,
+    "notion": true,
+    "supabase": true
+  }
+}

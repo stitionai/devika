@@ -31,3 +31,10 @@ orjson
 gevent
 gevent-websocket
 curl_cffi
+
+# GitHub Agent Secretary additions
+click>=8.1.0
+cryptography>=41.0.0
+python-dotenv>=1.0.0
+pydantic>=2.0.0
+structlog>=23.1.0
