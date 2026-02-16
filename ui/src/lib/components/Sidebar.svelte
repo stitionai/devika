@@ -10,6 +10,11 @@
       route: "/",
     },
     {
+      icon: Icons.MEETING,
+      tooltip: "Meeting Room",
+      route: "/meeting",
+    },
+    {
       icon: Icons.SETTINGS,
       tooltip: "Settings",
       route: "/settings",

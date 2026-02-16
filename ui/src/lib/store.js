@@ -46,3 +46,29 @@ export const isSending = writable(false);
 
 // Token usage store
 export const tokenUsage = writable(0);
+
+// ============ Meeting Room Stores ============
+
+// Agent presence in meeting room
+export const agentPresence = writable([]);
+
+// Meeting messages
+export const meetingMessages = writable([]);
+
+// Room state
+export const roomState = writable({
+    room_id: "main",
+    active_meeting_id: null,
+    agents_in_room: [],
+    speaking_agent: null,
+    last_activity: null
+});
+
+// Scheduled meetings
+export const meetings = writable([]);
+
+// Invitations
+export const invitations = writable({
+    sent: [],
+    received: []
+});

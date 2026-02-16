@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  # Backend API Service
+  backend:
+    build:
+      context: ./core
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - HOST=0.0.0.0
+      - PORT=8000
+    volumes:
+      - ./core:/app
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Frontend Service
+  frontend:
+    build:
+      context: ./visualization
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+      - NEXT_PUBLIC_WS_URL=ws://localhost:8000/ws
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  # Optional: OpenClaw Integration
+  # openclaw:
+  #   image: openclaw/backend:latest
+  #   ports:
+  #     - "8080:8080"
+  #   environment:
+  #     - DATABASE_URL=sqlite:///data/openclaw.db
+  #   volumes:
+  #     - openclaw-data:/data
+  #   restart: unless-stopped
+
+volumes:
+  openclaw-data:
