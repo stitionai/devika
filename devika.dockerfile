@@ -17,7 +17,6 @@ RUN $HOME/.cargo/bin/uv venv
 ENV PATH="/home/nonroot/devika/.venv/bin:$HOME/.cargo/bin:$PATH"
 
 # copy devika python engine only
-RUN $HOME/.cargo/bin/uv venv
 COPY requirements.txt /home/nonroot/devika/
 RUN UV_HTTP_TIMEOUT=100000 $HOME/.cargo/bin/uv pip install -r requirements.txt 
 
@@ -32,7 +31,7 @@ RUN chown -R nonroot:nonroot /home/nonroot/devika
 
 USER nonroot
 WORKDIR /home/nonroot/devika
-ENV PATH="/home/nonroot/devika/.venv/bin:$HOME/.cargo/bin:$PATH"
+ENV PATH="/usr/bin:/home/nonroot/devika/.venv/bin:$HOME/.cargo/bin:$PATH"
 RUN mkdir /home/nonroot/devika/db
 
 ENTRYPOINT [ "python3", "-m", "devika" ]

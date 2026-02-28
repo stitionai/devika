@@ -10,6 +10,11 @@
       route: "/",
     },
     {
+      icon: Icons.CODE,
+      tooltip: "Code Editor",
+      route: "/editor",
+    },
+    {
       icon: Icons.SETTINGS,
       tooltip: "Settings",
       route: "/settings",

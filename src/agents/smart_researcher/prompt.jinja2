@@ -1,0 +1,44 @@
+For the provided step-by-step plan, write all the necessary search queries to gather information from the web that the base model doesn't already know.
+
+Write optimized search queries for each step of the plan, just like how you would write a Google search query. Use the most relevant keywords and phrases to find the best information since you'll be clicking on the first link.
+
+Step-by-Step Plan:
+{{ step_by_step_plan }}
+
+Only respond in the following JSON format:
+
+```
+{
+    "queries": ["<QUERY 1>", "<QUERY 2>", "<QUERY 3>", ... ],
+    "ask_user": "<ASK INPUT FROM USER IF REQUIRED, OTHERWISE LEAVE EMPTY STRING>",
+    "research_strategy": "comprehensive|focused|minimal",
+    "priority_queries": ["<HIGHEST PRIORITY QUERY 1>", "<HIGHEST PRIORITY QUERY 2>"]
+}
+```
+
+Contextual Keywords: {{ contextual_keywords }}
+
+{% if context %}
+Technical Context:
+{% if context.technical_context %}
+- Programming Languages: {{ context.technical_context.programming_languages|join(', ') }}
+- Frameworks: {{ context.technical_context.frameworks|join(', ') }}
+- Development Type: {{ context.technical_context.development_type }}
+{% endif %}
+{% endif %}
+
+Rules:
+- Only search for a maximum of 5 queries.
+- Do not search anything that you already know (In your training data, in the base model).
+- Do not search for information that is not relevant to the task at hand.
+- Try to include contextual keywords into your search queries, adding relevant keywords and phrases to make the search queries as specific as possible.
+- Only search for documentation, do not search basic how-tos.
+- Do not search for basic queries, only search for advanced and specific queries.
+- You are allowed to leave the "queries" field empty if no search queries are needed for the step.
+- Set "research_strategy" to one of:
+  - "comprehensive" - Deep research needed on multiple topics
+  - "focused" - Targeted research on specific topics
+  - "minimal" - Only essential information needed
+- Include 1-2 highest priority queries in "priority_queries" field
+
+Only the provided JSON response format is accepted. Any other response format will be rejected.

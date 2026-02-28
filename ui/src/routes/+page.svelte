@@ -8,6 +8,7 @@
   import BrowserWidget from "$lib/components/BrowserWidget.svelte";
   import TerminalWidget from "$lib/components/TerminalWidget.svelte";
   import EditorWidget from "../lib/components/EditorWidget.svelte";
+  import AnalysisPanel from "../lib/components/AnalysisPanel.svelte";
   import * as Resizable from "$lib/components/ui/resizable/index.js";
 
   import { serverStatus } from "$lib/store";
@@ -52,6 +53,9 @@
     </div>
     <div class="flex flex-col gap-2 min-w-[calc(100vw-120px)] h-full pr-4 p-2">
       <EditorWidget />
+    </div>
+    <div class="flex flex-col gap-2 min-w-[calc(100vw-120px)] h-full pr-4 p-2">
+      <AnalysisPanel />
     </div>
   </div>
 </div>

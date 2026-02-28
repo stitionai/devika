@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" class="{{ theme_class }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Devika Code Editor{% endblock %}</title>
+    
+    <!-- CSS Framework -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Monaco Editor -->
+    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
+    
+    <!-- Custom Styles -->
+    <style>
+        :root {
+            --primary: {{ theme.primary }};
+            --background: {{ theme.background }};
+            --secondary: {{ theme.secondary }};
+            --tertiary: {{ theme.tertiary }};
+            --foreground: {{ theme.foreground }};
+            --border: {{ theme.border }};
+            --success: {{ theme.success }};
+            --warning: {{ theme.warning }};
+            --error: {{ theme.error }};
+        }
+        
+        .editor-container {
+            height: calc(100vh - 120px);
+        }
+        
+        .file-tree {
+            scrollbar-width: thin;
+            scrollbar-color: var(--tertiary) var(--secondary);
+        }
+        
+        .tab-container {
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        
+        .notification {
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .context-menu {
+            animation: fadeIn 0.15s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+    
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-background text-foreground">
+    <!-- Navigation Header -->
+    <nav class="bg-secondary border-b border-border px-4 py-2">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <h1 class="text-xl font-bold">
+                    <i class="fas fa-code text-primary"></i>
+                    Devika Editor
+                </h1>
+                
+                <!-- Project Selector -->
+                <div class="relative">
+                    <select id="project-selector" class="bg-background border border-border rounded px-3 py-1 text-sm">
+                        <option value="">Select Project</option>
+                        {% for project in projects %}
+                        <option value="{{ project.name }}" 
+                                {% if project.name == current_project %}selected{% endif %}>
+                            {{ project.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-2">
+                <!-- Theme Toggle -->
+                <button id="theme-toggle" class="p-2 rounded hover:bg-background transition-colors">
+                    <i class="fas fa-{{ 'sun' if theme_class == 'dark' else 'moon' }}"></i>
+                </button>
+                
+                <!-- Settings -->
+                <button id="settings-btn" class="p-2 rounded hover:bg-background transition-colors">
+                    <i class="fas fa-cog"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="flex h-screen">
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notifications" class="fixed top-4 right-4 z-50 space-y-2"></div>
+
+    <!-- Context Menu -->
+    <div id="context-menu" class="fixed bg-background border border-border rounded-lg shadow-lg py-1 z-50 hidden">
+        <!-- Dynamic content populated by JavaScript -->
+    </div>
+
+    <!-- Base JavaScript -->
+    <script>
+        // Global configuration
+        window.DEVIKA_CONFIG = {
+            apiBaseUrl: '{{ api_base_url }}',
+            currentProject: '{{ current_project }}',
+            theme: '{{ theme_class }}',
+            user: {{ user|tojson if user else 'null' }},
+            settings: {{ editor_settings|tojson }}
+        };
+    </script>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,32 @@
+{% set notification_class = {
+    'success': 'border-success bg-green-50 dark:bg-green-900/20',
+    'error': 'border-error bg-red-50 dark:bg-red-900/20',
+    'warning': 'border-warning bg-yellow-50 dark:bg-yellow-900/20',
+    'info': 'border-primary bg-blue-50 dark:bg-blue-900/20'
+}[type] %}
+
+{% set notification_icon = {
+    'success': 'fas fa-check-circle text-success',
+    'error': 'fas fa-exclamation-circle text-error',
+    'warning': 'fas fa-exclamation-triangle text-warning',
+    'info': 'fas fa-info-circle text-primary'
+}[type] %}
+
+<div class="notification flex items-center p-4 rounded-lg border-l-4 shadow-lg max-w-sm {{ notification_class }}"
+     data-id="{{ id }}"
+     style="animation: slideIn 0.3s ease-out;">
+    
+    <i class="{{ notification_icon }} mr-3"></i>
+    
+    <div class="flex-1 min-w-0">
+        {% if title %}
+            <p class="text-sm font-medium text-foreground">{{ title }}</p>
+        {% endif %}
+        <p class="text-sm {{ 'text-tertiary' if title else 'font-medium text-foreground' }}">{{ message }}</p>
+    </div>
+    
+    <button class="ml-3 text-tertiary hover:text-foreground transition-colors"
+            onclick="dismissNotification('{{ id }}')">
+        <i class="fas fa-times text-xs"></i>
+    </button>
+</div>

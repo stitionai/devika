@@ -1,0 +1,29 @@
+{% set is_active = tab.path == active_file.path if active_file else false %}
+
+<div class="tab flex items-center px-3 py-2 border-r border-border cursor-pointer hover:bg-background transition-colors group {{ 'bg-background' if is_active else '' }}"
+     data-path="{{ tab.path }}"
+     onclick="switchToTab('{{ tab.path }}')"
+     oncontextmenu="showTabContextMenu(event, '{{ tab.path }}')"
+     draggable="true"
+     ondragstart="handleTabDragStart(event, '{{ tab.path }}')"
+     ondragover="handleTabDragOver(event)"
+     ondrop="handleTabDrop(event, '{{ tab.path }}')">
+    
+    <i class="{{ get_file_icon(tab.name) }} mr-2 text-xs"></i>
+    
+    <span class="tab-name text-sm truncate max-w-32">{{ tab.name }}</span>
+    
+    {% if tab.modified %}
+        <div class="w-2 h-2 bg-warning rounded-full ml-2 animate-pulse"></div>
+    {% else %}
+        <button class="tab-close ml-2 w-4 h-4 flex items-center justify-center rounded hover:bg-error hover:text-white transition-colors opacity-0 group-hover:opacity-100"
+                onclick="event.stopPropagation(); closeTab('{{ tab.path }}')"
+                title="Close tab">
+            <i class="fas fa-times text-xs"></i>
+        </button>
+    {% endif %}
+    
+    {% if is_active %}
+        <div class="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"></div>
+    {% endif %}
+</div>
