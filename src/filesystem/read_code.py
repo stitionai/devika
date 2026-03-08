@@ -1,6 +1,7 @@
 import os
 
 from src.config import Config
+from src.services import Morph
 
 """
 TODO: Replace this with `code2prompt` - https://github.com/mufeedvh/code2prompt
@@ -29,6 +30,21 @@ class ReadCode:
         code_set = self.read_directory()
         markdown = ""
         for code in code_set:
+            markdown += f"### {code['filename']}:\n\n"
+            markdown += f"```\n{code['code']}\n```\n\n"
+            markdown += "---\n\n"
+        return markdown
+
+    def search_code(self, query: str) -> str:
+        try:
+            results = Morph().search(self.directory_path, query)
+            if not results:
+                return self.code_set_to_markdown()
+        except Exception:
+            return self.code_set_to_markdown()
+
+        markdown = ""
+        for code in results:
             markdown += f"### {code['filename']}:\n\n"
             markdown += f"```\n{code['code']}\n```\n\n"
             markdown += "---\n\n"

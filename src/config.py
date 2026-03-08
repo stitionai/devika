@@ -84,6 +84,9 @@ class Config:
     def get_netlify_api_key(self):
         return self.config["API_KEYS"]["NETLIFY"]
 
+    def get_morph_api_key(self):
+        return self.config["API_KEYS"]["MORPH"]
+
     def get_sqlite_db(self):
         return self.config["STORAGE"]["SQLITE_DB"]
 
@@ -165,6 +168,10 @@ class Config:
 
     def set_netlify_api_key(self, key):
         self.config["API_KEYS"]["NETLIFY"] = key
+        self.save_config()
+
+    def set_morph_api_key(self, key):
+        self.config["API_KEYS"]["MORPH"] = key
         self.save_config()
 
     def set_logging_rest_api(self, value):

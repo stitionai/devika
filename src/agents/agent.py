@@ -190,13 +190,21 @@ class Agent:
         self.agent_state.set_agent_active(project_name, True)
 
         conversation = self.project_manager.get_all_messages_formatted(project_name)
-        code_markdown = ReadCode(project_name).code_set_to_markdown()
 
         response, action = self.action.execute(conversation, project_name)
 
         self.project_manager.add_message_from_devika(project_name, response)
 
         print("\naction :: ", action, '\n')
+
+        read_code = ReadCode(project_name)
+        if action in ("answer", "feature", "bug"):
+            emit_agent("info", {"type": "info", "message": f"Searching codebase for: {prompt}"})
+            code_markdown = read_code.search_code(prompt)
+        elif action in ("run", "report"):
+            code_markdown = read_code.code_set_to_markdown()
+        else:
+            code_markdown = ""
 
         if action == "answer":
             response = self.answer.execute(
