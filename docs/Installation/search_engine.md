@@ -1,6 +1,6 @@
 # search Engine setup
 
-To use the search engine capabilities of Devika, you need to set up the search engine API keys. Currently, Devika supports Bing, Google and DuckDuckGo search engines. If you want to use duckduckgo, you don't need to set up any API keys.
+To use the search engine capabilities of Devika, you need to set up the search engine API keys. Devika supports Bing, Google, DuckDuckGo, and Tavily search engines. DuckDuckGo does not require an API key.
 
 For Bing and Google search engines, you need to set up the API keys. Here's how you can do it:
 
@@ -31,3 +31,8 @@ For Bing and Google search engines, you need to set up the API keys. Here's how 
 - click on the `Add` button.
 ![alt text](images/google-2.png)
 - After creating the engine. Copy the `Search Engine ID` and paste it in the API_Endpoints field with the name `GOOGLE_SEARCH_ENGINE_ID` in the `config.toml` file in the root directory of Devika or you can set it via UI.
+
+## Tavily Search API
+- Create a Tavily account and generate an API key from the [Tavily dashboard](https://app.tavily.com/).
+- Copy the key into the `TAVILY` field under `API_KEYS` in `config.toml`, or set it through the Devika UI.
+- Select `Tavily` as the search engine when starting a task. Tavily returns multiple ranked sources and relevant content directly to the coding agent.

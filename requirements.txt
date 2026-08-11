@@ -31,3 +31,4 @@ orjson
 gevent
 gevent-websocket
 curl_cffi
+tavily-python==0.7.27

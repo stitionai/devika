@@ -140,6 +140,7 @@ when you first time run Devika, it will create a `config.toml` file for you in t
    - `BING`: Your Bing Search API key for web searching capabilities.
    - `GOOGLE_SEARCH`: Your Google Search API key for web searching capabilities.
    - `GOOGLE_SEARCH_ENGINE_ID`: Your Google Search Engine ID for web searching using Google.
+   - `TAVILY`: Your Tavily API key for web searching capabilities.
    - `OPENAI`: Your OpenAI API key for accessing GPT models.
    - `GEMINI`: Your Gemini API key for accessing Gemini models.
    - `CLAUDE`: Your Anthropic API key for accessing Claude models.
@@ -153,7 +154,7 @@ when you first time run Devika, it will create a `config.toml` file for you in t
    - `OLLAMA`: The Ollama API endpoint for accessing Local LLMs.
    - `OPENAI`: The OpenAI API endpoint for accessing OpenAI models.
 
-Make sure to keep your API keys secure and do not share them publicly. For setting up the Bing and Google search API keys, follow the instructions in the [search engine setup](docs/Installation/search_engine.md)
+Make sure to keep your API keys secure and do not share them publicly. For setting up the Bing, Google, and Tavily search API keys, follow the instructions in the [search engine setup](docs/Installation/search_engine.md)
 
 
 ## Contributing

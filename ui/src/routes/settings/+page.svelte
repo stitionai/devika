@@ -47,6 +47,7 @@
       "BING": settings["API_KEYS"]["BING"],
       "GOOGLE_SEARCH": settings["API_KEYS"]["GOOGLE_SEARCH"],
       "GOOGLE_SEARCH_ENGINE_ID": settings["API_KEYS"]["GOOGLE_SEARCH_ENGINE_ID"],
+      "TAVILY": settings["API_KEYS"]["TAVILY"],
       "CLAUDE": settings["API_KEYS"]["CLAUDE"],
       "OPENAI": settings["API_KEYS"]["OPENAI"],
       "GEMINI": settings["API_KEYS"]["GEMINI"],
