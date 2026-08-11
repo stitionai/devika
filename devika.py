@@ -61,7 +61,7 @@ def test_connect(data):
 def data():
     project = manager.get_project_list()
     models = LLM().list_models()
-    search_engines = ["Bing", "Google", "DuckDuckGo"]
+    search_engines = ["Bing", "Google", "DuckDuckGo", "Tavily"]
     return jsonify({"projects": project, "models": models, "search_engines": search_engines})
 
 

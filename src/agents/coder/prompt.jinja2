@@ -10,15 +10,25 @@ Context From User:
 
 Context From Knowledge Base:
 
-{% if not knowledge_base_context %}
+{% if not search_results %}
 No context found.
 {% else %}
 {% for query, result in search_results.items() %}
 Query: {{ query }}
+{% if result is string %}
 Result:
 ```
 {{ result }}
 ```
+{% else %}
+Sources:
+{% for source in result %}
+- Title: {{ source.title }}
+  URL: {{ source.url }}
+  Score: {{ source.score }}
+  Content: {{ source.content }}
+{% endfor %}
+{% endif %}
 ---
 {% endfor %}
 {% endif %}

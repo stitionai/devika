@@ -57,6 +57,9 @@ class Config:
     def get_google_search_api_endpoint(self):
         return self.config["API_ENDPOINTS"]["GOOGLE"]
 
+    def get_tavily_api_key(self):
+        return self.config["API_KEYS"]["TAVILY"]
+
     def get_ollama_api_endpoint(self):
         return self.config["API_ENDPOINTS"]["OLLAMA"]
     

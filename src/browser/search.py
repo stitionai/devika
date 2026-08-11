@@ -1,10 +1,16 @@
+import logging
+import re
+from html import unescape
+from urllib.parse import unquote
+
+import orjson
 import requests
+from tavily import TavilyClient
+
 from src.config import Config
 
-import re
-from urllib.parse import unquote
-from html import unescape
-import orjson
+
+logger = logging.getLogger(__name__)
 
 
 class BingSearch:
@@ -28,6 +34,40 @@ class BingSearch:
 
     def get_first_link(self):
         return self.query_result["webPages"]["value"][0]["url"]
+
+
+class TavilySearch:
+    def __init__(self):
+        self.config = Config()
+        self.client = TavilyClient(
+            api_key=self.config.get_tavily_api_key(),
+            client_name="open-monitor/stitionai/devika",
+        )
+        self.query_result = []
+
+    def search(self, query):
+        try:
+            response = self.client.search(
+                query=query,
+                max_results=5,
+                include_answer=False,
+                include_raw_content=False,
+            )
+            results = response.get("results", []) if isinstance(response, dict) else []
+            self.query_result = [
+                {
+                    "title": result.get("title", ""),
+                    "url": result.get("url", ""),
+                    "content": result.get("content", ""),
+                    "score": result.get("score"),
+                }
+                for result in results
+                if isinstance(result, dict) and result.get("url")
+            ]
+        except Exception as error:
+            logger.warning("Tavily search failed for %r: %s", query, error)
+            self.query_result = []
+        return self.query_result
 
 
 class GoogleSearch:

@@ -17,7 +17,7 @@ from src.logger import Logger
 
 from src.bert.sentence import SentenceBert
 from src.memory import KnowledgeBase
-from src.browser.search import BingSearch, GoogleSearch, DuckDuckGoSearch
+from src.browser.search import BingSearch, GoogleSearch, DuckDuckGoSearch, TavilySearch
 from src.browser import Browser
 from src.browser import start_interaction
 from src.filesystem import ReadCode
@@ -85,6 +85,8 @@ class Agent:
             web_search = BingSearch()
         elif self.engine == "google":
             web_search = GoogleSearch()
+        elif self.engine == "tavily":
+            web_search = TavilySearch()
         else:
             web_search = DuckDuckGoSearch()
 
@@ -97,6 +99,11 @@ class Agent:
             # if knowledge:
             #     results[query] = knowledge
             #     continue
+
+            if self.engine == "tavily":
+                results[query] = web_search.search(query)
+                self.logger.info(f"got the search results for : {query}")
+                continue
 
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
