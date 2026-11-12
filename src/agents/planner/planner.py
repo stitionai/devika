@@ -51,8 +51,16 @@ class Planner:
                 result["focus"] += " " + line
             elif current_section == "plans":
                 if line.startswith("- [ ] Step"):
-                    current_step = line.split(":")[0].strip().split(" ")[-1]
-                    result["plans"][int(current_step)] = line.split(":", 1)[1].strip()
+                    parts = line.split(":", 1)
+                    if len(parts) < 2:
+                        continue
+                    step_parts = parts[0].strip().split(" ")
+                    try:
+                        current_step = step_parts[-1]
+                        step_num = int(current_step)
+                    except ValueError:
+                        continue
+                    result["plans"][step_num] = parts[1].strip()
                 elif current_step:
                     result["plans"][int(current_step)] += " " + line
             elif current_section == "summary":
