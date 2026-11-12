@@ -186,6 +186,9 @@ class Config:
     def update_config(self, data):
         for key, value in data.items():
             if key in self.config:
+                if not isinstance(value, dict):
+                    self.config[key] = value
+                    continue
                 with open("config.toml", "r+") as f:
                     config = toml.load(f)
                     for sub_key, sub_value in value.items():
