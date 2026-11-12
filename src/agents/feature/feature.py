@@ -37,6 +37,9 @@ class Feature:
     def validate_response(self, response: str) -> Union[List[Dict[str, str]], bool]:
         response = response.strip()
 
+        if "~~~" not in response:
+            return False
+
         response = response.split("~~~", 1)[1]
         response = response[:response.rfind("~~~")]
         response = response.strip()
@@ -50,7 +53,10 @@ class Feature:
             if line.startswith("File: "):
                 if current_file and current_code:
                     result.append({"file": current_file, "code": "\n".join(current_code)})
-                current_file = line.split("`")[1].strip()
+                parts = line.split("`")
+                if len(parts) < 2:
+                    continue
+                current_file = parts[1].strip()
                 current_code = []
                 code_block = False
             elif line.startswith("```"):
