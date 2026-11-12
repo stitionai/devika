@@ -26,7 +26,7 @@ class Action:
 
     @validate_responses
     def validate_response(self, response: str):
-        if "response" not in response and "action" not in response:
+        if "response" not in response or "action" not in response:
             return False
         else:
             return response["response"], response["action"]
