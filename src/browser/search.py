@@ -24,10 +24,14 @@ class BingSearch:
             self.query_result = response.json()
             return self.query_result
         except Exception as error:
-            return error
+            return None
 
     def get_first_link(self):
-        return self.query_result["webPages"]["value"][0]["url"]
+        if not self.query_result:
+            return None
+        web_pages = self.query_result.get("webPages", {})
+        values = web_pages.get("value", [])
+        return values[0]["url"] if values else None
 
 
 class GoogleSearch:
@@ -49,8 +53,9 @@ class GoogleSearch:
             response = requests.get(self.google_search_api_endpoint, params=params)
             # response.raise_for_status()
             self.query_result = response.json()
+            return self.query_result
         except Exception as error:
-            return error
+            return None
 
     def get_first_link(self):
         item = ""
@@ -108,6 +113,7 @@ class DuckDuckGoSearch:
         except Exception as error:
             if "timeout" in str(error).lower():
                 raise TimeoutError("Duckduckgo timed out error")
+        return None
 
     def duck(self, query):
         resp = self._get_url("POST", "https://duckduckgo.com/", data={"q": query})
@@ -148,6 +154,7 @@ class DuckDuckGoSearch:
                 return html_bytes[start:end].decode()
             except ValueError:
                 continue
+        return None
 
     @staticmethod
     def text_extract_json(html_bytes):
@@ -157,6 +164,7 @@ class DuckDuckGoSearch:
             return orjson.loads(html_bytes[start:end])
         except Exception as ex:
             print(f"Error extracting JSON: {type(ex).__name__}: {ex}")
+            return None
 
     @staticmethod
     def normalize_url(url: str) -> str:
