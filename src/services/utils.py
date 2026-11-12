@@ -33,7 +33,11 @@ def validate_responses(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         args = list(args)
+        if len(args) < 2:
+            return False
         response = args[1]
+        if not isinstance(response, str):
+            return False
         response = response.strip()
 
         try:
